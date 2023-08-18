@@ -5,22 +5,35 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
+
+/// <summary>
+/// techn. Prototyp für Socket-Netzwerkverbindung
+/// Client und Server auswählbar
+/// 
+/// Die Klassen sind wiederverwendbar gestalltet, und haben
+/// keine zusätzlichen Funktionen wie z.B. Benutzernamen oder Nachrichtenauswertung
+/// </summary>
 
 namespace NetworkPrototype {
     internal class Program {
         static void Main(string[] args) {
+            // IP-Adressen zur Einrichtung des Clienten oder Servers sowie zum Debuggen
             printIpAdresses();
-            System.Console.WriteLine("Client (c) or Server (s) or Client-Adress (d)?");
+
+            // Auswahl Client/Server
+            System.Console.WriteLine("C - Client with programmatic settings\n" +
+                "S - Dynamically setup Server\n" +
+                "D - Dynamically setup Client\n");
             ConsoleKey key = System.Console.ReadKey().Key;
+
+            // Connection is set programmatically
             if (key == ConsoleKey.C) {
                 System.Console.WriteLine("Client selected\n");
-                System.Console.WriteLine("\tInsert message to send to Hermine:");
-                String content = Console.ReadLine();
-                Console.WriteLine("Message:\n\t" + content);
-                NetworkClient client = new NetworkClient("Max Muster", "127.0.0.1:4");
-                client.sendMessageTo("Hermine", content);
+               
+                NetworkClient client = new NetworkClient();
+                client.SendWithStaticParameters();
             }
+            // Setup client connection via user input
             if (key == ConsoleKey.D) {
                 System.Console.WriteLine("Client selected\n");
                 System.Console.WriteLine("\tInsert message to send to Hermine:");
@@ -31,17 +44,23 @@ namespace NetworkPrototype {
                 System.Console.WriteLine("\tPort:");
                 String port = Console.ReadLine();
                 Console.WriteLine("Message:\n\t" + content + "\tAdress+Port: " + ipAdress + ":" + port);
-                NetworkClient client = new NetworkClient("Max Muster", "127.0.0.1:4");
-                client.sendMessageToAdress(ipAdress, port, content);
+                NetworkClient client = new NetworkClient();
+                client.SendMessageToAdress(ipAdress, port, content);
             }
+            // Setup server via user input
             if (key == ConsoleKey.S) {
                 System.Console.WriteLine("Server selected\n\n\tIP-Adresse:");
                 String ipAdress = Console.ReadLine();
+               
                 System.Console.WriteLine("\n\tPort:");
                 String port = Console.ReadLine();
+                
                 NetworkServer server = new NetworkServer();
                 server.startListening(ipAdress, port);
             }
+
+            // Programm Ende
+            Console.WriteLine("Tastendruck beendet Programm.");
             Console.ReadKey();
         }
 

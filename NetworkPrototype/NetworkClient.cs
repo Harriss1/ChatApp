@@ -5,19 +5,15 @@ using System.Text;
 
 namespace NetworkPrototype {
     internal class NetworkClient {
-        private string username;
-        private string ipAdress;
 
-        public NetworkClient(string username, string ipAdress) {
-            this.username = username;
-            this.ipAdress = ipAdress;
+        public NetworkClient() {
         }
 
-        internal void sendMessageTo(string username, string content) {
-            send("10.91.59.56", 3, content);
+        internal void SendWithStaticParameters() {
+            SendStatic();
         }
 
-        internal void sendMessageToAdress(string adress, string port, string content) {
+        internal void SendMessageToAdress(string adress, string port, string content) {
             string[] strIP = null;
             int count = 0;
 
@@ -37,7 +33,13 @@ namespace NetworkPrototype {
             send(adress, portNum, content);
         }
 
-        private void send() {
+        /// <summary>
+        /// Demonstriert das Senden an eine DNS-Adresse, hier "localhost"
+        /// Es ist ergo keine IP-Adresse nötig.
+        /// 
+        /// Man könnte aber das konvertieren der DNS zu einer IP auslagern.
+        /// </summary>
+        private void SendStatic() {
             byte[] bytes = new byte[1024];
 
             try {
@@ -77,12 +79,15 @@ namespace NetworkPrototype {
                     sender.Close();
 
                 }
+                // Falls ein Null-String übergeben wurde
                 catch (ArgumentNullException ane) {
                     Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
                 }
+                // Verbindungsfehler
                 catch (SocketException se) {
                     Console.WriteLine("SocketException : {0}", se.ToString());
                 }
+                // Nicht vorhergesehene Fehler
                 catch (Exception e) {
                     Console.WriteLine("Unexpected exception : {0}", e.ToString());
                 }
@@ -94,22 +99,18 @@ namespace NetworkPrototype {
         }
 
         /// <summary>
-        /// 
+        /// Senden an eine spezifische IP-Adresse
         /// </summary>
-        /// <param name="dnsAdress"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="port"></param>
         /// <param name="message">message string without eof suffix</param>
-        private void send(string dnsAdress, int port, string message) {
+        private void send(string ipAdress, int port, string message) {
             byte[] bytes = new byte[1024];
 
             try {
                 // Connect to a Remote server
-                // Get Host IP Address that is used to establish a connection
-                // In this case, we get one IP address of localhost that is IP : 127.0.0.1
-                // If a host has multiple addresses, you will get a list of addresses
-                IPHostEntry host = Dns.GetHostEntry(dnsAdress);
-                //IPAddress ipAddress = host.AddressList[0];
-                IPAddress ipAddress = IPAddress.Parse(dnsAdress);
+                               
+                IPAddress ipAddress = IPAddress.Parse(ipAdress);
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
 
                 // Create a TCP/IP  socket.
