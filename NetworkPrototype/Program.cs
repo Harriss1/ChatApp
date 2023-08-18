@@ -42,7 +42,7 @@ namespace NetworkPrototype {
                 System.Console.WriteLine("\tInsert message to send to Hermine:");
                 String content = Console.ReadLine();
 
-                System.Console.WriteLine("\tIP-Adress:");
+                System.Console.WriteLine("\tnumeric IP-Adress:");
                 String ipAdress = Console.ReadLine();
 
                 System.Console.WriteLine("\tPort:");
@@ -58,7 +58,7 @@ namespace NetworkPrototype {
                 System.Console.WriteLine("Server selected\n\n\tIP-Adresse:");
                 String ipAdress = Console.ReadLine();
                
-                System.Console.WriteLine("\n\tPort:");
+                System.Console.WriteLine("\n\tnumeric Port:");
                 String port = Console.ReadLine();
                 
                 NetworkServer server = new NetworkServer();
@@ -86,6 +86,23 @@ namespace NetworkPrototype {
                     }
                 }
             }
+        }
+
+        /////////////////////////////////////////////////////////
+        /// 
+        /// Auslagern der folgenden Methoden in Helfer-Klasse falls im Projekt benötigt.
+
+        public static IPAddress GetIPAddressFromIP(string ip) {
+            IPAddress ipAddress = IPAddress.Parse(ip);
+            return ipAddress;
+        }
+        public static IPAddress GetIPAdressFromDNS(string dnsAddress) {
+            // Get Host IP Address that is used to establish a connection
+            // In this case, we get one IP address of localhost that is IP : 127.0.0.1
+            // If a host has multiple addresses, you will get a list of addresses
+            IPHostEntry host = Dns.GetHostEntry(dnsAddress);
+            IPAddress ipAddress = host.AddressList[0];
+            return ipAddress;
         }
     }
 }

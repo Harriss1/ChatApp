@@ -7,12 +7,8 @@ namespace NetworkPrototype {
     internal class NetworkServer {
         public NetworkServer() {
         }
-        internal void StartListening(string ipAdress, string port) {
-            // Get Host IP Address that is used to establish a connection
-            // In this case, we get one IP address of localhost that is IP : 127.0.0.1
-            // If a host has multiple addresses, you will get a list of addresses
-            IPHostEntry host = Dns.GetHostEntry(ipAdress);
-            IPAddress ipAddress = host.AddressList[0];
+        public void StartListening(string ipAdress, string port) {
+            IPAddress ipAddress = IPAddress.Parse(ipAdress);
             int portNum = Int32.Parse(port);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, portNum);
 
@@ -20,31 +16,33 @@ namespace NetworkPrototype {
 
                 // Create a Socket that will use Tcp protocol
                 Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                // A Socket must be associated with an endpoint using the Bind method
+                
+                // "Festlegen": A Socket must be associated with an endpoint using the Bind method
                 listener.Bind(localEndPoint);
+                
                 // Specify how many requests a Socket can listen before it gives Server busy response.
-                // We will listen 10 requests at a time
-                listener.Listen(10);
+                // Änderung auf 100
+                listener.Listen(100);
 
                 Console.WriteLine("Waiting for a connection...");
                 Socket handler = listener.Accept();
 
                 // Incoming data from the client.
-                string data = null;
+                string receivedData = null;
                 byte[] bytes = null;
-
-                while (true) {
+                bool endOfFileReached = false;
+                while (!endOfFileReached) {
                     bytes = new byte[1024];
                     int bytesRec = handler.Receive(bytes);
-                    data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                    if (data.IndexOf("<EOF>") > -1) {
-                        break;
+                    receivedData += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                    if (receivedData.IndexOf("<EOF>") > -1) {
+                        endOfFileReached = true;
                     }
                 }
 
-                Console.WriteLine("Text received : {0}", data);
+                Console.WriteLine("Text received : {0}", receivedData);
 
-                byte[] msg = Encoding.ASCII.GetBytes(data);
+                byte[] msg = Encoding.ASCII.GetBytes(receivedData);
                 handler.Send(msg);
                 handler.Shutdown(SocketShutdown.Both);
                 handler.Close();
@@ -52,16 +50,12 @@ namespace NetworkPrototype {
             catch (Exception e) {
                 Console.WriteLine(e.ToString());
             }
-
-            Console.WriteLine("\n Press any key to continue...");
-            Console.ReadKey();
-
         }
 
         /// <summary>
         /// Original Beispielcode
         /// </summary>
-        internal void StartListeningStatic() {
+        public void StartListeningStatic() {
             // Get Host IP Address that is used to establish a connection
             // In this case, we get one IP address of localhost that is IP : 127.0.0.1
             // If a host has multiple addresses, you will get a list of addresses

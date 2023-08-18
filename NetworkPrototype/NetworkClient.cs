@@ -9,41 +9,21 @@ namespace NetworkPrototype {
         public NetworkClient() {
         }
 
-        internal void SendWithStaticParameters() {
-            SendStatic();
-        }
-
-        internal void SendMessageToAdress(string adress, string port, string content) {
-            string[] strIP = null;
-            int count = 0;
-
-            IPHostEntry HostEntry = Dns.GetHostEntry((Dns.GetHostName()));
-            if (HostEntry.AddressList.Length > 0) {
-                strIP = new string[HostEntry.AddressList.Length];
-                foreach (IPAddress ip in HostEntry.AddressList) {
-                    if (ip.AddressFamily == AddressFamily.InterNetwork) {
-                        strIP[count] = ip.ToString();
-                        Console.WriteLine(ip.ToString());
-                        count++;
-                        content += "\n\t - " + ip.ToString();
-                    }
-                }
-            }
+        public void SendMessageToAdress(string address, string port, string content) {
             int portNum = Int32.Parse(port);
-            Send(adress, portNum, content);
+            SendMessageToAdress(address, portNum, content);
         }
         /// <summary>
-        /// Senden an eine spezifische IP-Adresse, Port
+        /// Senden einer Nachricht an eine spezifische IP-Adresse, Port
         /// </summary>
         /// <param name="ipAdress"></param>
         /// <param name="port"></param>
-        /// <param name="message">message string without eof suffix</param>
-        private void Send(string ipAdress, int port, string message) {
+        /// <param name="content">message string without eof suffix</param>
+        public void SendMessageToAdress(string ipAdress, int port, string content) {
             byte[] bytes = new byte[1024];
 
             try {
                 // Connect to a Remote server
-
                 IPAddress endpointAdress = IPAddress.Parse(ipAdress);
                 IPEndPoint remoteEndpoint = new IPEndPoint(endpointAdress, port);
 
@@ -60,7 +40,7 @@ namespace NetworkPrototype {
                         sender.RemoteEndPoint.ToString());
 
                     // Encode the data string into a byte array.
-                    byte[] msg = Encoding.ASCII.GetBytes(message + "<EOF>");
+                    byte[] msg = Encoding.ASCII.GetBytes(content + "<EOF>");
 
                     // Send the data through the socket.
                     int bytesSent = sender.Send(msg);
@@ -75,16 +55,18 @@ namespace NetworkPrototype {
                     sender.Close();
 
                 }
+                // Falls ein Null-String übergeben wurde
                 catch (ArgumentNullException ane) {
                     Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
                 }
+                // Verbindungsfehler
                 catch (SocketException se) {
                     Console.WriteLine("SocketException : {0}", se.ToString());
                 }
+                // Nicht vorhergesehene Fehler
                 catch (Exception e) {
                     Console.WriteLine("Unexpected exception : {0}", e.ToString());
                 }
-
             }
             catch (Exception e) {
                 Console.WriteLine(e.ToString());
@@ -96,9 +78,9 @@ namespace NetworkPrototype {
         /// Demonstriert das Senden an eine DNS-Adresse, hier "localhost"
         /// Es ist ergo keine IP-Adresse nötig.
         /// 
-        /// Man könnte aber das konvertieren der DNS zu einer IP auslagern.
+        /// Man könnte aber das Konvertieren der DNS zu einer IP auslagern.
         /// </summary>
-        private void SendStatic() {
+        public void SendWithStaticParameters() {
             byte[] bytes = new byte[1024];
 
             try {
@@ -138,15 +120,12 @@ namespace NetworkPrototype {
                     sender.Close();
 
                 }
-                // Falls ein Null-String übergeben wurde
                 catch (ArgumentNullException ane) {
                     Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
                 }
-                // Verbindungsfehler
                 catch (SocketException se) {
                     Console.WriteLine("SocketException : {0}", se.ToString());
                 }
-                // Nicht vorhergesehene Fehler
                 catch (Exception e) {
                     Console.WriteLine("Unexpected exception : {0}", e.ToString());
                 }
