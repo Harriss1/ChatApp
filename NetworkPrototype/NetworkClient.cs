@@ -14,7 +14,6 @@ namespace NetworkPrototype {
         }
 
         internal void sendMessageTo(string username, string content) {
-            
             send("10.91.59.56", 3, content);
         }
 
