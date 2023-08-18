@@ -7,7 +7,7 @@ namespace NetworkPrototype {
     internal class NetworkServer {
         public NetworkServer() {
         }
-        internal void startListening(string ipAdress, string port) {
+        internal void StartListening(string ipAdress, string port) {
             // Get Host IP Address that is used to establish a connection
             // In this case, we get one IP address of localhost that is IP : 127.0.0.1
             // If a host has multiple addresses, you will get a list of addresses
@@ -58,7 +58,10 @@ namespace NetworkPrototype {
 
         }
 
-        internal void startListening() {
+        /// <summary>
+        /// Original Beispielcode
+        /// </summary>
+        internal void StartListeningStatic() {
             // Get Host IP Address that is used to establish a connection
             // In this case, we get one IP address of localhost that is IP : 127.0.0.1
             // If a host has multiple addresses, you will get a list of addresses

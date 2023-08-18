@@ -10,6 +10,8 @@ using System.Net.Sockets;
 /// techn. Prototyp für Socket-Netzwerkverbindung
 /// Client und Server auswählbar
 /// 
+/// Client und Server Code von: https://www.c-sharpcorner.com/article/socket-programming-in-C-Sharp/
+/// 
 /// Die Klassen sind wiederverwendbar gestalltet, und haben
 /// keine zusätzlichen Funktionen wie z.B. Benutzernamen oder Nachrichtenauswertung
 /// </summary>
@@ -18,7 +20,7 @@ namespace NetworkPrototype {
     internal class Program {
         static void Main(string[] args) {
             // IP-Adressen zur Einrichtung des Clienten oder Servers sowie zum Debuggen
-            printIpAdresses();
+            PrintIpAdresses();
 
             // Auswahl Client/Server
             System.Console.WriteLine("C - Client with programmatic settings\n" +
@@ -33,6 +35,7 @@ namespace NetworkPrototype {
                 NetworkClient client = new NetworkClient();
                 client.SendWithStaticParameters();
             }
+
             // Setup client connection via user input
             if (key == ConsoleKey.D) {
                 System.Console.WriteLine("Client selected\n");
@@ -41,12 +44,15 @@ namespace NetworkPrototype {
 
                 System.Console.WriteLine("\tIP-Adress:");
                 String ipAdress = Console.ReadLine();
+
                 System.Console.WriteLine("\tPort:");
                 String port = Console.ReadLine();
+
                 Console.WriteLine("Message:\n\t" + content + "\tAdress+Port: " + ipAdress + ":" + port);
                 NetworkClient client = new NetworkClient();
                 client.SendMessageToAdress(ipAdress, port, content);
             }
+
             // Setup server via user input
             if (key == ConsoleKey.S) {
                 System.Console.WriteLine("Server selected\n\n\tIP-Adresse:");
@@ -56,7 +62,7 @@ namespace NetworkPrototype {
                 String port = Console.ReadLine();
                 
                 NetworkServer server = new NetworkServer();
-                server.startListening(ipAdress, port);
+                server.StartListening(ipAdress, port);
             }
 
             // Programm Ende
@@ -64,7 +70,8 @@ namespace NetworkPrototype {
             Console.ReadKey();
         }
 
-        private static void printIpAdresses() {
+        private static void PrintIpAdresses() {
+            // Quelle: https://stackoverflow.com/questions/9487452/obtain-ip-address-of-wifi-connected-system
             string[] strIP = null;
             int count = 0;
 
