@@ -44,6 +44,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonAddLabel = new System.Windows.Forms.Button();
+            this.buttonAddPanel = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
@@ -230,10 +231,11 @@
             // tableLayoutPanel3
             // 
             this.tableLayoutPanel3.ColumnCount = 2;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.Controls.Add(this.panelChatScroller, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.buttonAddLabel, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.buttonAddPanel, 1, 1);
             this.tableLayoutPanel3.Location = new System.Drawing.Point(489, 3);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 2;
@@ -268,13 +270,13 @@
             // textBox1
             // 
             this.textBox1.HideSelection = false;
-            this.textBox1.Location = new System.Drawing.Point(96, 179);
+            this.textBox1.Location = new System.Drawing.Point(96, 153);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.Size = new System.Drawing.Size(100, 46);
             this.textBox1.TabIndex = 0;
-            this.textBox1.Text = "wqb";
+            this.textBox1.Text = "Nur AddPanel ODER AddLabel pro Sitzung";
             // 
             // buttonAddLabel
             // 
@@ -285,6 +287,16 @@
             this.buttonAddLabel.Text = "Add Label";
             this.buttonAddLabel.UseVisualStyleBackColor = true;
             this.buttonAddLabel.Click += new System.EventHandler(this.ButtonAddLabel_Click);
+            // 
+            // buttonAddPanel
+            // 
+            this.buttonAddPanel.Location = new System.Drawing.Point(115, 373);
+            this.buttonAddPanel.Name = "buttonAddPanel";
+            this.buttonAddPanel.Size = new System.Drawing.Size(75, 23);
+            this.buttonAddPanel.TabIndex = 2;
+            this.buttonAddPanel.Text = "Add Panel";
+            this.buttonAddPanel.UseVisualStyleBackColor = true;
+            this.buttonAddPanel.Click += new System.EventHandler(this.ButtonAddPanel_Click);
             // 
             // Form1
             // 
@@ -337,6 +349,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button buttonAddLabel;
+        private System.Windows.Forms.Button buttonAddPanel;
     }
 }
 

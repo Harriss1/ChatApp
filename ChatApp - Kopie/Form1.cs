@@ -17,6 +17,7 @@ namespace FormsPrototyp {
     public partial class Form1 : Form {
         private int textboxCount = 0;
         private TextBox lastTextBox = null;
+        private Panel lastPanel = null;
         public Form1() {
             InitializeComponent();
         }
@@ -72,7 +73,7 @@ namespace FormsPrototyp {
                 panelChatScroller.VerticalScroll.Value = panelChatScroller.VerticalScroll.Maximum;
                 locator = lastTextBox.Location;
                 locator.X = 0;
-                locator.Offset(0, 20);
+                locator.Offset(0, lastTextBox.Height+2);
             }
             TextBox textbox= new TextBox();
             textbox.Text = "neue Textbox";
@@ -81,6 +82,33 @@ namespace FormsPrototyp {
             textboxCount++;
             panelChatScroller.Controls.Add(textbox);
             lastTextBox = textbox;
+        }
+
+        private void ButtonAddPanel_Click(object sender, EventArgs e) {
+            Point locator = new Point(0, 0);
+            if (lastPanel != null) {
+                locator = lastPanel.Location;
+                locator.X = 0;
+                locator.Offset(0, lastPanel.Height + 2);
+            }
+
+            Panel panel = new Panel();
+            TextBox nameBox = new TextBox();
+            nameBox.Text = "Henry Stanzel";
+
+            TextBox messageBox = new TextBox();
+            messageBox.Text = "Dies ist seine erste Nachricht";
+            Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
+            messageBox.Width = size.Width;
+            messageBox.Height = size.Height;
+            messageBox.Top = nameBox.Height+2;
+            panel.Controls.Add(nameBox);
+            panel.Controls.Add(messageBox);
+            panel.Location = locator;
+            panel.Height = messageBox.Height + nameBox.Height + 4;
+            panelChatScroller.Controls.Add(panel);
+            lastPanel = panel;
+            panelChatScroller.VerticalScroll.Value = panelChatScroller.VerticalScroll.Maximum;
         }
     }
 }
