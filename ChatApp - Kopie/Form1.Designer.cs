@@ -35,14 +35,26 @@
             this.closeButton = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.textboxDialogueDisplay = new System.Windows.Forms.TextBox();
+            this.textboxChatInput = new System.Windows.Forms.TextBox();
+            this.buttonChatSubmit = new System.Windows.Forms.Button();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.panelChatScroller = new System.Windows.Forms.Panel();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.buttonAddLabel = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
+            this.panelChatScroller.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonClickThis
             // 
-            this.buttonClickThis.Location = new System.Drawing.Point(833, 402);
+            this.buttonClickThis.Location = new System.Drawing.Point(855, 485);
             this.buttonClickThis.Margin = new System.Windows.Forms.Padding(2);
             this.buttonClickThis.Name = "buttonClickThis";
             this.buttonClickThis.Size = new System.Drawing.Size(129, 19);
@@ -54,7 +66,7 @@
             // lblHelloWorld
             // 
             this.lblHelloWorld.AutoSize = true;
-            this.lblHelloWorld.Location = new System.Drawing.Point(830, 329);
+            this.lblHelloWorld.Location = new System.Drawing.Point(730, 469);
             this.lblHelloWorld.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblHelloWorld.Name = "lblHelloWorld";
             this.lblHelloWorld.Size = new System.Drawing.Size(35, 13);
@@ -75,7 +87,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(713, 515);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(486, 515);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // pictureBox1
@@ -85,7 +97,7 @@
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.Location = new System.Drawing.Point(3, 3);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(707, 457);
+            this.pictureBox1.Size = new System.Drawing.Size(480, 457);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
@@ -108,15 +120,15 @@
             this.flowLayoutPanel1.Controls.Add(this.closeButton);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(109, 466);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(75, 466);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(601, 46);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(408, 46);
             this.flowLayoutPanel1.TabIndex = 2;
             // 
             // showPictureButton
             // 
             this.showPictureButton.AutoSize = true;
-            this.showPictureButton.Location = new System.Drawing.Point(510, 3);
+            this.showPictureButton.Location = new System.Drawing.Point(317, 3);
             this.showPictureButton.Name = "showPictureButton";
             this.showPictureButton.Size = new System.Drawing.Size(88, 23);
             this.showPictureButton.TabIndex = 0;
@@ -127,7 +139,7 @@
             // clearPictureButton
             // 
             this.clearPictureButton.AutoSize = true;
-            this.clearPictureButton.Location = new System.Drawing.Point(410, 3);
+            this.clearPictureButton.Location = new System.Drawing.Point(217, 3);
             this.clearPictureButton.Name = "clearPictureButton";
             this.clearPictureButton.Size = new System.Drawing.Size(94, 23);
             this.clearPictureButton.TabIndex = 1;
@@ -138,7 +150,7 @@
             // setBackgroundColorButton
             // 
             this.setBackgroundColorButton.AutoSize = true;
-            this.setBackgroundColorButton.Location = new System.Drawing.Point(285, 3);
+            this.setBackgroundColorButton.Location = new System.Drawing.Point(92, 3);
             this.setBackgroundColorButton.Name = "setBackgroundColorButton";
             this.setBackgroundColorButton.Size = new System.Drawing.Size(119, 23);
             this.setBackgroundColorButton.TabIndex = 2;
@@ -149,7 +161,7 @@
             // closeButton
             // 
             this.closeButton.AutoSize = true;
-            this.closeButton.Location = new System.Drawing.Point(204, 3);
+            this.closeButton.Location = new System.Drawing.Point(11, 3);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(75, 23);
             this.closeButton.TabIndex = 3;
@@ -163,11 +175,124 @@
             this.openFileDialog1.Filter = "JPEG Files (*.jpg)|*.jpg|PNG Files (*.png)|*.png|BMP Files (*.bmp)|*.bmp|All file" +
     "s (*.*)|*.*";
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 90F));
+            this.tableLayoutPanel2.Controls.Add(this.textboxDialogueDisplay, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.textboxChatInput, 1, 1);
+            this.tableLayoutPanel2.Controls.Add(this.buttonChatSubmit, 0, 1);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(720, 13);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(264, 411);
+            this.tableLayoutPanel2.TabIndex = 3;
+            // 
+            // textboxDialogueDisplay
+            // 
+            this.textboxDialogueDisplay.BackColor = System.Drawing.SystemColors.Window;
+            this.tableLayoutPanel2.SetColumnSpan(this.textboxDialogueDisplay, 2);
+            this.textboxDialogueDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textboxDialogueDisplay.Location = new System.Drawing.Point(3, 3);
+            this.textboxDialogueDisplay.Multiline = true;
+            this.textboxDialogueDisplay.Name = "textboxDialogueDisplay";
+            this.textboxDialogueDisplay.ReadOnly = true;
+            this.textboxDialogueDisplay.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textboxDialogueDisplay.Size = new System.Drawing.Size(258, 363);
+            this.textboxDialogueDisplay.TabIndex = 0;
+            // 
+            // textboxChatInput
+            // 
+            this.textboxChatInput.AcceptsTab = true;
+            this.textboxChatInput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textboxChatInput.Location = new System.Drawing.Point(29, 372);
+            this.textboxChatInput.Multiline = true;
+            this.textboxChatInput.Name = "textboxChatInput";
+            this.textboxChatInput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textboxChatInput.Size = new System.Drawing.Size(232, 36);
+            this.textboxChatInput.TabIndex = 1;
+            // 
+            // buttonChatSubmit
+            // 
+            this.buttonChatSubmit.BackColor = System.Drawing.SystemColors.Highlight;
+            this.buttonChatSubmit.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buttonChatSubmit.Location = new System.Drawing.Point(3, 372);
+            this.buttonChatSubmit.Name = "buttonChatSubmit";
+            this.buttonChatSubmit.Size = new System.Drawing.Size(20, 36);
+            this.buttonChatSubmit.TabIndex = 2;
+            this.buttonChatSubmit.Text = ">";
+            this.buttonChatSubmit.UseVisualStyleBackColor = false;
+            this.buttonChatSubmit.Click += new System.EventHandler(this.ButtonChatSubmit_Click);
+            // 
+            // tableLayoutPanel3
+            // 
+            this.tableLayoutPanel3.ColumnCount = 2;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel3.Controls.Add(this.panelChatScroller, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.buttonAddLabel, 0, 1);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(489, 3);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 2;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(225, 463);
+            this.tableLayoutPanel3.TabIndex = 4;
+            // 
+            // panelChatScroller
+            // 
+            this.panelChatScroller.AutoScroll = true;
+            this.tableLayoutPanel3.SetColumnSpan(this.panelChatScroller, 2);
+            this.panelChatScroller.Controls.Add(this.textBox2);
+            this.panelChatScroller.Controls.Add(this.textBox1);
+            this.panelChatScroller.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelChatScroller.Location = new System.Drawing.Point(3, 3);
+            this.panelChatScroller.Name = "panelChatScroller";
+            this.panelChatScroller.Size = new System.Drawing.Size(219, 364);
+            this.panelChatScroller.TabIndex = 0;
+            // 
+            // textBox2
+            // 
+            this.textBox2.HideSelection = false;
+            this.textBox2.Location = new System.Drawing.Point(96, 205);
+            this.textBox2.Multiline = true;
+            this.textBox2.Name = "textBox2";
+            this.textBox2.ReadOnly = true;
+            this.textBox2.Size = new System.Drawing.Size(100, 20);
+            this.textBox2.TabIndex = 1;
+            this.textBox2.Text = "ert";
+            // 
+            // textBox1
+            // 
+            this.textBox1.HideSelection = false;
+            this.textBox1.Location = new System.Drawing.Point(96, 179);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.TabIndex = 0;
+            this.textBox1.Text = "wqb";
+            // 
+            // buttonAddLabel
+            // 
+            this.buttonAddLabel.Location = new System.Drawing.Point(3, 373);
+            this.buttonAddLabel.Name = "buttonAddLabel";
+            this.buttonAddLabel.Size = new System.Drawing.Size(75, 23);
+            this.buttonAddLabel.TabIndex = 1;
+            this.buttonAddLabel.Text = "Add Label";
+            this.buttonAddLabel.UseVisualStyleBackColor = true;
+            this.buttonAddLabel.Click += new System.EventHandler(this.ButtonAddLabel_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(995, 515);
+            this.Controls.Add(this.tableLayoutPanel3);
+            this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.lblHelloWorld);
             this.Controls.Add(this.buttonClickThis);
@@ -179,6 +304,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.panelChatScroller.ResumeLayout(false);
+            this.panelChatScroller.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -198,6 +328,15 @@
         private System.Windows.Forms.Button closeButton;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.TextBox textboxDialogueDisplay;
+        private System.Windows.Forms.TextBox textboxChatInput;
+        private System.Windows.Forms.Button buttonChatSubmit;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.Panel panelChatScroller;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button buttonAddLabel;
     }
 }
 

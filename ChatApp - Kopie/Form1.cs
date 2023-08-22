@@ -15,6 +15,8 @@ using System.Windows.Forms;
 /// </summary>
 namespace FormsPrototyp {
     public partial class Form1 : Form {
+        private int textboxCount = 0;
+        private TextBox lastTextBox = null;
         public Form1() {
             InitializeComponent();
         }
@@ -56,6 +58,29 @@ namespace FormsPrototyp {
             } else {
                 pictureBox1.SizeMode = PictureBoxSizeMode.Normal;
             }
+        }
+
+        private void ButtonChatSubmit_Click(object sender, EventArgs e) {
+            string inputText = textboxChatInput.Text + "\r\n"; //or /n,&#13;
+            textboxChatInput.Text = "";
+            textboxDialogueDisplay.Text += inputText;
+        }
+
+        private void ButtonAddLabel_Click(object sender, EventArgs e) {
+            Point locator = new Point(0, 0);
+            if (lastTextBox != null) {
+                panelChatScroller.VerticalScroll.Value = panelChatScroller.VerticalScroll.Maximum;
+                locator = lastTextBox.Location;
+                locator.X = 0;
+                locator.Offset(0, 20);
+            }
+            TextBox textbox= new TextBox();
+            textbox.Text = "neue Textbox";
+            textbox.Location = locator;
+            //textbox.Location = new Point(10, textboxCount*20);
+            textboxCount++;
+            panelChatScroller.Controls.Add(textbox);
+            lastTextBox = textbox;
         }
     }
 }
