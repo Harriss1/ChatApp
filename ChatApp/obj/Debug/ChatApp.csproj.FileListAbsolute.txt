@@ -1,0 +1,11 @@
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\bin\Debug\ChatApp.exe.config
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\bin\Debug\ChatApp.exe
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\bin\Debug\ChatApp.pdb
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\obj\Debug\ChatApp.csproj.AssemblyReference.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\obj\Debug\ChatApp.csproj.SuggestedBindingRedirects.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\obj\Debug\ChatApp.Form1.resources
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\obj\Debug\ChatApp.Properties.Resources.resources
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\obj\Debug\ChatApp.csproj.GenerateResource.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\obj\Debug\ChatApp.csproj.CoreCompileInputs.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\obj\Debug\ChatApp.exe
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\obj\Debug\ChatApp.pdb
