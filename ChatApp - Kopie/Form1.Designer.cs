@@ -1,4 +1,4 @@
-﻿namespace ChatApp {
+﻿namespace FormsPrototyp {
     partial class Form1 {
         /// <summary>
         /// Required designer variable.

@@ -13,7 +13,7 @@ using System.Windows.Forms;
 /// Quelle: 
 /// https://learn.microsoft.com/en-us/visualstudio/get-started/csharp/tutorial-windows-forms-picture-viewer-layout?view=vs-2022
 /// </summary>
-namespace ChatApp {
+namespace FormsPrototyp {
     public partial class Form1 : Form {
         public Form1() {
             InitializeComponent();
