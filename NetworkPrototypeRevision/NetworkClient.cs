@@ -9,7 +9,11 @@ namespace NetworkPrototypeRevision {
         private IPAddress endpointAdress;
         private NetworkClient() {
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ipAdress">Format: 123.123.123.123</param>
+        /// <param name="port">Format: 12345</param>
         public NetworkClient(string ipAdress, string port) {
             endpointAdress= IPAddress.Parse(ipAdress);
             int endpointPort = Int32.Parse(port);

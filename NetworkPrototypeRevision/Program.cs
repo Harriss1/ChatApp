@@ -35,13 +35,18 @@ namespace NetworkPrototypeRevision {
                 System.Console.WriteLine("\tPort (example: 10010):");
                 String port = Console.ReadLine();
 
-                System.Console.WriteLine("Message to send:");
-                String content = Console.ReadLine();
-
-                Console.WriteLine("Message:\n\t" + content + "\tAdress+Port: " + ipAdress + ":" + port + "\n");
-
                 NetworkClient client = new NetworkClient(ipAdress, port);
-                client.Send(content);
+                do {
+                    System.Console.WriteLine("Message to send:");
+                    String content = Console.ReadLine();
+
+                    Console.WriteLine("Message:\n\t" + content + "\tAdress+Port: " + ipAdress + ":" + port + "\n" +
+                        "\n Press Any Key to send next message or ESC to Stop");
+
+                    client.Send(content);
+                    key = System.Console.ReadKey().Key;
+                }
+                while(key !=ConsoleKey.Escape);
 
             }
 
@@ -63,15 +68,15 @@ namespace NetworkPrototypeRevision {
                 System.Console.WriteLine("Port (example: 10010):");
                 String port = Console.ReadLine();
 
-                NetworkServer server = new NetworkServer();
-                server.StartListening(ipAdress, port);
+                NetworkServer server = new NetworkServer(ipAdress, port);
+                server.StartListening();
             }
             // localhost:10010 Server connection
             if (key == ConsoleKey.P) {
                 System.Console.WriteLine("SERVER (localhost:10010) selected\n");
 
-                NetworkServer server = new NetworkServer();
-                server.StartListening(localhostAddress, localhostPort.ToString());
+                NetworkServer server = new NetworkServer(localhostAddress, localhostPort.ToString());
+                server.StartListening();
             }
 
             // Programm Ende
