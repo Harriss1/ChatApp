@@ -5,23 +5,26 @@ using System.Text;
 
 namespace NetworkPrototypeRevision {
     internal class NetworkClient {
-
-        public NetworkClient() {
+        private IPEndPoint remoteEndpoint;
+        private IPAddress endpointAdress;
+        private NetworkClient() {
         }
 
+        public NetworkClient(string ipAdress, string port) {
+            endpointAdress= IPAddress.Parse(ipAdress);
+            int endpointPort = Int32.Parse(port);
+            remoteEndpoint = new IPEndPoint(endpointAdress, endpointPort);
+        }
         /// <summary>
         /// Senden einer Nachricht an eine spezifische IP-Adresse, Port
         /// </summary>
         /// <param name="ipAdress"></param>
         /// <param name="endpointPort"></param>
         /// <param name="content">message string without eof suffix</param>
-        public void SendMessageToAdress(string ipAdress, string port, string content) {
+        public void Send(string content) {
             byte[] bytes = new byte[1024];
-            int endpointPort = Int32.Parse(port);
             try {
                 // Connect to a Remote server
-                IPAddress endpointAdress = IPAddress.Parse(ipAdress);
-                IPEndPoint remoteEndpoint = new IPEndPoint(endpointAdress, endpointPort);
 
                 // Create a TCP/IP  socket.
                 Socket sender = new Socket(endpointAdress.AddressFamily,

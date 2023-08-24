@@ -40,8 +40,8 @@ namespace NetworkPrototypeRevision {
 
                 Console.WriteLine("Message:\n\t" + content + "\tAdress+Port: " + ipAdress + ":" + port + "\n");
 
-                NetworkClient client = new NetworkClient();
-                client.SendMessageToAdress(ipAdress, port, content);
+                NetworkClient client = new NetworkClient(ipAdress, port);
+                client.Send(content);
 
             }
 
@@ -51,8 +51,8 @@ namespace NetworkPrototypeRevision {
                 System.Console.WriteLine("Insert message to send:");
                 String content = Console.ReadLine();
                 Console.WriteLine("Message:\n\t" + content);
-                NetworkClient client = new NetworkClient();
-                client.SendMessageToAdress(localhostAddress, localhostPort.ToString(), content);
+                NetworkClient client = new NetworkClient(localhostAddress, localhostPort.ToString());
+                client.Send(content);
             }
 
             // configure and start Server
