@@ -6,3 +6,11 @@ C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\NetworkPrototypeRe
 C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\NetworkPrototypeRevision\obj\Debug\NetworkPrototypeRevision.csproj.CoreCompileInputs.cache
 C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\NetworkPrototypeRevision\obj\Debug\NetworkPrototypeRevision.exe
 C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp\NetworkPrototypeRevision\obj\Debug\NetworkPrototypeRevision.pdb
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeRevision\bin\Debug\NetworkPrototypeRevision.exe.config
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeRevision\bin\Debug\NetworkPrototypeRevision.exe
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeRevision\bin\Debug\NetworkPrototypeRevision.pdb
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeRevision\obj\Debug\NetworkPrototypeRevision.csproj.AssemblyReference.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeRevision\obj\Debug\NetworkPrototypeRevision.csproj.SuggestedBindingRedirects.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeRevision\obj\Debug\NetworkPrototypeRevision.csproj.CoreCompileInputs.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeRevision\obj\Debug\NetworkPrototypeRevision.exe
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeRevision\obj\Debug\NetworkPrototypeRevision.pdb

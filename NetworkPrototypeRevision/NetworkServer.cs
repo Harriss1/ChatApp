@@ -4,34 +4,31 @@ using System.Net.Sockets;
 using System.Text;
 
 namespace NetworkPrototypeRevision {
-    internal class NetworkServer {
-        IPAddress endpointIp;
-        IPEndPoint localEndPoint;
+    internal class NetworkServerOld {
+        int maxRequestLimit = 100;
+        
+        public NetworkServerOld() {
+        }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="ipAdress">Format: 123.123.123.123</param>
         /// <param name="port">Format: 12345</param>
-        public NetworkServer(string ipAdress, string port) {
-
-            endpointIp = IPAddress.Parse(ipAdress); ;
+        public void StartListening(string ipAddress, string port) {
+            IPAddress endpointIp = IPAddress.Parse(ipAddress);
             int portNum = Int32.Parse(port);
-            localEndPoint = new IPEndPoint(endpointIp, portNum);
-        }
-        private NetworkServer() {
-        }
-        public void StartListening() {
+            IPEndPoint localEndPoint = new IPEndPoint(endpointIp, portNum);
 
             try {
                 // Create a Socket that will use Tcp protocol
                 Socket listener = new Socket(endpointIp.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
                 // "Festlegen auf den Endpoint": A Socket must be associated with an endpoint using the Bind method
+                // Dieses Objekt muss immer neu instanziiert werden pro Kommunikation.
                 listener.Bind(localEndPoint);
 
                 // Specify how many requests a Socket can listen before it gives Server busy response.
-                // Änderung auf 100
-                listener.Listen(100);
+                listener.Listen(maxRequestLimit);
 
                 // Programm stoppt hier bis eine Verbindung aufgebaut wird.
                 Console.WriteLine("Waiting for a connection...");

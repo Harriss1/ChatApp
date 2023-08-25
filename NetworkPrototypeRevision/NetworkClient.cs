@@ -4,20 +4,10 @@ using System.Net.Sockets;
 using System.Text;
 
 namespace NetworkPrototypeRevision {
-    internal class NetworkClient {
+    internal class NetworkClientOld {
         private IPEndPoint remoteEndpoint;
         private IPAddress endpointAdress;
-        private NetworkClient() {
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ipAdress">Format: 123.123.123.123</param>
-        /// <param name="port">Format: 12345</param>
-        public NetworkClient(string ipAdress, string port) {
-            endpointAdress= IPAddress.Parse(ipAdress);
-            int endpointPort = Int32.Parse(port);
-            remoteEndpoint = new IPEndPoint(endpointAdress, endpointPort);
+        public NetworkClientOld() {
         }
         /// <summary>
         /// Senden einer Nachricht an eine spezifische IP-Adresse, Port
@@ -25,7 +15,11 @@ namespace NetworkPrototypeRevision {
         /// <param name="ipAdress"></param>
         /// <param name="endpointPort"></param>
         /// <param name="content">message string without eof suffix</param>
-        public void Send(string content) {
+        public void Send(string ipAddressText, string port, string content) {
+            int portNum = Int32.Parse(port);
+
+            IPAddress endpointAdress = IPAddress.Parse(ipAddressText);
+            IPEndPoint remoteEndpoint = new IPEndPoint(endpointAdress, portNum);
             byte[] bytes = new byte[1024];
             try {
                 // Connect to a Remote server
