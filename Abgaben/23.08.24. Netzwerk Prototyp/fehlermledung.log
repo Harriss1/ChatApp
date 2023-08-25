@@ -1,0 +1,25 @@
+Network Prototype: Chat via sending string-messages
+IP-Adresses of this computer:
+192.168.9.165
+192.168.56.1
+
+Press Key:
+W - configure and start Server
+S - use preset: 127.0.0.1:10015 and start Server
+
+D - configure and start Client
+C - use preset:  127.0.0.1:10015 and start Client
+
+sSERVER (127.0.0.1:10015) selected
+
+Waiting for a connection...
+Text received : zulf<EOF>
+System.Net.Sockets.SocketException (0x80004005): Eine Anforderung zum Senden oder Empfangen von Daten wurde verhindert, da der Socket nicht verbunden ist und (beim Senden über einen Datagrammsocket mit einem sendto-Aufruf) keine Adresse angegeben wurde
+   bei System.Net.Sockets.Socket.Disconnect(Boolean reuseSocket)
+   bei NetworkPrototypeRevision.NetworkServer.StartListening(String ipAddress, String port) in C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeRevision\Program.cs:Zeile 313.
+Press Any Key to receive next message or ESC to Stop
+System.Net.Sockets.SocketException (0x80004005): Normalerweise darf jede Socketadresse (Protokoll, Netzwerkadresse oder Anschluss) nur jeweils einmal verwendet werden
+   bei System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   bei System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   bei NetworkPrototypeRevision.NetworkServer.StartListening(String ipAddress, String port) in C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeRevision\Program.cs:Zeile 284.
+Press Any Key to receive next message or ESC to Stop

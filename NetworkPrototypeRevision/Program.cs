@@ -20,6 +20,7 @@ namespace NetworkPrototypeRevision {
         static void Main(string[] args) {
             int localhostPort = 10015;
             string localhostAddress = "127.0.0.1";
+
             System.Console.WriteLine("Network Prototype: Chat via sending string-messages");
             // IP-Adressen zur Einrichtung des Clienten oder Servers sowie zum Debuggen
             System.Console.WriteLine("IP-Adresses of this computer:");
@@ -85,9 +86,9 @@ namespace NetworkPrototypeRevision {
                 System.Console.WriteLine("Port (example: 10010):");
                 String port = Console.ReadLine();
 
+                NetworkServer server = new NetworkServer(ipAdress, port);
                 do {
-                    NetworkServer server = new NetworkServer();
-                    server.StartListening(ipAdress, port);
+                    server.StartListening();
                     Console.WriteLine("Press Any Key to receive next message or ESC to Stop");
                     key = System.Console.ReadKey().Key;
                 }
@@ -96,11 +97,14 @@ namespace NetworkPrototypeRevision {
             // localhost:10010 Server connection
             if (key == ConsoleKey.S) {
                 System.Console.WriteLine("SERVER ("+ localhostAddress + ":" + localhostPort + ") selected\n");
+
+                // Es ist zwingend den Listener in der gesamten Programmausführung
+                // bei zu behalten, ansonsten kommt ein Fehler
+                NetworkServer server = new NetworkServer(localhostAddress, localhostPort.ToString());
                 do {
-                    NetworkServer server = new NetworkServer();
-                    server.StartListening(localhostAddress, localhostPort.ToString());
-                    Console.WriteLine("Press Any Key to receive next message or ESC to Stop");
-                    key = System.Console.ReadKey().Key;
+                    server.StartListening();
+                    //Console.WriteLine("Press Any Key to receive next message or ESC to Stop");
+                    //key = System.Console.ReadKey().Key;
                 }
                 while (key != ConsoleKey.Escape) ;
             }
@@ -136,8 +140,8 @@ namespace NetworkPrototypeRevision {
         /// <summary>
         /// Senden einer Nachricht an eine spezifische IP-Adresse, Port
         /// </summary>
-        /// <param name="ipAdress"></param>
-        /// <param name="endpointPort"></param>
+        /// <param name="ipAddressText"></param>
+        /// <param name="port"></param>
         /// <param name="content">message string without eof suffix</param>
         public void Send(string ipAddressText, string port, string content) {
             int portNum = Int32.Parse(port);
@@ -262,27 +266,39 @@ namespace NetworkPrototypeRevision {
 
     internal class NetworkServer {
         int maxRequestLimit = 100;
-
-        public NetworkServer() {
+        private Socket listener;
+        private static bool alreadyStarted = false;
+        private NetworkServer() {
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ipAdress">Format: 123.123.123.123</param>
-        /// <param name="port">Format: 12345</param>
-        public void StartListening(string ipAddress, string port) {
-            IPAddress endpointIp = IPAddress.Parse(ipAddress);
-            int portNum = Int32.Parse(port);
-            IPEndPoint localEndPoint = new IPEndPoint(endpointIp, portNum);
-
+        public NetworkServer(string ipAddress, string port) {
+            // Es ist zwingend hier die Listener Instanz einmalig
+            // für das Programm zu instanziieren, ansonsten kommt der FEhler:
+            // System.Net.Sockets.SocketException (0x80004005): Normalerweise darf jede
+            // Socketadresse (Protokoll, Netzwerkadresse oder Anschluss) nur jeweils
+            // einmal verwendet werden
+            // Todo:Recherche: bei Thread auch?
+            if (alreadyStarted) {
+                throw new InvalidOperationException("listener is only allowed to run once during the execution of the server application");
+            } else {
+                alreadyStarted = true;
+            }
             try {
+                IPAddress endpointIp = IPAddress.Parse(ipAddress);
+                int portNum = Int32.Parse(port);
+                IPEndPoint localEndPoint = new IPEndPoint(endpointIp, portNum);
                 // Create a Socket that will use Tcp protocol
-                Socket listener = new Socket(endpointIp.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
+                this.listener = new Socket(endpointIp.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 // "Festlegen auf den Endpoint": A Socket must be associated with an endpoint using the Bind method
                 // Dieses Objekt muss immer neu instanziiert werden pro Kommunikation.
-                listener.Bind(localEndPoint);
+                this.listener.Bind(localEndPoint);
+            }
+            catch (Exception e) {
+                System.Console.WriteLine(e);
+            }
+        }
+        public void StartListening() {
 
+            try {
                 // Specify how many requests a Socket can listen before it gives Server busy response.
                 listener.Listen(maxRequestLimit);
 
