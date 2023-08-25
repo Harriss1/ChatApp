@@ -29,7 +29,7 @@ namespace NetworkPrototypeRevision {
             System.Console.WriteLine("\nPress Key:");
             System.Console.WriteLine(
                 "W - configure and start Server\n" +
-                "S - use preset: "+ localhostAddress + ":"+ localhostPort + "and start Server" +
+                "S - use preset: "+ localhostAddress + ":"+ localhostPort + " and start Server" +
                 "\n\n" +
                 "D - configure and start Client\n" +
                 "C - use preset:  " + localhostAddress + ":" + localhostPort + " and start Client\n");
@@ -88,7 +88,7 @@ namespace NetworkPrototypeRevision {
                 do {
                     NetworkServer server = new NetworkServer();
                     server.StartListening(ipAdress, port);
-                    Console.WriteLine("Press Any Key to send next message or ESC to Stop");
+                    Console.WriteLine("Press Any Key to receive next message or ESC to Stop");
                     key = System.Console.ReadKey().Key;
                 }
                 while (key != ConsoleKey.Escape) ;
@@ -99,7 +99,7 @@ namespace NetworkPrototypeRevision {
                 do {
                     NetworkServer server = new NetworkServer();
                     server.StartListening(localhostAddress, localhostPort.ToString());
-                    Console.WriteLine("Press Any Key to send next message or ESC to Stop");
+                    Console.WriteLine("Press Any Key to receive next message or ESC to Stop");
                     key = System.Console.ReadKey().Key;
                 }
                 while (key != ConsoleKey.Escape) ;
