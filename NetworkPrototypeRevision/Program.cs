@@ -62,7 +62,7 @@ namespace NetworkPrototypeRevision {
 
             // localhost:10010 client connection
             if (key == ConsoleKey.C) {
-                System.Console.WriteLine("CLIENT (localhost:10010) selected\n");
+                System.Console.WriteLine("CLIENT ("+localhostAddress+":"+localhostPort+" selected\n");
                 
                 
                 do {
@@ -299,7 +299,8 @@ namespace NetworkPrototypeRevision {
         public void StartListening() {
 
             try {
-                // Specify how many requests a Socket can listen before it gives Server busy response.
+                // Länge der Warteliste für Anfragen, die versch. Clienten stellen.
+                // Es wird je Durchlauf nur ein Client abgearbeitet
                 listener.Listen(maxRequestLimit);
 
                 // Programm stoppt hier bis eine Verbindung aufgebaut wird.

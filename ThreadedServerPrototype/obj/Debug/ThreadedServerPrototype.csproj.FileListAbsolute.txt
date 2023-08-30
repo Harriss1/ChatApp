@@ -1,0 +1,8 @@
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ThreadedServerPrototype\bin\Debug\ThreadedServerPrototype.exe.config
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ThreadedServerPrototype\bin\Debug\ThreadedServerPrototype.exe
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ThreadedServerPrototype\bin\Debug\ThreadedServerPrototype.pdb
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ThreadedServerPrototype\obj\Debug\ThreadedServerPrototype.csproj.AssemblyReference.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ThreadedServerPrototype\obj\Debug\ThreadedServerPrototype.csproj.SuggestedBindingRedirects.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ThreadedServerPrototype\obj\Debug\ThreadedServerPrototype.csproj.CoreCompileInputs.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ThreadedServerPrototype\obj\Debug\ThreadedServerPrototype.exe
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ThreadedServerPrototype\obj\Debug\ThreadedServerPrototype.pdb
