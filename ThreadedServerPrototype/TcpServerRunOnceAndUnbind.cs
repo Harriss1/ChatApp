@@ -4,15 +4,22 @@ using System.Net.Sockets;
 using System.Text;
 
 namespace ThreadedServerPrototype {
-    internal class TcpServerInstance {
+    /// <summary>
+    /// Ziel: Demonstration - korrektes Herunterfahren und Freigeben des Socket.
+    /// Dieser Server beendet sich nach jeder einzelnen Listen-Receive Aktion
+    /// Natürlich zerstört dies auch die Warteschlange.
+    /// Zusätzliche Clienten in der Warteschlange würden also getrennt werden.
+    /// Er ist also für einen ChatClienten nicht geeignet.
+    /// </summary>
+    internal class TcpServerRunOnceAndUnbind {
         int maxRequestLimit = 100;
         private static bool alreadyStarted = false;
 
         IPAddress endpointIp;
         IPEndPoint localEndPoint;
-        private TcpServerInstance() {
+        private TcpServerRunOnceAndUnbind() {
         }
-        public TcpServerInstance(string ipAddress, string port) {
+        public TcpServerRunOnceAndUnbind(string ipAddress, string port) {
 
             if (false && alreadyStarted) {
                 throw new InvalidOperationException("listener is only allowed to run once during the execution of the server application");
