@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace ThreadedServerPrototype {
+namespace ThreadedServerPrototypeExtern {
     /// <summary>
     /// Ziel: Demonstration - korrektes Herunterfahren und Freigeben des Socket.
     /// Dieser Server beendet sich nach jeder einzelnen Listen-Receive Aktion

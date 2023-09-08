@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace ThreadedServerPrototype {
+namespace ThreadedServerPrototypeExtern {
     internal class LockTestObject {
         private string threadSafeValue;
 

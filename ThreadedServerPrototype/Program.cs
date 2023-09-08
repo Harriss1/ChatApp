@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 /// <summary>
 /// Multithreading Prototyp
 /// Karl Klotz, IA 121, 8.9.2023
@@ -172,6 +174,231 @@ namespace ThreadedServerPrototype {
             while (true) {
                 TcpServerRunOnceAndUnbind tcpServer = new TcpServerRunOnceAndUnbind(ipAddress, port);
                 tcpServer.StartListening();
+            }
+        }
+    }
+
+    /// <summary>
+    /// TCP-Server
+    /// Startet und bindet sich direkt bei Instanziierung an einen Socket
+    /// 
+    /// StartAndListen() also nur aufrufen, falls man den Server beendet hat mittels close()
+    /// </summary>
+    internal class TcpServer {
+        private const int maxRequestLimit = 100;
+        private Socket listener;
+        private static bool alreadyStarted = false;
+        private TcpServer() {
+        }
+        /// <summary>
+        /// Startet den Server und beginnt den Port abzuhören.
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <param name="port"></param>
+        public TcpServer(string ipAddress, string port) {
+            StartAndListen(ipAddress, port);
+        }
+
+        public void StartAndListen(string ipAddress, string port) {
+            // Es ist zwingend hier die Listener Instanz einmalig
+            // für das Programm zu instanziieren, ansonsten kommt der FEhler:
+            // System.Net.Sockets.SocketException (0x80004005): Normalerweise darf jede
+            // Socketadresse (Protokoll, Netzwerkadresse oder Anschluss) nur jeweils
+            // einmal verwendet werden
+            // Es geht darum, dass der Socket auch nicht verwendbar ist, falls er wieder freigegeben wurde.
+            // Todo:Recherche: bei Thread auch?
+            if (alreadyStarted) {
+                throw new InvalidOperationException("already started - listener is only allowed to run once during the execution of the server application");
+            }
+            else {
+                alreadyStarted = true;
+            }
+            try {
+                IPAddress endpointIp = IPAddress.Parse(ipAddress);
+                int portNum = Int32.Parse(port);
+                IPEndPoint localEndPoint = new IPEndPoint(endpointIp, portNum);
+                // Create a Socket that will use Tcp protocol
+                this.listener = new Socket(endpointIp.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                // "Festlegen auf den Endpoint": A Socket must be associated with an endpoint using the Bind method
+                // Dieses Objekt muss immer neu instanziiert werden pro Kommunikation.
+                this.listener.Bind(localEndPoint);
+                // Länge der Warteliste für Anfragen, die versch. Clienten stellen.
+                // Es wird je Durchlauf nur ein Client abgearbeitet
+                this.listener.Listen(maxRequestLimit);
+            }
+            catch (Exception e) {
+                System.Console.WriteLine(e);
+            }
+        }
+        /// <summary>
+        /// Beendet den Server
+        /// </summary>
+        public void Stop() {
+            this.listener.Close(); // Entbindet alle Ressourcen für den aktuellen Socket
+            this.listener.Dispose(); // Entbindet alle Ressourcen für die aktuelle listener-Instanz
+            TcpServer.alreadyStarted = false;
+            Console.WriteLine("Socket Shutdown completed");
+        }
+        public void Accept() {
+            try {
+                // Programm stoppt hier bis eine Verbindung aufgebaut wird.
+                Console.WriteLine("Waiting for a connection...");
+                Socket handler = this.listener.Accept();
+
+                // Hier würde ja ein neuer Thread gestartet werden?
+                // Incoming data from the client.
+                string receivedData = null;
+                byte[] bytes = null;
+                bool endOfFileReached = false;
+                while (!endOfFileReached) {
+                    bytes = new byte[1024];
+                    int bytesRec = handler.Receive(bytes);
+                    receivedData += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                    if (receivedData.IndexOf("<EOF>") > -1) {
+                        endOfFileReached = true;
+                    }
+                }
+
+                Console.WriteLine("Text received : {0}", receivedData);
+
+                byte[] msg = Encoding.ASCII.GetBytes(receivedData);
+                handler.Send(msg);
+                handler.Shutdown(SocketShutdown.Both);
+                handler.Close();
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.ToString());
+            }
+        }
+    }
+    /// <summary>
+    /// Klasse dient zur Demonstration der Locking-Technik
+    /// </summary>
+    internal class LockTestObject {
+        private string threadSafeValue;
+
+        // Zeitspanne, welcher der Thread simuliert zu arbeiten
+        private TimeSpan compututationDuration = TimeSpan.FromSeconds(5);
+
+        private LockTestObject() { }
+        public LockTestObject(string threadSafeValue) {
+            this.threadSafeValue = threadSafeValue;
+        }
+
+        public void SetValueWithDelay(string value, string source) {
+            object obj = this;
+            CheckIfLocked(obj, source);
+            lock (obj) {
+                System.Console.WriteLine("warte " + compututationDuration.TotalSeconds + " Sekunden für TestLock Änderung[Threadsource={0}]", source);
+                System.Threading.Thread.Sleep(compututationDuration);
+                this.threadSafeValue = value;
+                System.Console.WriteLine("Lock wieder freigegeben [Threadsource={0}]", source);
+            }
+        }
+
+        public string GetValueWithDelay(string source) {
+            object obj = this;
+            CheckIfLocked(obj, source);
+            lock (obj) {
+                System.Console.WriteLine("warte " + compututationDuration.TotalSeconds + " Sekunden für TestLock Anzeige [Threadsource={0}]", source);
+                System.Threading.Thread.Sleep(compututationDuration);
+                Console.WriteLine("Lock wieder freigegeben [Threadsource={0}]", source);
+                return this.threadSafeValue;
+            }
+        }
+
+        private static void CheckIfLocked(object obj, string source) {
+            var lockedBySomeoneElse = !Monitor.TryEnter(obj);
+            if (lockedBySomeoneElse) {
+                System.Console.WriteLine("#### Achtung ####");
+                System.Console.WriteLine("Versuch den geschützten Bereich zu öffnen durch [Threadsource={0}]", source);
+            }
+            else {
+                Monitor.Exit(obj); // Muss den Code erneut freigeben.
+            }
+        }
+
+        public void Print() {
+            System.Console.WriteLine("threadsave text = " + this.threadSafeValue);
+        }
+    }
+
+    /// <summary>
+    /// Diese TCPServer-Implementierung beendet sich nach jeder einzelnen Listen-Receive Aktion
+    /// Natürlich zerstört dies auch die Warteschlange.
+    /// Ziel: Demonstration - korrektes Herunterfahren und Freigeben des Socket.
+    /// Zusätzliche Clienten in der Warteschlange würden also getrennt werden.
+    /// Er ist also für einen ChatClienten nicht geeignet.
+    /// </summary>
+    internal class TcpServerRunOnceAndUnbind {
+        int maxRequestLimit = 100;
+        private static bool alreadyStarted = false;
+
+        IPAddress endpointIp;
+        IPEndPoint localEndPoint;
+        private TcpServerRunOnceAndUnbind() {
+        }
+        public TcpServerRunOnceAndUnbind(string ipAddress, string port) {
+
+            if (false && alreadyStarted) {
+                throw new InvalidOperationException("listener is only allowed to run once during the execution of the server application");
+            }
+            else {
+                alreadyStarted = true;
+            }
+            try {
+                this.endpointIp = IPAddress.Parse(ipAddress);
+                int portNum = Int32.Parse(port);
+                this.localEndPoint = new IPEndPoint(endpointIp, portNum);
+
+            }
+            catch (Exception e) {
+                System.Console.WriteLine(e);
+            }
+        }
+        public void StartListening() {
+
+            Socket listener;
+            try {
+                // Länge der Warteliste für Anfragen, die versch. Clienten stellen.
+                // Es wird je Durchlauf nur ein Client abgearbeitet
+                // Create a Socket that will use Tcp protocol
+                listener = new Socket(endpointIp.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                // "Festlegen auf den Endpoint": A Socket must be associated with an endpoint using the Bind method
+                // Dieses Objekt muss immer neu instanziiert werden pro Kommunikation.
+                listener.Bind(localEndPoint);
+                listener.Listen(maxRequestLimit);
+
+                // Programm stoppt hier bis eine Verbindung aufgebaut wird.
+                Console.WriteLine("Waiting for a connection...");
+                Socket handler = listener.Accept();
+
+                // Incoming data from the client.
+                string receivedData = null;
+                byte[] bytes = null;
+                bool endOfFileReached = false;
+                while (!endOfFileReached) {
+                    bytes = new byte[1024];
+                    int bytesRec = handler.Receive(bytes);
+                    receivedData += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                    if (receivedData.IndexOf("<EOF>") > -1) {
+                        endOfFileReached = true;
+                    }
+                }
+
+                Console.WriteLine("Text received : {0}", receivedData);
+
+                byte[] msg = Encoding.ASCII.GetBytes(receivedData);
+                handler.Send(msg);
+                handler.Shutdown(SocketShutdown.Both);
+                handler.Close();
+                // Close oder Dispose muss aufgerufen werden
+                listener.Close(); // Entbindet alle Ressourcen für den aktuellen Socket
+                listener.Dispose(); // Entbindet alle Ressourcen für die aktuelle listener-Instanz
+                Console.WriteLine("Socket Shutdown completed");
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.ToString());
             }
         }
     }

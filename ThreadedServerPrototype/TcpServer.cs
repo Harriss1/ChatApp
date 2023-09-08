@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace ThreadedServerPrototype {
+namespace ThreadedServerPrototypeExtern {
     /// <summary>
     /// Bindet sich an einen Socket und hört Anfragen sofort ab.
     /// 
