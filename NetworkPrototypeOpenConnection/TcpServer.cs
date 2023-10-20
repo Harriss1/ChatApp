@@ -67,6 +67,8 @@ namespace NetworkPrototypeOpenConnection {
                 bool abortCondition = false;
                 while (!abortCondition) {
                     string receivedData = ReceiveText(handler);
+                    Console.WriteLine("Wait 1000");
+                    System.Threading.Thread.Sleep(1000);
                     if(CheckTextForQuitMessage(receivedData) || CheckForDisconnectEvent()) {
                         abortCondition = true;
                     }
@@ -80,7 +82,7 @@ namespace NetworkPrototypeOpenConnection {
         }
 
         private bool CheckForDisconnectEvent() {
-            throw new NotImplementedException();
+            return false;
         }
         public void Logoff(string username) {
 
@@ -100,6 +102,7 @@ namespace NetworkPrototypeOpenConnection {
             string receivedData = null;
             byte[] bytes = null;
             bool endOfFileReached = false;
+            System.Console.WriteLine("receive loop start");
             while (!endOfFileReached) {
                 bytes = new byte[1024];
                 int bytesRec = handler.Receive(bytes);
