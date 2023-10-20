@@ -162,11 +162,11 @@ namespace NetworkDummyClient {
                     // Connect to Remote EndPoint
                     sender.Connect(remoteEndpoint);
 
-                    Console.WriteLine("Socket connected to {0}",
+                    Console.WriteLine("Socket connected to {0} [quit] beendet Verbindung.",
                         sender.RemoteEndPoint.ToString());
                     bool receivedQuitMessage = false;
                     bool quitEvent = false;
-                    while (!receivedQuitMessage || !quitEvent) {
+                    while (!receivedQuitMessage || quitEvent) {
                         // Encode the data string into a byte array.
                         if (content == null) {
                             Console.WriteLine("Nächste Nachricht eingeben:");

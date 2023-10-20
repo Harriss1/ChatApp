@@ -6,3 +6,11 @@ C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkDummyClient\obj\Deb
 C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkDummyClient\obj\Debug\NetworkDummyClient.csproj.CoreCompileInputs.cache
 C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkDummyClient\obj\Debug\NetworkDummyClient.exe
 C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkDummyClient\obj\Debug\NetworkDummyClient.pdb
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\NetworkDummyClient\bin\Debug\NetworkDummyClient.exe.config
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\NetworkDummyClient\bin\Debug\NetworkDummyClient.exe
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\NetworkDummyClient\bin\Debug\NetworkDummyClient.pdb
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\NetworkDummyClient\obj\Debug\NetworkDummyClient.csproj.AssemblyReference.cache
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\NetworkDummyClient\obj\Debug\NetworkDummyClient.csproj.SuggestedBindingRedirects.cache
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\NetworkDummyClient\obj\Debug\NetworkDummyClient.csproj.CoreCompileInputs.cache
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\NetworkDummyClient\obj\Debug\NetworkDummyClient.exe
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\NetworkDummyClient\obj\Debug\NetworkDummyClient.pdb

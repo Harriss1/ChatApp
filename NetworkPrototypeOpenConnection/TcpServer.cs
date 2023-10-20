@@ -8,6 +8,8 @@ namespace NetworkPrototypeOpenConnection {
         private const int maxRequestLimit = 100;
         private Socket listener;
         private static bool alreadyStarted = false;
+
+        public delegate void ConnectionAcceptedCallback();
         private TcpServer() {
         }
         /// <summary>
@@ -59,11 +61,12 @@ namespace NetworkPrototypeOpenConnection {
             TcpServer.alreadyStarted = false;
             Console.WriteLine("Socket Shutdown completed");
         }
-        public void Accept() {
+        public void Accept(ConnectionAcceptedCallback _signal) {
             try {
                 // Programm stoppt hier bis eine Verbindung aufgebaut wird.
                 Console.WriteLine("Waiting for a connection...");
                 Socket handler = this.listener.Accept();
+                _signal();
                 bool abortCondition = false;
                 while (!abortCondition) {
                     string receivedData = ReceiveText(handler);
@@ -89,7 +92,7 @@ namespace NetworkPrototypeOpenConnection {
         }
 
         private bool CheckTextForQuitMessage(string receivedData) {
-            if(receivedData.Contains("exit") || receivedData.Contains("<MessageType>logout</MessageType>")) {
+            if(receivedData.Contains("quit") || receivedData.Contains("<MessageType>logout</MessageType>")) {
                 return true;
             }
             return false;
