@@ -8,7 +8,7 @@ using System.Text;
 /// Multithreading Prototyp
 /// Karl Klotz, IA 121, 8.9.2023
 /// 
-/// Umngesetzte Techniken: Thread-Erstellung, Callbacks, Locking
+/// Umngesetzte Techniken: Thread-Erstellung, Callbacks, Locking, sowie Delegate
 /// 
 /// # Anwendungsfall
 /// Das Programm startet einen TCP-Server. Die Server-Routine ist in einem ChildThread implementiert.
@@ -60,7 +60,7 @@ namespace ThreadedServerPrototype {
             const string port = "10015";
             StartServerThreadLambdavised(ipAddress, port);
 
-            // Die Hauptschleife wird wartet bei jeden Durchlauf 5 Sekunden
+            // Die Hauptschleife wartet bei jeden Durchlauf 5 Sekunden
             // Danach zeigt sie den Zustand der Variablen und Objekte an
             int loopCount = 0;
             while (true) {
@@ -201,7 +201,7 @@ namespace ThreadedServerPrototype {
 
         public void StartAndListen(string ipAddress, string port) {
             // Es ist zwingend hier die Listener Instanz einmalig
-            // für das Programm zu instanziieren, ansonsten kommt der Fehler:
+            // für das Programm zu instanziieren, ansonsten kommt der FEhler:
             // System.Net.Sockets.SocketException (0x80004005): Normalerweise darf jede
             // Socketadresse (Protokoll, Netzwerkadresse oder Anschluss) nur jeweils
             // einmal verwendet werden
@@ -231,7 +231,7 @@ namespace ThreadedServerPrototype {
             }
         }
         /// <summary>
-        /// Beendet den Server und gibt den Socket wieder frei
+        /// Beendet den Server
         /// </summary>
         public void Stop() {
             this.listener.Close(); // Entbindet alle Ressourcen für den aktuellen Socket
@@ -288,7 +288,6 @@ namespace ThreadedServerPrototype {
         public void SetValueWithDelay(string value, string source) {
             object obj = this;
             CheckIfLocked(obj, source);
-            // Lock Statement an sich erlaubt es trotzdem die Anwendung zweimal auszuführen.
             lock (obj) {
                 System.Console.WriteLine("warte " + compututationDuration.TotalSeconds + " Sekunden für TestLock Änderung[Threadsource={0}]", source);
                 System.Threading.Thread.Sleep(compututationDuration);

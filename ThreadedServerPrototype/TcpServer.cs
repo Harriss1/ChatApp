@@ -37,7 +37,7 @@ namespace ThreadedServerPrototypeExtern {
             }
             else {
                 alreadyStarted = true;
-            }
+            } 
             try {
                 IPAddress endpointIp = IPAddress.Parse(ipAddress);
                 int portNum = Int32.Parse(port);
