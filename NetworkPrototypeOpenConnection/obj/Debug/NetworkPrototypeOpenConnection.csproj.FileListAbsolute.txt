@@ -1,0 +1,8 @@
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeOpenConnection\bin\Debug\NetworkPrototypeOpenConnection.exe.config
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeOpenConnection\bin\Debug\NetworkPrototypeOpenConnection.exe
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeOpenConnection\bin\Debug\NetworkPrototypeOpenConnection.pdb
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeOpenConnection\obj\Debug\NetworkPrototypeOpenConnection.csproj.AssemblyReference.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeOpenConnection\obj\Debug\NetworkPrototypeOpenConnection.csproj.SuggestedBindingRedirects.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeOpenConnection\obj\Debug\NetworkPrototypeOpenConnection.csproj.CoreCompileInputs.cache
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeOpenConnection\obj\Debug\NetworkPrototypeOpenConnection.exe
+C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\NetworkPrototypeOpenConnection\obj\Debug\NetworkPrototypeOpenConnection.pdb
