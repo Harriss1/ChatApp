@@ -7,30 +7,32 @@ using System.Text;
 
 namespace NetworkPrototypeOpenConnection {
     internal class ServerManager {
-        TcpServer server;
+        TcpServer tcpServer;
         int threadCounter = 0;
         public ServerManager() { }
         public ServerManager(string ipAddress, string port) {
-            this.server = new TcpServer(ipAddress, port);
             System.Console.WriteLine("Starting server at: " + ipAddress + ":" + port);
+            this.tcpServer = new TcpServer(ipAddress, port);
         }
 
         // Nutzung eines Delegate als Funktionspointer
         // Zweck ist ein Callback vom ServerHandler-Thread zu implementieren
         private delegate string PrintTextCallback(string text);
 
-        public void StartServerThreadLoop() {
-            System.Console.WriteLine("ThreadCounter: " + threadCounter++);
-            TcpServer.ConnectionAcceptedCallback _acceptedSignal = new TcpServer.ConnectionAcceptedCallback(StartServerThreadLoop);
+        /// <summary>
+        /// Startet einen neuen Thread, und immer einen weiteren 
+        /// neuen nach erfolgten Verbindungsaufbau mittels Accept()
+        /// </summary>
 
-            Thread serverHandler = new Thread(() => AcceptConnection(_acceptedSignal));
+        public void StartNewThreadsBySignals() {
+            System.Console.WriteLine("ThreadCounter: " + threadCounter++);
+
+            // Starte die eigene Methode bei erhalt des Signals (ähnlich einer Rekursion)           
+            TcpServer.ConnectionAcceptedCallback _acceptedSignal = new TcpServer.ConnectionAcceptedCallback(StartNewThreadsBySignals);
+
+            Thread serverHandler = new Thread(() => tcpServer.Accept(_acceptedSignal));
             serverHandler.Start();
             
-            
-
-        }
-        private void AcceptConnection(TcpServer.ConnectionAcceptedCallback _signal) {
-            server.Accept(_signal);
         }
 
         public void StartServerThreadLambdavised(string ipAddress, string port) {
