@@ -4,9 +4,11 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using NetworkPrototypeOpenConnection.Server.Listener;
+using static NetworkPrototypeOpenConnection.Server.Listener.TcpServer;
 
-namespace NetworkPrototypeOpenConnection {
-    internal class ServerManager {
+namespace NetworkPrototypeOpenConnection.Server {
+    public class ServerManager {
         TcpServer tcpServer;
         int threadCounter = 0;
         public ServerManager() { }
@@ -23,14 +25,15 @@ namespace NetworkPrototypeOpenConnection {
         /// Startet einen neuen Server-Thread, und immer einen weiteren 
         /// neuen Thread nach erfolgten Verbindungsaufbau mittels Accept()
         /// </summary>
-
         public void StartConnectionsThreadRunner() {
             System.Console.WriteLine("ThreadCounter: " + threadCounter++);
 
+            // Achtung Unterschied Signal zu Callback:
+            // Signal kann von jeden Thread erhalten werden, Callback nur von Elternthread
             // Starte die eigene Methode bei Erhalt des Callback-Signals nach erfolgten Accept (ähnlich einer Rekursion)           
-            TcpServer.ConnectionAcceptedCallback _acceptedSignal = new TcpServer.ConnectionAcceptedCallback(StartConnectionsThreadRunner);
+            ConnectionAcceptedCallback _newConnectionAcceptedCallback = new ConnectionAcceptedCallback(StartConnectionsThreadRunner);
 
-            Thread serverHandler = new Thread(() => tcpServer.Accept(_acceptedSignal));
+            Thread serverHandler = new Thread(() => tcpServer.Accept(_newConnectionAcceptedCallback));
             serverHandler.Start();
             
             // TODO Abbruchbedingung für rekursives Verhalten

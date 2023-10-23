@@ -3,7 +3,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace NetworkPrototypeOpenConnection {
+// Zusätzlicher Namespace um zu erklären, dass dies eine Unterklasse ist
+namespace NetworkPrototypeOpenConnection.Server.Listener {
+    // Rename to TcpListener?
     internal class TcpServer {
         private const int maxRequestLimit = 100;
         private Socket listener;
@@ -61,12 +63,13 @@ namespace NetworkPrototypeOpenConnection {
             TcpServer.alreadyStarted = false;
             Console.WriteLine("Socket Shutdown completed");
         }
-        public void Accept(ConnectionAcceptedCallback _signal) {
+        public void Accept(ConnectionAcceptedCallback _newConnectionEstablishedCallback) {
             try {
                 // Programm stoppt hier bis eine Verbindung aufgebaut wird.
                 Console.WriteLine("Waiting for a connection...");
                 Socket handler = this.listener.Accept();
-                _signal();
+                _newConnectionEstablishedCallback();
+
                 bool abortCondition = false;
                 while (!abortCondition) {
                     string receivedData = ReceiveText(handler);
