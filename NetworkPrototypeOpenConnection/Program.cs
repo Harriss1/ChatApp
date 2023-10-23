@@ -14,7 +14,7 @@ namespace NetworkPrototypeOpenConnection {
             const string ipAddress = "127.0.0.1";
             const string port = "10015";
             ServerManager serverManager = new ServerManager(ipAddress, port);
-            serverManager.StartNewThreadsBySignals();
+            serverManager.StartConnectionsThreadRunner();
             //ServerManager serverManager = new ServerManager();
             //serverManager.StartServerThreadLambdavised(ipAddress, port);
         }

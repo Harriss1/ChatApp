@@ -20,19 +20,21 @@ namespace NetworkPrototypeOpenConnection {
         private delegate string PrintTextCallback(string text);
 
         /// <summary>
-        /// Startet einen neuen Thread, und immer einen weiteren 
-        /// neuen nach erfolgten Verbindungsaufbau mittels Accept()
+        /// Startet einen neuen Server-Thread, und immer einen weiteren 
+        /// neuen Thread nach erfolgten Verbindungsaufbau mittels Accept()
         /// </summary>
 
-        public void StartNewThreadsBySignals() {
+        public void StartConnectionsThreadRunner() {
             System.Console.WriteLine("ThreadCounter: " + threadCounter++);
 
-            // Starte die eigene Methode bei erhalt des Signals (ähnlich einer Rekursion)           
-            TcpServer.ConnectionAcceptedCallback _acceptedSignal = new TcpServer.ConnectionAcceptedCallback(StartNewThreadsBySignals);
+            // Starte die eigene Methode bei Erhalt des Callback-Signals nach erfolgten Accept (ähnlich einer Rekursion)           
+            TcpServer.ConnectionAcceptedCallback _acceptedSignal = new TcpServer.ConnectionAcceptedCallback(StartConnectionsThreadRunner);
 
             Thread serverHandler = new Thread(() => tcpServer.Accept(_acceptedSignal));
             serverHandler.Start();
             
+            // TODO Abbruchbedingung für rekursives Verhalten
+            // TODO Limit für Verbindungen
         }
 
         public void StartServerThreadLambdavised(string ipAddress, string port) {
