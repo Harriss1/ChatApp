@@ -12,20 +12,22 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
         private static bool alreadyStarted = false;
 
         public delegate void ConnectionAcceptedCallback();
-        private TcpServer() {
+        
+        public TcpServer() {
         }
+
         /// <summary>
         /// Startet den Server und beginnt den Port abzuhören.
+        /// 
+        /// IP-Adresse und Port sind nicht änderbar während der Server aktiv ist,
+        /// deshalb kann diese nur beim Start festgelegt werden, und eine Änderung
+        /// ist nur nach Stop möglich.
         /// </summary>
         /// <param name="ipAddress"></param>
         /// <param name="port"></param>
-        public TcpServer(string ipAddress, string port) {
-            StartAndListen(ipAddress, port);
-        }
-
         public void StartAndListen(string ipAddress, string port) {
             // Es ist zwingend hier die Listener Instanz einmalig
-            // für das Programm zu instanziieren, ansonsten kommt der FEhler:
+            // für das Programm zu instanziieren, ansonsten kommt der Fehler:
             // System.Net.Sockets.SocketException (0x80004005): Normalerweise darf jede
             // Socketadresse (Protokoll, Netzwerkadresse oder Anschluss) nur jeweils
             // einmal verwendet werden
@@ -103,7 +105,6 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
 
         private static string ReceiveText(Socket handler) {
 
-            // Hier würde ja ein neuer Thread gestartet werden?
             // Incoming data from the client.
             string receivedData = null;
             byte[] bytes = null;
