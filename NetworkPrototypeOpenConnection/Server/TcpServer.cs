@@ -16,6 +16,11 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
         public TcpServer() {
         }
 
+
+        // Idee: Adresse und Port mittels Setter? Ist hier nicht nötig, also JANGI
+        // Man kann halt nicht den Server instanziieren
+        // Vielleicht braucht ja jemand Start und Adresse setzen an unterschiedlichen Stellen?
+
         /// <summary>
         /// Startet den Server und beginnt den Port abzuhören.
         /// 
@@ -65,16 +70,16 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
             TcpServer.alreadyStarted = false;
             Console.WriteLine("Socket Shutdown completed");
         }
-        public void Accept(ConnectionAcceptedCallback _newConnectionEstablishedCallback) {
+        public void Accept(ConnectionAcceptedCallback _newConnectionEstablishedCallback, CommunicationClerk clerk) {
             try {
                 // Programm stoppt hier bis eine Verbindung aufgebaut wird.
                 Console.WriteLine("Waiting for a connection...");
                 Socket handler = this.listener.Accept();
                 _newConnectionEstablishedCallback();
-
+                Console.WriteLine("connection established in TCPserver");
                 bool abortCondition = false;
                 while (!abortCondition) {
-                    string receivedData = ReceiveText(handler);
+                    string receivedData = ReceiveText(handler, clerk);
                     Console.WriteLine("Wait 1000");
                     System.Threading.Thread.Sleep(1000);
                     if(CheckTextForQuitMessage(receivedData) || CheckForDisconnectEvent()) {
@@ -103,17 +108,28 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
             return false;
         }
 
-        private static string ReceiveText(Socket handler) {
+        private string ReceiveText(Socket handler, CommunicationClerk clerk) {
 
             // Incoming data from the client.
+            // receivedData soll nun in ByteStreamClerk ausgewertet werden.
             string receivedData = null;
+
             byte[] bytes = null;
             bool endOfFileReached = false;
             System.Console.WriteLine("receive loop start");
             while (!endOfFileReached) {
+
+                //bytes = dataStreamClerk.CreateDefaultByteArray();
+                //dataStreamClerk.PushReceivedData(handler.Receive(bytes), bytes);
+                //if (dataStreamClerk.IsTransmissionFinished()) {
+                //    endOfFileReached = true;
+                //    receivedData = dataStreamClerk.GetReceivedDataString();
+                //}
+                
                 bytes = new byte[1024];
                 int bytesRec = handler.Receive(bytes);
                 receivedData += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                clerk.EventHandler(receivedData);
                 if (receivedData.IndexOf("<EOF>") > -1) {
                     endOfFileReached = true;
                 }
@@ -124,6 +140,10 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
             byte[] msg = Encoding.ASCII.GetBytes(receivedData);
             handler.Send(msg);
             return receivedData;
+        }
+
+        private string TransmittString(string text) {
+            return "from tcpserver, text parameter=" + text;
         }
     }
 }
