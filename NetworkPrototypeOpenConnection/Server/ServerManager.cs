@@ -13,6 +13,7 @@ namespace NetworkPrototypeOpenConnection.Server {
     /// Ausführungsreihenfolge:
     /// 1: StartServer
     /// 2: Subscribe to OnNewConnectionEvent
+    /// 3: Subscribe to PublishConnectionThread
     /// 3: Set OnDefineConnectionEventClerk
     /// </summary>
     public class ServerManager {
@@ -20,8 +21,11 @@ namespace NetworkPrototypeOpenConnection.Server {
         int threadCounter = 0;
         public delegate void OnAcceptedNewConnectionEvent();
         public delegate CommunicationEventClerk OnDefineConnectionClerkEvent();
+        public delegate void OnEvent_PublishConnectionThread(Thread thread);
         private OnAcceptedNewConnectionEvent _publishAcceptedNewConnectionEvent;
         private OnDefineConnectionClerkEvent _defineConnectionClerk;
+        private OnEvent_PublishConnectionThread _publishConnectionThread;
+
         private List<Thread> connectionThreads = new List<Thread> ();
         public ServerManager() {
         }
@@ -32,9 +36,12 @@ namespace NetworkPrototypeOpenConnection.Server {
             tcpServer.StartAndListen(ipAddress,port);
         }
 
-        public void SubscribeToOnNewConnectionEvent(OnAcceptedNewConnectionEvent _newConnectionEvent) {
+        public void SubscribeTo_OnNewConnectionEvent(OnAcceptedNewConnectionEvent _newConnectionEvent) {
             // Zweck: mehrere Observer sollen informiert werden können, falls es eine neue Verbindung gibt.
             this._publishAcceptedNewConnectionEvent += _newConnectionEvent;
+        }
+        public void SubscribeTo_PublishStartedThread(OnEvent_PublishConnectionThread _newThreadEvent) {
+            _publishConnectionThread += _newThreadEvent;
         }
 
         /// <summary>
@@ -67,6 +74,8 @@ namespace NetworkPrototypeOpenConnection.Server {
             Thread serverHandler = new Thread(() => tcpServer.Accept(_newConnectionAcceptedCallback, clerk));
             serverHandler.Start();
             connectionThreads.Add(serverHandler);
+            if(_publishConnectionThread != null)
+                _publishConnectionThread(serverHandler);
             _defineConnectionClerk = null;
             // TODO Abbruchbedingung für rekursives Verhalten
             // TODO Limit für Verbindungen

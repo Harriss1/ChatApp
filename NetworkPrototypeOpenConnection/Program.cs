@@ -19,8 +19,9 @@ namespace NetworkPrototypeOpenConnection {
             const string port = "10015";
             serverManager = new ServerManager();
             serverManager.StartServer(ipAddress, port);
-            ServerManager.OnAcceptedNewConnectionEvent _newConnectionEvent = new ServerManager.OnAcceptedNewConnectionEvent(OnNewConnection);
-            serverManager.SubscribeToOnNewConnectionEvent(_newConnectionEvent);
+            ServerManager.OnAcceptedNewConnectionEvent _newConnectionEvent 
+                = new ServerManager.OnAcceptedNewConnectionEvent(OnNewConnection);
+            serverManager.SubscribeTo_OnNewConnectionEvent(_newConnectionEvent);
 
             serverManager.AcceptConnections();
             for(int i = 0; i<10; i++) {
