@@ -84,13 +84,20 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
                     
                     string receivedData = ReceiveText(handler, clerk);
                     Console.WriteLine("Wait 1000");
+
+                    System.Console.WriteLine("Kontrolpunkt 3");
                     System.Threading.Thread.Sleep(1000);
                     
-                    // bug?
+                    // bug
                     byte[] bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
+
+                    System.Console.WriteLine("Kontrolpunkt 4");
                     while (bytesToSend != null && bytesToSend.Length > 0) {
+
+                        System.Console.WriteLine("Kontrolpunkt 5");
                         handler.Send(bytesToSend);
                         bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
+                        Console.WriteLine("Sending bytes.");
                     }
                     if (CheckTextForQuitMessage(receivedData)
                         || CheckForDisconnectEvent()
@@ -124,34 +131,46 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
             string receivedData = null;
 
             byte[] bytes = null;
-            bool endOfFileReached = false;
+            bool bytesToReceiveExist = true;
             // Bug
-            bool cancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
+            bool shouldCancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
             System.Console.WriteLine("receive loop start");
-            while (!endOfFileReached || cancelTransmission) {
-                                
-                bytes = new byte[1024];
-                int bytesRec = handler.Receive(bytes);
-                clerk.PublishEvent_ReceiveByteArray(bytes, bytesRec);
-                Console.WriteLine("ran loop once");
-                receivedData += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                Console.WriteLine("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
-                clerk.PublishEvent_AppendString(receivedData);
-                if (receivedData.IndexOf("<EOF>") > -1) {
-                    endOfFileReached = true;
+            while (bytesToReceiveExist && !shouldCancelTransmission) {
+                int availableBytes = handler.Available;
+                System.Console.WriteLine("Kontrolpunkt 0-1 av=" + availableBytes);
+                if (availableBytes > 0) {
+                    bytes = new byte[1024];
+                    int receivedBytesCount = handler.Receive(bytes);
+                    System.Console.WriteLine("Kontrolpunkt 0-2");
+                    clerk.PublishEvent_ReceiveByteArray(bytes, receivedBytesCount);
+                    Console.WriteLine("ran loop once");
+                    receivedData += Encoding.ASCII.GetString(bytes, 0, receivedBytesCount);
+                    Console.WriteLine("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
+                    clerk.PublishEvent_AppendString(receivedData);
+                    //if (receivedData.IndexOf("<EOF>") > -1) {
+                    //    endOfFileReached = true;
+                    //}
+                    Console.WriteLine("Received Bytes=" + receivedBytesCount);
+                    if (availableBytes <= 0) {
+
+                        System.Console.WriteLine("Kontrolpunkt 1");
+                        bytesToReceiveExist = false;
+                    }
+                    System.Console.WriteLine("Kontrolpunkt 2");
+                    shouldCancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
+                    System.Console.WriteLine("Kontrolpunkt 2-1");
+                } else {
+                    bytesToReceiveExist = false;
                 }
-                cancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
             }
-
+            System.Console.WriteLine("Kontrolpunkt 2-2");
             Console.WriteLine("Text received : {0}", receivedData);
-
+            // ReceiveText sollte nicht zweimal ausgeführt werden, beim zweiten mal kam nix zurück...
             byte[] msg = Encoding.ASCII.GetBytes(receivedData);
-            handler.Send(msg);
-            return receivedData;
-        }
+            handler.Send(msg); //könnte auskommentiert werden.
 
-        private string TransmittString(string text) {
-            return "from tcpserver, text parameter=" + text;
+            System.Console.WriteLine("Kontrolpunkt 2-3");
+            return receivedData;
         }
     }
 }

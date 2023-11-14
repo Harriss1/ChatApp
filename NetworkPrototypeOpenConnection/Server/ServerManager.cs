@@ -91,7 +91,7 @@ namespace NetworkPrototypeOpenConnection.Server {
         public bool GracefullyShutdown() {
             foreach (Thread connection in connectionThreads) {
                 if(connection.IsAlive) {
-                    Console.WriteLine("Warnng: Gracefully Shutdown nicht möglich, Thread einer Verbindung ist noch offen.");
+                    Console.WriteLine("Warnung: Gracefully Shutdown nicht möglich, Thread einer Verbindung ist noch offen.");
                     return false;
                 }
             }

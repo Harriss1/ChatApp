@@ -24,6 +24,7 @@ namespace NetworkPrototypeOpenConnection {
             serverManager.SubscribeTo_OnNewConnectionEvent(_newConnectionEvent);
 
             serverManager.AcceptConnections();
+
             for(int i = 0; i<10; i++) {
 
                 System.Threading.Thread.Sleep(2000);
@@ -45,16 +46,21 @@ namespace NetworkPrototypeOpenConnection {
                 = new CommunicationEventClerk.OnEvent_ReceiveByteArray(OnBytesReceived);
             CommunicationEventClerk.OnEvent_CheckForBytesToSend _checkBytesToSendEvent 
                 = new CommunicationEventClerk.OnEvent_CheckForBytesToSend(OnCheckForBytesToSendEvent);
-            CommunicationEventClerk.OnEvent_CheckToCancelConnection _cancelConnectionEvent
-                = new CommunicationEventClerk.OnEvent_CheckToCancelConnection(OnCheckForCancelConnectionEvent);
-            CommunicationEventClerk.OnEvent_CheckToStopCurrentTransmission _checkToStopCurrentTransmissionEvent
-                = new CommunicationEventClerk.OnEvent_CheckToStopCurrentTransmission(OnCheckForCancelConnection);
+
+            CommunicationEventClerk.OnEvent_CheckCancelConnection _cancelConnectionEvent
+                = new CommunicationEventClerk.OnEvent_CheckCancelConnection(OnCheck_CancelConnection);
+
+            CommunicationEventClerk.OnEvent_CheckAbortTransmission _checkAbortTransmissionEvent
+                // großes Problem: Lesbarkeit!
+                // ich habe hier OnCheckShouldCancelConnection als Parameter übergeben
+                // kann ich dies mit einem Interface vermeiden?
+                = new CommunicationEventClerk.OnEvent_CheckAbortTransmission(OnCheck_AbortTransmission);
 
             CommunicationEventClerk clerk = new CommunicationEventClerk(
                     _receiveStringEvent,
                     _receiveBytesEvent,
                     _checkBytesToSendEvent,
-                    _checkToStopCurrentTransmissionEvent,
+                    _checkAbortTransmissionEvent,
                     _cancelConnectionEvent);
 
             ServerManager.OnDefineConnectionClerkEvent _registerConnectionClerk = new ServerManager.OnDefineConnectionClerkEvent(() =>
@@ -65,7 +71,7 @@ namespace NetworkPrototypeOpenConnection {
 
         }
 
-        private static bool OnCheckForCancelConnection() {
+        private static bool OnCheck_CancelConnection() {
             Console.WriteLine("## Counter Increase ##");
             if (action++ == 5) {
                 Console.WriteLine("########## CancelConnection #############");
@@ -74,7 +80,7 @@ namespace NetworkPrototypeOpenConnection {
             return false;
         }
 
-        private static bool OnCheckForCancelConnectionEvent() {
+        private static bool OnCheck_AbortTransmission() {
             return false;
         }
         private static byte[] receivedBytes;

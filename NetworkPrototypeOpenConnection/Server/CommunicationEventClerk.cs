@@ -16,21 +16,21 @@ namespace NetworkPrototypeOpenConnection.Server {
 
         public delegate void OnEvent_ReceiveByteArray(byte[] bytes, int receivedBytes);
         public delegate byte[] OnEvent_CheckForBytesToSend();
-        public delegate bool OnEvent_CheckToStopCurrentTransmission();
-        public delegate bool OnEvent_CheckToCancelConnection();
+        public delegate bool OnEvent_CheckAbortTransmission();
+        public delegate bool OnEvent_CheckCancelConnection();
 
         private OnEvent_ReceiveByteArray _onReceiveByteArray;
         private OnEvent_CheckForBytesToSend _onCheckForBytesToSend;
-        private OnEvent_CheckToStopCurrentTransmission _onCheckToStopCurrentTransmission;
-        private OnEvent_CheckToCancelConnection _onCheckToCancelConnection;
+        private OnEvent_CheckAbortTransmission _onCheckToStopCurrentTransmission;
+        private OnEvent_CheckCancelConnection _onCheckToCancelConnection;
 
         public CommunicationEventClerk(
             OnEvent_ReceiveString _onReceiveAppendString,
 
             OnEvent_ReceiveByteArray _onReceiveByteArray,
             OnEvent_CheckForBytesToSend _onCheckForBytesToSend,
-            OnEvent_CheckToStopCurrentTransmission _onCheckToStopCurrentTransmission,
-            OnEvent_CheckToCancelConnection _onCheckToCancelConnection)
+            OnEvent_CheckAbortTransmission _onCheckToStopCurrentTransmission,
+            OnEvent_CheckCancelConnection _onCheckToCancelConnection)
         {
             this._onReceiveAppendString = _onReceiveAppendString;
 
