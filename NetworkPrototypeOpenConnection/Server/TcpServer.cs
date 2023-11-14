@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 // Zusätzlicher Namespace um zu erklären, dass dies eine Unterklasse ist
 namespace NetworkPrototypeOpenConnection.Server.Listener {
@@ -70,7 +71,7 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
             TcpServer.alreadyStarted = false;
             Console.WriteLine("Socket Shutdown completed");
         }
-        public void Accept(ConnectionAcceptedCallback _newConnectionEstablishedCallback, CommunicationClerk clerk) {
+        public void Accept(ConnectionAcceptedCallback _newConnectionEstablishedCallback, CommunicationEventClerk clerk) {
             try {
                 // Programm stoppt hier bis eine Verbindung aufgebaut wird.
                 Console.WriteLine("Waiting for a connection...");
@@ -108,7 +109,7 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
             return false;
         }
 
-        private string ReceiveText(Socket handler, CommunicationClerk clerk) {
+        private string ReceiveText(Socket handler, CommunicationEventClerk eventClerk) {
 
             // Incoming data from the client.
             // receivedData soll nun in ByteStreamClerk ausgewertet werden.
@@ -128,8 +129,11 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
                 
                 bytes = new byte[1024];
                 int bytesRec = handler.Receive(bytes);
+                eventClerk.OnReceiveByteArray(bytes, bytesRec);
+                Console.WriteLine("ran loop once");
                 receivedData += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                clerk.EventHandler(receivedData);
+                Console.WriteLine("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
+                eventClerk.OnReceiveStringEvent(receivedData);
                 if (receivedData.IndexOf("<EOF>") > -1) {
                     endOfFileReached = true;
                 }
