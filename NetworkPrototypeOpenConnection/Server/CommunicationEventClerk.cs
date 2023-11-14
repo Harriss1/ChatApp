@@ -14,12 +14,12 @@ namespace NetworkPrototypeOpenConnection.Server {
         public delegate string OnReceiveString(string test);
         private OnReceiveString _onReceiveAppendString;
 
-        public delegate void OnReceivedByteArray(byte[] bytes, int receivedBytes);
+        public delegate void OnReceiveByteArrayEvent(byte[] bytes, int receivedBytes);
         public delegate byte[] OnCheckForBytesToSendEvent();
         public delegate bool OnCheckIsStopCurrentTransmissionEvent();
         public delegate bool OnCheckIsCancelConnectionEvent();
 
-        private OnReceivedByteArray _onReceivedByteArray;
+        private OnReceiveByteArrayEvent _onReceiveByteArray;
         private OnCheckForBytesToSendEvent _onCheckForBytesToSendEvent;
         private OnCheckIsStopCurrentTransmissionEvent _onCheckIsStopCurrentTransmissionEvent;
         private OnCheckIsCancelConnectionEvent _onCheckIsCancelConnectionEvent;
@@ -27,33 +27,31 @@ namespace NetworkPrototypeOpenConnection.Server {
         public CommunicationEventClerk(
             OnReceiveString _onReceiveAppendString,
 
-            OnReceivedByteArray _onReceiveByteArray,
-            OnCheckForBytesToSendEvent _onCheckForBytesToSendEvent)
+            OnReceiveByteArrayEvent _onReceiveByteArray,
+            OnCheckForBytesToSendEvent _onCheckForBytesToSendEvent,
+            OnCheckIsCancelConnectionEvent _onCheckIsCancelConnectionEvent)
         {
             this._onReceiveAppendString = _onReceiveAppendString;
 
-            this._onReceivedByteArray = _onReceiveByteArray;
+            this._onReceiveByteArray = _onReceiveByteArray;
             this._onCheckForBytesToSendEvent = _onCheckForBytesToSendEvent;
+            this._onCheckIsCancelConnectionEvent = _onCheckIsCancelConnectionEvent;
         }
 
-        public string OnAppendStringEvent(string test) {
+        public string PublishAppendStringEvent(string test) {
             _onReceiveAppendString(test);
             return "EventHandler String";
         }
 
-        public void OnReceiveByteArray(byte[] bytes, int receivedBytes) {
-            _onReceivedByteArray(bytes, receivedBytes);
+        public void PublishReceiveByteArray(byte[] bytes, int receivedBytes) {
+            _onReceiveByteArray(bytes, receivedBytes);
         }
-        public byte[] OnCheckForBytesToSend() {
+        public byte[] PublishCheckForBytesToSend() {
             return _onCheckForBytesToSendEvent();
         }
 
-        //public byte[] OnCheckForBytesToSendEvent() {
-        //    return _onCheckForBytesToSendEvent();
-        //}
-
-        public void RegisterListener(OnCheckForBytesToSendEvent _dele) {
-        
+        public bool PublishCheckForCancelConnectionEvent() {
+            return _onCheckIsCancelConnectionEvent();
         }
-}
+    }
 }

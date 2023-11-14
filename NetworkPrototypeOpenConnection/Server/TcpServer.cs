@@ -79,17 +79,22 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
                 _newConnectionEstablishedCallback();
                 Console.WriteLine("connection established in TCPserver");
                 bool abortCondition = false;
+                abortCondition = clerk.PublishCheckForCancelConnectionEvent();
                 while (!abortCondition) {
+                    
                     string receivedData = ReceiveText(handler, clerk);
                     Console.WriteLine("Wait 1000");
                     System.Threading.Thread.Sleep(1000);
-                    if(CheckTextForQuitMessage(receivedData) || CheckForDisconnectEvent()) {
+                    
+                    //byte[] bytesToSend = clerk.PublishCheckForBytesToSend();
+                    //while (bytesToSend.Length > 0) {
+                    //    handler.Send(bytesToSend);
+                    //    bytesToSend = clerk.PublishCheckForBytesToSend();
+                    //}
+                    if (CheckTextForQuitMessage(receivedData)
+                        || CheckForDisconnectEvent()
+                        || clerk.PublishCheckForCancelConnectionEvent()) {
                         abortCondition = true;
-                    }
-                    byte[] bytesToSend = clerk.OnCheckForBytesToSend();
-                    while (bytesToSend.Length > 0) {
-                        handler.Send(bytesToSend);
-                        bytesToSend = clerk.OnCheckForBytesToSend();
                     }
                 }
                 handler.Shutdown(SocketShutdown.Both);
@@ -131,11 +136,11 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
                 
                 bytes = new byte[1024];
                 int bytesRec = handler.Receive(bytes);
-                eventClerk.OnReceiveByteArray(bytes, bytesRec);
+                eventClerk.PublishReceiveByteArray(bytes, bytesRec);
                 Console.WriteLine("ran loop once");
                 receivedData += Encoding.ASCII.GetString(bytes, 0, bytesRec);
                 Console.WriteLine("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
-                eventClerk.OnAppendStringEvent(receivedData);
+                eventClerk.PublishAppendStringEvent(receivedData);
                 if (receivedData.IndexOf("<EOF>") > -1) {
                     endOfFileReached = true;
                 }
