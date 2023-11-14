@@ -86,6 +86,11 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
                     if(CheckTextForQuitMessage(receivedData) || CheckForDisconnectEvent()) {
                         abortCondition = true;
                     }
+                    byte[] bytesToSend = clerk.OnCheckForBytesToSend();
+                    while (bytesToSend.Length > 0) {
+                        handler.Send(bytesToSend);
+                        bytesToSend = clerk.OnCheckForBytesToSend();
+                    }
                 }
                 handler.Shutdown(SocketShutdown.Both);
                 handler.Close();
@@ -97,9 +102,6 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
 
         private bool CheckForDisconnectEvent() {
             return false;
-        }
-        public void Logoff(string username) {
-
         }
 
         private bool CheckTextForQuitMessage(string receivedData) {
@@ -133,7 +135,7 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
                 Console.WriteLine("ran loop once");
                 receivedData += Encoding.ASCII.GetString(bytes, 0, bytesRec);
                 Console.WriteLine("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
-                eventClerk.OnReceiveStringEvent(receivedData);
+                eventClerk.OnAppendStringEvent(receivedData);
                 if (receivedData.IndexOf("<EOF>") > -1) {
                     endOfFileReached = true;
                 }

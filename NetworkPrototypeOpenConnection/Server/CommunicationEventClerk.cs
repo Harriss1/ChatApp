@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetworkPrototypeOpenConnection {
+namespace NetworkPrototypeOpenConnection.Server {
     // Falls dies ein Listener wäre, wäre das Ziel: TcpServer soll von den Objekten die ihm zuhören unabhängig bleiben.
     // Daten über Listener Schnittstelle an TcpServer zu senden fühlt sich falsch an, da mehrere Zuhören könnten
     // Namen: Subscriber, ClientCommunicationEvents, ClientCommunicationListener, CommunicationBridge, Mediator
@@ -36,13 +36,16 @@ namespace NetworkPrototypeOpenConnection {
             this._onCheckForBytesToSendEvent = _onCheckForBytesToSendEvent;
         }
 
-        public string OnReceiveStringEvent(string test) {
+        public string OnAppendStringEvent(string test) {
             _onReceiveAppendString(test);
             return "EventHandler String";
         }
 
         public void OnReceiveByteArray(byte[] bytes, int receivedBytes) {
             _onReceivedByteArray(bytes, receivedBytes);
+        }
+        public byte[] OnCheckForBytesToSend() {
+            return _onCheckForBytesToSendEvent();
         }
 
         //public byte[] OnCheckForBytesToSendEvent() {

@@ -17,7 +17,7 @@ namespace NetworkPrototypeOpenConnection {
             const string port = "10015";
             serverManager = new ServerManager();
             serverManager.StartServer(ipAddress, port);
-            ServerManager.OnNewConnectionEvent _newConnectionEvent = new ServerManager.OnNewConnectionEvent(OnNewConnection);
+            ServerManager.OnAcceptedNewConnectionEvent _newConnectionEvent = new ServerManager.OnAcceptedNewConnectionEvent(OnNewConnection);
             serverManager.SubscribeToOnNewConnectionEvent(_newConnectionEvent);
 
             serverManager.AcceptConnections();
@@ -29,10 +29,6 @@ namespace NetworkPrototypeOpenConnection {
                 string inputMessage = Console.ReadLine();
                 sendToAllClients.Add(inputMessage);
             }
-
-
-            //ServerManager serverManager = new ServerManager();
-            //serverManager.StartServerThreadLambdavised(ipAddress, port);
         }
 
         private static string ReceiveBytePackageEventHandle(string test) {
@@ -47,16 +43,17 @@ namespace NetworkPrototypeOpenConnection {
                 new CommunicationEventClerk.OnCheckForBytesToSendEvent(OnCheckForBytesToSendEvent);
             CommunicationEventClerk clerk = new CommunicationEventClerk(_receiveStringEvent, _receiveBytesEvent, _checkBytesToSendEvent);
 
-            ServerManager.OnRegisterConnectionClerkEvent _registerConnectionClerk = new ServerManager.OnRegisterConnectionClerkEvent(() =>
+            ServerManager.OnDefineConnectionClerkEvent _registerConnectionClerk = new ServerManager.OnDefineConnectionClerkEvent(() =>
             {
                 return clerk;
             });
-            serverManager.TakeOnRegisterConnectionClerkEvent(_registerConnectionClerk);
+            serverManager.SetOnDefineConnectionClerkEvent(_registerConnectionClerk);
 
         }
 
         private static void OnBytesReceived(byte[] bytes, int receivedBytes) {
             Console.WriteLine("this event was handled from main.OnBytesReceived testval=" + Encoding.ASCII.GetString(bytes, 0, receivedBytes));
+            Thread.CurrentThread.Abort();
         }
 
         private static byte[] OnCheckForBytesToSendEvent() {
