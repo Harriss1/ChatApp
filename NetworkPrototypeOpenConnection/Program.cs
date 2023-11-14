@@ -38,19 +38,22 @@ namespace NetworkPrototypeOpenConnection {
         }
         
         private static void OnNewConnection() {
-            CommunicationEventClerk.OnReceiveString _receiveStringEvent 
-                = new CommunicationEventClerk.OnReceiveString(ReceiveBytePackageEventHandle);
-            CommunicationEventClerk.OnReceiveByteArrayEvent _receiveBytesEvent
-                = new CommunicationEventClerk.OnReceiveByteArrayEvent(OnBytesReceived);
-            CommunicationEventClerk.OnCheckForBytesToSendEvent _checkBytesToSendEvent 
-                = new CommunicationEventClerk.OnCheckForBytesToSendEvent(OnCheckForBytesToSendEvent);
-            CommunicationEventClerk.OnCheckIsCancelConnectionEvent _cancelConnectionEvent
-                = new CommunicationEventClerk.OnCheckIsCancelConnectionEvent(OnCheckForCancelConnectionEvent);
+            CommunicationEventClerk.OnEvent_ReceiveString _receiveStringEvent 
+                = new CommunicationEventClerk.OnEvent_ReceiveString(ReceiveBytePackageEventHandle);
+            CommunicationEventClerk.OnEvent_ReceiveByteArray _receiveBytesEvent
+                = new CommunicationEventClerk.OnEvent_ReceiveByteArray(OnBytesReceived);
+            CommunicationEventClerk.OnEvent_CheckForBytesToSend _checkBytesToSendEvent 
+                = new CommunicationEventClerk.OnEvent_CheckForBytesToSend(OnCheckForBytesToSendEvent);
+            CommunicationEventClerk.OnEvent_CheckToCancelConnection _cancelConnectionEvent
+                = new CommunicationEventClerk.OnEvent_CheckToCancelConnection(OnCheckForCancelConnectionEvent);
+            CommunicationEventClerk.OnEvent_CheckToStopCurrentTransmission _checkToStopCurrentTransmissionEvent
+                = new CommunicationEventClerk.OnEvent_CheckToStopCurrentTransmission(OnCheckForCancelConnection);
 
             CommunicationEventClerk clerk = new CommunicationEventClerk(
                     _receiveStringEvent,
                     _receiveBytesEvent,
                     _checkBytesToSendEvent,
+                    _checkToStopCurrentTransmissionEvent,
                     _cancelConnectionEvent);
 
             ServerManager.OnDefineConnectionClerkEvent _registerConnectionClerk = new ServerManager.OnDefineConnectionClerkEvent(() =>
@@ -61,17 +64,29 @@ namespace NetworkPrototypeOpenConnection {
 
         }
 
-        private static bool OnCheckForCancelConnectionEvent() {
+        private static bool OnCheckForCancelConnection() {
+            Console.WriteLine("## Counter Increase ##");
+            if (action++ == 5) {
+                Console.WriteLine("########## CancelConnection #############");
+                return true;
+            }
             return false;
         }
 
-        private static void OnBytesReceived(byte[] bytes, int receivedBytes) {
-            Console.WriteLine("this event was handled from main.OnBytesReceived testval=" + Encoding.ASCII.GetString(bytes, 0, receivedBytes));
-            //if(action++ == 3) Thread.CurrentThread.Abort();
+        private static bool OnCheckForCancelConnectionEvent() {
+            return false;
+        }
+        private static byte[] receivedBytes;
+        private static byte[] bytesToSend;
+        private static void OnBytesReceived(byte[] bytes, int receivedBytesCount) {
+            bytesToSend = bytes;
+            Console.WriteLine("this event was handled from main.OnBytesReceived testval=" + Encoding.ASCII.GetString(bytes, 0, receivedBytesCount));
+            //if(action++ == 5) Thread.CurrentThread.Abort();
         }
 
         private static byte[] OnCheckForBytesToSendEvent() {
-            byte[] bytes = new byte[1024];
+            byte[] bytes = bytesToSend;
+            bytesToSend = null;
             return bytes;
         }
     }

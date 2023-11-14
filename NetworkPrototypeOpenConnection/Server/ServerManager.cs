@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using NetworkPrototypeOpenConnection.Server.Listener;
-using static NetworkPrototypeOpenConnection.Server.Listener.TcpServer;
 
 namespace NetworkPrototypeOpenConnection.Server {
     /// <summary>
@@ -33,9 +32,6 @@ namespace NetworkPrototypeOpenConnection.Server {
             tcpServer.StartAndListen(ipAddress,port);
         }
 
-        // Nutzung eines Delegate als Funktionspointer
-        // Zweck ist ein Callback vom ServerHandler-Thread zu implementieren
-        private delegate string PrintTextCallback(string text);
         public void SubscribeToOnNewConnectionEvent(OnAcceptedNewConnectionEvent _newConnectionEvent) {
             // Zweck: mehrere Observer sollen informiert werden können, falls es eine neue Verbindung gibt.
             this._publishAcceptedNewConnectionEvent += _newConnectionEvent;
@@ -65,7 +61,7 @@ namespace NetworkPrototypeOpenConnection.Server {
             System.Console.WriteLine("ThreadCounter: " + threadCounter++);
 
             // Starte die eigene Methode bei Erhalt des Callback-Events nach erfolgten Accept (ähnlich einer Rekursion)           
-            ConnectionAcceptedCallback _newConnectionAcceptedCallback = new ConnectionAcceptedCallback(AcceptConnections);
+            TcpServer.ConnectionAcceptedCallback _newConnectionAcceptedCallback = new TcpServer.ConnectionAcceptedCallback(AcceptConnections);
             _publishAcceptedNewConnectionEvent();
             CommunicationEventClerk clerk = _defineConnectionClerk();
             Thread serverHandler = new Thread(() => tcpServer.Accept(_newConnectionAcceptedCallback, clerk));

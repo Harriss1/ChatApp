@@ -78,23 +78,24 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
                 Socket handler = this.listener.Accept();
                 _newConnectionEstablishedCallback();
                 Console.WriteLine("connection established in TCPserver");
-                bool abortCondition = false;
-                abortCondition = clerk.PublishCheckForCancelConnectionEvent();
-                while (!abortCondition) {
+                bool closeConnection = false;
+                closeConnection = clerk.PublishEvent_CheckForCancelConnection();
+                while (!closeConnection) {
                     
                     string receivedData = ReceiveText(handler, clerk);
                     Console.WriteLine("Wait 1000");
                     System.Threading.Thread.Sleep(1000);
                     
-                    //byte[] bytesToSend = clerk.PublishCheckForBytesToSend();
-                    //while (bytesToSend.Length > 0) {
-                    //    handler.Send(bytesToSend);
-                    //    bytesToSend = clerk.PublishCheckForBytesToSend();
-                    //}
+                    // bug?
+                    byte[] bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
+                    while (bytesToSend != null && bytesToSend.Length > 0) {
+                        handler.Send(bytesToSend);
+                        bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
+                    }
                     if (CheckTextForQuitMessage(receivedData)
                         || CheckForDisconnectEvent()
-                        || clerk.PublishCheckForCancelConnectionEvent()) {
-                        abortCondition = true;
+                        || clerk.PublishEvent_CheckForCancelConnection()) {
+                        closeConnection = true;
                     }
                 }
                 handler.Shutdown(SocketShutdown.Both);
@@ -116,7 +117,7 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
             return false;
         }
 
-        private string ReceiveText(Socket handler, CommunicationEventClerk eventClerk) {
+        private string ReceiveText(Socket handler, CommunicationEventClerk clerk) {
 
             // Incoming data from the client.
             // receivedData soll nun in ByteStreamClerk ausgewertet werden.
@@ -124,26 +125,22 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
 
             byte[] bytes = null;
             bool endOfFileReached = false;
+            // Bug
+            bool cancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
             System.Console.WriteLine("receive loop start");
-            while (!endOfFileReached) {
-
-                //bytes = dataStreamClerk.CreateDefaultByteArray();
-                //dataStreamClerk.PushReceivedData(handler.Receive(bytes), bytes);
-                //if (dataStreamClerk.IsTransmissionFinished()) {
-                //    endOfFileReached = true;
-                //    receivedData = dataStreamClerk.GetReceivedDataString();
-                //}
-                
+            while (!endOfFileReached || cancelTransmission) {
+                                
                 bytes = new byte[1024];
                 int bytesRec = handler.Receive(bytes);
-                eventClerk.PublishReceiveByteArray(bytes, bytesRec);
+                clerk.PublishEvent_ReceiveByteArray(bytes, bytesRec);
                 Console.WriteLine("ran loop once");
                 receivedData += Encoding.ASCII.GetString(bytes, 0, bytesRec);
                 Console.WriteLine("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
-                eventClerk.PublishAppendStringEvent(receivedData);
+                clerk.PublishEvent_AppendString(receivedData);
                 if (receivedData.IndexOf("<EOF>") > -1) {
                     endOfFileReached = true;
                 }
+                cancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
             }
 
             Console.WriteLine("Text received : {0}", receivedData);
