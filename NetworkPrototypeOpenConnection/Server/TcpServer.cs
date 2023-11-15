@@ -87,17 +87,17 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
 
                     System.Console.WriteLine("Kontrolpunkt 3");
                     System.Threading.Thread.Sleep(1000);
-                    
+
                     // bug
+                    System.Console.WriteLine("Kontrolpunkt 4: erster Callback CheckForBytesToSend");
                     byte[] bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
 
-                    System.Console.WriteLine("Kontrolpunkt 4");
                     while (bytesToSend != null && bytesToSend.Length > 0) {
 
-                        System.Console.WriteLine("Kontrolpunkt 5");
+                        Console.WriteLine("Sending bytes...");
                         handler.Send(bytesToSend);
+                        System.Console.WriteLine("Kontrolpunkt 5: Loop Callback von CheckForBytesToSend");
                         bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
-                        Console.WriteLine("Sending bytes.");
                     }
                     if (CheckTextForQuitMessage(receivedData)
                         || CheckForDisconnectEvent()
@@ -118,7 +118,8 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
         }
 
         private bool CheckTextForQuitMessage(string receivedData) {
-            if(receivedData.Contains("quit") || receivedData.Contains("<MessageType>logout</MessageType>")) {
+            if (receivedData == null) return false;
+            if (receivedData.Contains("quit") || receivedData.Contains("<MessageType>logout</MessageType>")) {
                 return true;
             }
             return false;
@@ -136,13 +137,13 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
             bool shouldCancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
             System.Console.WriteLine("receive loop start");
             while (bytesToReceiveExist && !shouldCancelTransmission) {
-                System.Console.WriteLine("Kontrolpunkt 0-1 av=");
+                System.Console.WriteLine("Kontrolpunkt 0-1");
                 
                 bytes = new byte[1024];
                 int receivedBytesCount = handler.Receive(bytes);
                 System.Console.WriteLine("Kontrolpunkt 0-2");
                 clerk.PublishEvent_ReceiveByteArray(bytes, receivedBytesCount);
-                Console.WriteLine("ran loop once");
+                System.Console.WriteLine("Kontrolpunkt 1");
                 receivedData += Encoding.ASCII.GetString(bytes, 0, receivedBytesCount);
                 Console.WriteLine("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
                 clerk.PublishEvent_AppendString(receivedData);
@@ -165,8 +166,8 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
             System.Console.WriteLine("Kontrolpunkt 2-2");
             Console.WriteLine("Text received : {0}", receivedData);
             // ReceiveText sollte nicht zweimal ausgeführt werden, beim zweiten mal kam nix zurück...
-            byte[] msg = Encoding.ASCII.GetBytes(receivedData);
-            handler.Send(msg); //könnte auskommentiert werden.
+            //byte[] msg = Encoding.ASCII.GetBytes(receivedData);
+            //handler.Send(msg); //könnte auskommentiert werden.
 
             System.Console.WriteLine("Kontrolpunkt 2-3");
             return receivedData;

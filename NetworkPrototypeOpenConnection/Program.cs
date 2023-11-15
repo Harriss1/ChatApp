@@ -11,6 +11,7 @@ namespace NetworkPrototypeOpenConnection {
         static List<string>  sendToAllClients = new List<string>();
         static ServerManager serverManager;
         private static int action = 1;
+        static bool debugMode_ForCancelationOfTransmissionAndConnection = false;
 
         static void Main(string[] args) {
             Console.WriteLine("ThreadID Main at Start = " + Thread.CurrentThread.ManagedThreadId);
@@ -71,16 +72,28 @@ namespace NetworkPrototypeOpenConnection {
 
         }
 
+        /// <summary>
+        /// unbedingt Counter entfernen, er dient nur zum Test der Verbindungsbeendigung.
+        /// </summary>
+        /// <returns></returns>
         private static bool OnCheck_CancelConnection() {
-            Console.WriteLine("## Counter Increase ##");
-            if (action++ == 5) {
-                Console.WriteLine("########## CancelConnection #############");
-                return true;
+            if (debugMode_ForCancelationOfTransmissionAndConnection) {
+                Console.WriteLine("## Counter Increase ##");
+                if (action++ == 5) {
+                    Console.WriteLine("########## CancelConnection #############");
+                    return true;
+                }
             }
             return false;
         }
 
         private static bool OnCheck_AbortTransmission() {
+            if (debugMode_ForCancelationOfTransmissionAndConnection) {
+                if (action == 10) {
+                    Console.WriteLine("########## Cancel Transmission #############");
+                    return true;
+                }
+            }
             return false;
         }
         private static byte[] receivedBytes;

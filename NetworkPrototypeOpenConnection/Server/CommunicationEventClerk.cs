@@ -15,13 +15,20 @@ namespace NetworkPrototypeOpenConnection.Server {
         private OnEvent_ReceiveString _onReceiveAppendString;
 
         public delegate void OnEvent_ReceiveByteArray(byte[] bytes, int receivedBytes);
+        /// <summary>
+        /// Wiederholung der Prüfung auf Bytes to Send
+        /// Ende der Prüfungsschleife falls:
+        /// 1) Null übergeben wird
+        /// 2) Das übergebene Array eine Länge von 0 hat.
+        /// </summary>
+        /// <returns></returns>
         public delegate byte[] OnEvent_CheckForBytesToSend();
         public delegate bool OnEvent_CheckAbortTransmission();
         public delegate bool OnEvent_CheckCancelConnection();
 
         private OnEvent_ReceiveByteArray _onReceiveByteArray;
         private OnEvent_CheckForBytesToSend _onCheckForBytesToSend;
-        private OnEvent_CheckAbortTransmission _onCheckToStopCurrentTransmission;
+        private OnEvent_CheckAbortTransmission _onCheckAbortTransmission;
         private OnEvent_CheckCancelConnection _onCheckToCancelConnection;
 
         public CommunicationEventClerk(
@@ -29,14 +36,14 @@ namespace NetworkPrototypeOpenConnection.Server {
 
             OnEvent_ReceiveByteArray _onReceiveByteArray,
             OnEvent_CheckForBytesToSend _onCheckForBytesToSend,
-            OnEvent_CheckAbortTransmission _onCheckToStopCurrentTransmission,
+            OnEvent_CheckAbortTransmission _onCheckToAbortTransmission,
             OnEvent_CheckCancelConnection _onCheckToCancelConnection)
         {
             this._onReceiveAppendString = _onReceiveAppendString;
 
             this._onReceiveByteArray = _onReceiveByteArray;
             this._onCheckForBytesToSend = _onCheckForBytesToSend;
-            this._onCheckToStopCurrentTransmission = _onCheckToStopCurrentTransmission;
+            this._onCheckAbortTransmission = _onCheckToAbortTransmission;
             this._onCheckToCancelConnection = _onCheckToCancelConnection;
         }
 
@@ -57,7 +64,7 @@ namespace NetworkPrototypeOpenConnection.Server {
         }
 
         public bool PublishEvent_OnCheckToStopCurrentTransmission() {
-            return _onCheckToStopCurrentTransmission();
+            return _onCheckAbortTransmission();
         }
     }
 }
