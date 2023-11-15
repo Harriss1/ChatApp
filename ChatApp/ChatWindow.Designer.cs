@@ -36,6 +36,7 @@
             this.Text_Chat_Partner = new System.Windows.Forms.TextBox();
             this.Button_Request_Chat_Partner = new System.Windows.Forms.Button();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.Text_Chatmessages_Placeholder = new System.Windows.Forms.TextBox();
             this.tableLayout.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -55,6 +56,7 @@
             this.tableLayout.Controls.Add(this.tableLayoutPanel2, 0, 0);
             this.tableLayout.Controls.Add(this.tableLayoutPanel3, 0, 2);
             this.tableLayout.Controls.Add(this.Text_Message_Input, 0, 4);
+            this.tableLayout.Controls.Add(this.Text_Chatmessages_Placeholder, 0, 3);
             this.tableLayout.Location = new System.Drawing.Point(0, 0);
             this.tableLayout.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayout.Name = "tableLayout";
@@ -232,6 +234,21 @@
             this.tableLayoutPanel3.Size = new System.Drawing.Size(800, 30);
             this.tableLayoutPanel3.TabIndex = 3;
             // 
+            // Text_Chatmessages_Placeholder
+            // 
+            this.Text_Chatmessages_Placeholder.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Text_Chatmessages_Placeholder.Font = new System.Drawing.Font("Calibri", 12F);
+            this.Text_Chatmessages_Placeholder.Location = new System.Drawing.Point(3, 113);
+            this.Text_Chatmessages_Placeholder.Multiline = true;
+            this.Text_Chatmessages_Placeholder.Name = "Text_Chatmessages_Placeholder";
+            this.Text_Chatmessages_Placeholder.ReadOnly = true;
+            this.Text_Chatmessages_Placeholder.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.Text_Chatmessages_Placeholder.Size = new System.Drawing.Size(794, 204);
+            this.Text_Chatmessages_Placeholder.TabIndex = 5;
+            this.Text_Chatmessages_Placeholder.Text = "(messages)";
+            // 
             // ChatWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -267,6 +284,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Button Button_Request_Chat_Partner;
         private System.Windows.Forms.TextBox Text_Chat_Partner;
+        private System.Windows.Forms.TextBox Text_Chatmessages_Placeholder;
     }
 }
 
