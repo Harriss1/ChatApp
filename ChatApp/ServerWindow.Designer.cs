@@ -25,8 +25,8 @@
         private void InitializeComponent() {
             this.tableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.Panel_Controls = new System.Windows.Forms.TableLayoutPanel();
-            this.Button_Start_Server = new System.Windows.Forms.Button();
             this.Button_Stop_Server = new System.Windows.Forms.Button();
+            this.Button_Start_Server = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.tableLayout.SuspendLayout();
             this.Panel_Controls.SuspendLayout();
@@ -49,38 +49,43 @@
             // Panel_Controls
             // 
             this.Panel_Controls.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Panel_Controls.ColumnCount = 2;
-            this.Panel_Controls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 85.04436F));
-            this.Panel_Controls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 14.95564F));
-            this.Panel_Controls.Controls.Add(this.Button_Stop_Server, 1, 0);
-            this.Panel_Controls.Controls.Add(this.Button_Start_Server, 0, 0);
+            this.Panel_Controls.ColumnCount = 3;
+            this.Panel_Controls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.Panel_Controls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.Panel_Controls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.Panel_Controls.Controls.Add(this.Button_Stop_Server, 2, 0);
+            this.Panel_Controls.Controls.Add(this.Button_Start_Server, 1, 0);
             this.Panel_Controls.Location = new System.Drawing.Point(0, 414);
             this.Panel_Controls.Margin = new System.Windows.Forms.Padding(0);
             this.Panel_Controls.Name = "Panel_Controls";
             this.Panel_Controls.RowCount = 1;
-            this.Panel_Controls.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.Panel_Controls.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.Panel_Controls.Size = new System.Drawing.Size(795, 30);
             this.Panel_Controls.TabIndex = 0;
             // 
+            // Button_Stop_Server
+            // 
+            this.Button_Stop_Server.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_Stop_Server.Location = new System.Drawing.Point(698, 3);
+            this.Button_Stop_Server.Name = "Button_Stop_Server";
+            this.Button_Stop_Server.Size = new System.Drawing.Size(94, 24);
+            this.Button_Stop_Server.TabIndex = 1;
+            this.Button_Stop_Server.Text = "Stoppen";
+            this.Button_Stop_Server.UseVisualStyleBackColor = true;
+            // 
             // Button_Start_Server
             // 
-            this.Button_Start_Server.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_Start_Server.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Button_Start_Server.Location = new System.Drawing.Point(598, 3);
             this.Button_Start_Server.Name = "Button_Start_Server";
-            this.Button_Start_Server.Size = new System.Drawing.Size(75, 23);
+            this.Button_Start_Server.Size = new System.Drawing.Size(94, 24);
             this.Button_Start_Server.TabIndex = 0;
             this.Button_Start_Server.Text = "Starten";
             this.Button_Start_Server.UseVisualStyleBackColor = true;
-            // 
-            // Button_Stop_Server
-            // 
-            this.Button_Stop_Server.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_Stop_Server.Location = new System.Drawing.Point(717, 3);
-            this.Button_Stop_Server.Name = "Button_Stop_Server";
-            this.Button_Stop_Server.Size = new System.Drawing.Size(75, 23);
-            this.Button_Stop_Server.TabIndex = 1;
-            this.Button_Stop_Server.Text = "Beenden";
-            this.Button_Stop_Server.UseVisualStyleBackColor = true;
             // 
             // textBox1
             // 
