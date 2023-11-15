@@ -60,6 +60,14 @@
     <Compile Include="ServerWindow.Designer.cs">
       <DependentUpon>ServerWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Server\Clients\ChatMessage.cs" />
+    <Compile Include="Server\Clients\ChatPartner.cs" />
+    <Compile Include="Server\Clients\Client.cs" />
+    <Compile Include="Server\Clients\ConnectionStatus.cs" />
+    <Compile Include="Server\Clients\MessageType.cs" />
+    <Compile Include="Server\CommunicationEventClerk.cs" />
+    <Compile Include="Server\ServerManager.cs" />
+    <Compile Include="Server\TcpServer.cs" />
     <EmbeddedResource Include="ChatWindow.resx">
       <DependentUpon>ChatWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -88,5 +96,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
