@@ -4,15 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetworkPrototypeOpenConnection.Server {
+namespace ChatApp.Server {
     // Falls dies ein Listener wäre, wäre das Ziel: TcpServer soll von den Objekten die ihm zuhören unabhängig bleiben.
     // Daten über Listener Schnittstelle an TcpServer zu senden fühlt sich falsch an, da mehrere Zuhören könnten
     // Namen: Subscriber, ClientCommunicationEvents, ClientCommunicationListener, CommunicationBridge, Mediator
     // 
     public class CommunicationEventClerk {
-
-        public delegate string OnEvent_ReceiveString(string test);
-        private OnEvent_ReceiveString _onReceiveAppendString;
 
         public delegate void OnEvent_ReceiveByteArray(byte[] bytes, int receivedBytes);
         /// <summary>
@@ -32,24 +29,17 @@ namespace NetworkPrototypeOpenConnection.Server {
         private OnEvent_CheckCancelConnection _onCheckToCancelConnection;
 
         public CommunicationEventClerk(
-            OnEvent_ReceiveString _onReceiveAppendString,
 
             OnEvent_ReceiveByteArray _onReceiveByteArray,
             OnEvent_CheckForBytesToSend _onCheckForBytesToSend,
             OnEvent_CheckAbortTransmission _onCheckToAbortTransmission,
             OnEvent_CheckCancelConnection _onCheckToCancelConnection)
         {
-            this._onReceiveAppendString = _onReceiveAppendString;
 
             this._onReceiveByteArray = _onReceiveByteArray;
             this._onCheckForBytesToSend = _onCheckForBytesToSend;
             this._onCheckAbortTransmission = _onCheckToAbortTransmission;
             this._onCheckToCancelConnection = _onCheckToCancelConnection;
-        }
-
-        public string PublishEvent_AppendString(string test) {
-            _onReceiveAppendString(test);
-            return "EventHandler String";
         }
 
         public void PublishEvent_ReceiveByteArray(byte[] bytes, int receivedBytes) {

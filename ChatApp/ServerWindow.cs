@@ -14,13 +14,13 @@ namespace ChatApp {
         ServerController server = new ServerController();
         public ServerWindow() {
             InitializeComponent();
-            ServerController.OnEvent_PublishServerMessage _observeMessage = 
-                new ServerController.OnEvent_PublishServerMessage(AddConsoleMessage);
-            // wird doppelt subscribed, das ist falsch.
-            server.SubscribeTo_PublishServerMessage(_observeMessage);
+            LogPublisher.OnEvent_PublishServerMessage onEvent_PublishServerMessage =
+                new LogPublisher.OnEvent_PublishServerMessage(OnEvent_AddConsoleMessage);
+            LogPublisher.SubscribeTo_PublishServerMessage(onEvent_PublishServerMessage);
         }
 
-        private void AddConsoleMessage(string message) {
+        private void OnEvent_AddConsoleMessage(string message) {
+            // Der Zugriff auf das Steuerelement Text_Console_Output erfolgte von einem anderen Thread als dem Thread, für den es erstellt wurde.
             Text_Console_Output.Text += message + "\r\n";
         }
 

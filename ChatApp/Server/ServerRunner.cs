@@ -4,9 +4,9 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using NetworkPrototypeOpenConnection.Server.Listener;
+using ChatApp.Server.Listener;
 
-namespace NetworkPrototypeOpenConnection.Server {
+namespace ChatApp.Server {
     /// <summary>
     /// Einzelne Verbindungen werden durch den ConnectionClerk gemanaged.
     /// Für einen GracefullyShutdown ist es nötig alle offenen Verbindungen mittels ConnectionClerk zu schließen.
@@ -35,21 +35,21 @@ namespace NetworkPrototypeOpenConnection.Server {
             tcpServer = new TcpServer();
             tcpServer.StartAndListen(ipAddress,port);
         }
-
+        // Kann eventuell raus?
         public void SubscribeTo_OnNewConnectionEvent(OnAcceptedNewConnectionEvent _newConnectionEvent) {
             // Zweck: mehrere Observer sollen informiert werden können, falls es eine neue Verbindung gibt.
             this._publishAcceptedNewConnectionEvent += _newConnectionEvent;
         }
-        public void SubscribeTo_PublishStartedThread(OnEvent_PublishConnectionThread _newThreadEvent) {
+        public void SubscribeTo_PublishConnectionThread(OnEvent_PublishConnectionThread _newThreadEvent) {
             _publishConnectionThread += _newThreadEvent;
         }
 
         /// <summary>
-        /// 
+        /// Kann nur einmal registriert werden!
         /// </summary>
         /// <param name="_registerClerkEvent"></param>
         /// <exception cref="InvalidOperationException"></exception>
-        public void SetOnDefineConnectionClerkEvent(OnDefineConnectionClerkEvent _registerClerkEvent) {
+        public void SubscribeTo_OnDefineConnectionClerkEvent(OnDefineConnectionClerkEvent _registerClerkEvent) {
             if (this._defineConnectionClerk != null) {
                 throw new InvalidOperationException("Eine offene Verbindung darf nur von einer Instanz kontrolliert werden.");
             }
@@ -69,7 +69,7 @@ namespace NetworkPrototypeOpenConnection.Server {
 
             // Starte die eigene Methode bei Erhalt des Callback-Events nach erfolgten Accept (ähnlich einer Rekursion)           
             TcpServer.ConnectionAcceptedCallback _newConnectionAcceptedCallback = new TcpServer.ConnectionAcceptedCallback(AcceptConnections);
-            _publishAcceptedNewConnectionEvent();
+            _publishAcceptedNewConnectionEvent(); // Kann eventuell raus?
             CommunicationEventClerk clerk = _defineConnectionClerk();
             Thread serverHandler = new Thread(() => tcpServer.Accept(_newConnectionAcceptedCallback, clerk));
             serverHandler.Start();

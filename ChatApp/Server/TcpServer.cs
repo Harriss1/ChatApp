@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 
 // Zusätzlicher Namespace um zu erklären, dass dies eine Unterklasse ist
-namespace NetworkPrototypeOpenConnection.Server.Listener {
+namespace ChatApp.Server.Listener {
     // Rename to TcpListener?
     internal class TcpServer {
         private const int maxRequestLimit = 100;
@@ -76,6 +76,7 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
                 // Programm stoppt hier bis eine Verbindung aufgebaut wird.
                 Console.WriteLine("Waiting for a connection...");
                 Socket handler = this.listener.Accept();
+                // Der Zugriff auf das Steuerelement Text_Console_Output erfolgte von einem anderen Thread als dem Thread, für den es erstellt wurde.
                 _newConnectionEstablishedCallback();
                 Console.WriteLine("connection established in TCPserver");
                 bool closeConnection = false;
@@ -146,7 +147,6 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
                 System.Console.WriteLine("Kontrolpunkt 1");
                 receivedData += Encoding.ASCII.GetString(bytes, 0, receivedBytesCount);
                 Console.WriteLine("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
-                clerk.PublishEvent_AppendString(receivedData);
                 //if (receivedData.IndexOf("<EOF>") > -1) {
                 //    endOfFileReached = true;
                 //}
