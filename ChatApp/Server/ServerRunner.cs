@@ -16,7 +16,7 @@ namespace NetworkPrototypeOpenConnection.Server {
     /// 3: Subscribe to PublishConnectionThread
     /// 3: Set OnDefineConnectionEventClerk
     /// </summary>
-    public class ServerManager {
+    public class ServerRunner {
         TcpServer tcpServer;
         int threadCounter = 0;
         public delegate void OnAcceptedNewConnectionEvent();
@@ -27,7 +27,7 @@ namespace NetworkPrototypeOpenConnection.Server {
         private OnEvent_PublishConnectionThread _publishConnectionThread;
 
         private List<Thread> connectionThreads = new List<Thread> ();
-        public ServerManager() {
+        public ServerRunner() {
         }
 
         public void StartServer(string ipAddress, string port) {
