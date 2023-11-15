@@ -15,7 +15,13 @@ namespace ChatApp {
         }
 
         private void Button_Server_View_Click(object sender, EventArgs e) {
-            ServerWindow serverWindow = new ServerWindow();
+            // Position relative to the right of Main Window
+            var chatWindow = new ChatWindow();
+            var xOffset = chatWindow.Width;
+            var serverWindow = new ServerWindow();
+            serverWindow.StartPosition = FormStartPosition.Manual;
+            serverWindow.Location = PointToScreen(new Point(chatWindow.Location.X + xOffset, chatWindow.Location.Y-30));
+            
             serverWindow.Show();
         }
     }

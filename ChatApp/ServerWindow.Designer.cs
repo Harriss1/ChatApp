@@ -43,7 +43,7 @@
             this.tableLayout.RowCount = 2;
             this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayout.Size = new System.Drawing.Size(795, 444);
+            this.tableLayout.Size = new System.Drawing.Size(406, 444);
             this.tableLayout.TabIndex = 0;
             // 
             // Panel_Controls
@@ -60,7 +60,7 @@
             this.Panel_Controls.Name = "Panel_Controls";
             this.Panel_Controls.RowCount = 1;
             this.Panel_Controls.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.Panel_Controls.Size = new System.Drawing.Size(795, 30);
+            this.Panel_Controls.Size = new System.Drawing.Size(406, 30);
             this.Panel_Controls.TabIndex = 0;
             // 
             // Button_Stop_Server
@@ -68,7 +68,7 @@
             this.Button_Stop_Server.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_Stop_Server.Location = new System.Drawing.Point(698, 3);
+            this.Button_Stop_Server.Location = new System.Drawing.Point(309, 3);
             this.Button_Stop_Server.Name = "Button_Stop_Server";
             this.Button_Stop_Server.Size = new System.Drawing.Size(94, 24);
             this.Button_Stop_Server.TabIndex = 1;
@@ -80,7 +80,7 @@
             this.Button_Start_Server.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_Start_Server.Location = new System.Drawing.Point(598, 3);
+            this.Button_Start_Server.Location = new System.Drawing.Point(209, 3);
             this.Button_Start_Server.Name = "Button_Start_Server";
             this.Button_Start_Server.Size = new System.Drawing.Size(94, 24);
             this.Button_Start_Server.TabIndex = 0;
@@ -101,7 +101,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(795, 414);
+            this.textBox1.Size = new System.Drawing.Size(406, 414);
             this.textBox1.TabIndex = 1;
             this.textBox1.Text = "Dies ist ein Text";
             // 
@@ -109,7 +109,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(415, 450);
             this.Controls.Add(this.tableLayout);
             this.Name = "ServerWindow";
             this.Text = "Server";

@@ -100,12 +100,13 @@
             this.Text_Connection_Status.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Text_Connection_Status.Font = new System.Drawing.Font("Cascadia Mono ExtraLight", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Text_Connection_Status.BackColor = System.Drawing.SystemColors.Menu;
+            this.Text_Connection_Status.Font = new System.Drawing.Font("Cascadia Mono Light", 10F);
             this.Text_Connection_Status.Location = new System.Drawing.Point(3, 3);
             this.Text_Connection_Status.Name = "Text_Connection_Status";
-            this.Text_Connection_Status.Size = new System.Drawing.Size(663, 20);
+            this.Text_Connection_Status.Size = new System.Drawing.Size(663, 23);
             this.Text_Connection_Status.TabIndex = 1;
-            this.Text_Connection_Status.Text = "Verbindungsstatus";
+            this.Text_Connection_Status.Text = "(Verbindungsstatus zum Server)";
             // 
             // tableLayoutPanel2
             // 

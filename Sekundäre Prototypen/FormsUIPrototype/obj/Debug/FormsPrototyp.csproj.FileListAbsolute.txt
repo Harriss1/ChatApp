@@ -9,3 +9,14 @@ C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp - Kopie\obj\Debug\
 C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp - Kopie\obj\Debug\FormsPrototyp.csproj.CoreCompileInputs.cache
 C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp - Kopie\obj\Debug\FormsPrototyp.exe
 C:\DateinKarlKlotz\Schule\Projekt Chatapp\_repository\ChatApp - Kopie\obj\Debug\FormsPrototyp.pdb
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\Sekundäre Prototypen\FormsUIPrototype\bin\Debug\FormsPrototyp.exe.config
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\Sekundäre Prototypen\FormsUIPrototype\bin\Debug\FormsPrototyp.exe
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\Sekundäre Prototypen\FormsUIPrototype\bin\Debug\FormsPrototyp.pdb
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\Sekundäre Prototypen\FormsUIPrototype\obj\Debug\FormsPrototyp.csproj.AssemblyReference.cache
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\Sekundäre Prototypen\FormsUIPrototype\obj\Debug\FormsPrototyp.csproj.SuggestedBindingRedirects.cache
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\Sekundäre Prototypen\FormsUIPrototype\obj\Debug\FormsPrototyp.Form1.resources
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\Sekundäre Prototypen\FormsUIPrototype\obj\Debug\FormsPrototyp.Properties.Resources.resources
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\Sekundäre Prototypen\FormsUIPrototype\obj\Debug\FormsPrototyp.csproj.GenerateResource.cache
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\Sekundäre Prototypen\FormsUIPrototype\obj\Debug\FormsPrototyp.csproj.CoreCompileInputs.cache
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\Sekundäre Prototypen\FormsUIPrototype\obj\Debug\FormsPrototyp.exe
+C:\DateinKarlKlotz\Schule\SDM 3. LJ\Projekt Chatapp\_repository\Sekundäre Prototypen\FormsUIPrototype\obj\Debug\FormsPrototyp.pdb
