@@ -68,6 +68,7 @@
     <Compile Include="Server\Clients\ConnectionStatus.cs" />
     <Compile Include="Server\Clients\MessageType.cs" />
     <Compile Include="Server\CommunicationEventClerk.cs" />
+    <Compile Include="Server\MessageNotifier.cs" />
     <Compile Include="Server\ServerController.cs" />
     <Compile Include="Server\ServerRunner.cs" />
     <Compile Include="Server\TcpServer.cs" />

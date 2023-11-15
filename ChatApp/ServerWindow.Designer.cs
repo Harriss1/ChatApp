@@ -27,8 +27,8 @@
             this.Panel_Controls = new System.Windows.Forms.TableLayoutPanel();
             this.Button_Shutdown_Server = new System.Windows.Forms.Button();
             this.Button_Start_Server = new System.Windows.Forms.Button();
-            this.Button_Abort = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.Button_Abort_Server = new System.Windows.Forms.Button();
+            this.Text_Console_Output = new System.Windows.Forms.TextBox();
             this.tableLayout.SuspendLayout();
             this.Panel_Controls.SuspendLayout();
             this.SuspendLayout();
@@ -38,7 +38,7 @@
             this.tableLayout.ColumnCount = 1;
             this.tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayout.Controls.Add(this.Panel_Controls, 0, 1);
-            this.tableLayout.Controls.Add(this.textBox1, 0, 0);
+            this.tableLayout.Controls.Add(this.Text_Console_Output, 0, 0);
             this.tableLayout.Location = new System.Drawing.Point(4, 5);
             this.tableLayout.Name = "tableLayout";
             this.tableLayout.RowCount = 2;
@@ -57,7 +57,7 @@
             this.Panel_Controls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.Panel_Controls.Controls.Add(this.Button_Shutdown_Server, 2, 0);
             this.Panel_Controls.Controls.Add(this.Button_Start_Server, 1, 0);
-            this.Panel_Controls.Controls.Add(this.Button_Abort, 3, 0);
+            this.Panel_Controls.Controls.Add(this.Button_Abort_Server, 3, 0);
             this.Panel_Controls.Location = new System.Drawing.Point(0, 414);
             this.Panel_Controls.Margin = new System.Windows.Forms.Padding(0);
             this.Panel_Controls.Name = "Panel_Controls";
@@ -92,36 +92,35 @@
             this.Button_Start_Server.UseVisualStyleBackColor = true;
             this.Button_Start_Server.Click += new System.EventHandler(this.Button_Start_Server_Click);
             // 
-            // Button_Abort
+            // Button_Abort_Server
             // 
-            this.Button_Abort.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.Button_Abort_Server.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_Abort.Location = new System.Drawing.Point(309, 3);
-            this.Button_Abort.Name = "Button_Abort";
-            this.Button_Abort.Size = new System.Drawing.Size(94, 24);
-            this.Button_Abort.TabIndex = 2;
-            this.Button_Abort.Text = "Sofort Stoppen";
-            this.Button_Abort.UseVisualStyleBackColor = true;
-            this.Button_Abort.Click += new System.EventHandler(this.Button_Abort_Click);
+            this.Button_Abort_Server.Location = new System.Drawing.Point(309, 3);
+            this.Button_Abort_Server.Name = "Button_Abort_Server";
+            this.Button_Abort_Server.Size = new System.Drawing.Size(94, 24);
+            this.Button_Abort_Server.TabIndex = 2;
+            this.Button_Abort_Server.Text = "Sofort Stoppen";
+            this.Button_Abort_Server.UseVisualStyleBackColor = true;
+            this.Button_Abort_Server.Click += new System.EventHandler(this.Button_Abort_Server_Click);
             // 
-            // textBox1
+            // Text_Console_Output
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.Text_Console_Output.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            this.textBox1.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.textBox1.Location = new System.Drawing.Point(0, 0);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(0);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(406, 414);
-            this.textBox1.TabIndex = 1;
-            this.textBox1.Text = "Dies ist ein Text";
+            this.Text_Console_Output.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.Text_Console_Output.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Text_Console_Output.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.Text_Console_Output.Location = new System.Drawing.Point(0, 0);
+            this.Text_Console_Output.Margin = new System.Windows.Forms.Padding(0);
+            this.Text_Console_Output.Multiline = true;
+            this.Text_Console_Output.Name = "Text_Console_Output";
+            this.Text_Console_Output.ReadOnly = true;
+            this.Text_Console_Output.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.Text_Console_Output.Size = new System.Drawing.Size(406, 414);
+            this.Text_Console_Output.TabIndex = 1;
             // 
             // ServerWindow
             // 
@@ -144,7 +143,7 @@
         private System.Windows.Forms.TableLayoutPanel Panel_Controls;
         private System.Windows.Forms.Button Button_Start_Server;
         private System.Windows.Forms.Button Button_Shutdown_Server;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button Button_Abort;
+        private System.Windows.Forms.TextBox Text_Console_Output;
+        private System.Windows.Forms.Button Button_Abort_Server;
     }
 }

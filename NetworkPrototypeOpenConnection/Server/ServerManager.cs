@@ -20,9 +20,11 @@ namespace NetworkPrototypeOpenConnection.Server {
         TcpServer tcpServer;
         int threadCounter = 0;
         public delegate void OnAcceptedNewConnectionEvent();
+        private OnAcceptedNewConnectionEvent _publishAcceptedNewConnectionEvent;
+
         public delegate CommunicationEventClerk OnDefineConnectionClerkEvent();
         public delegate void OnEvent_PublishConnectionThread(Thread thread);
-        private OnAcceptedNewConnectionEvent _publishAcceptedNewConnectionEvent;
+
         private OnDefineConnectionClerkEvent _defineConnectionClerk;
         private OnEvent_PublishConnectionThread _publishConnectionThread;
 
