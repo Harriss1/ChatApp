@@ -136,32 +136,31 @@ namespace NetworkPrototypeOpenConnection.Server.Listener {
             bool shouldCancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
             System.Console.WriteLine("receive loop start");
             while (bytesToReceiveExist && !shouldCancelTransmission) {
-                int availableBytes = handler.Available;
-                System.Console.WriteLine("Kontrolpunkt 0-1 av=" + availableBytes);
-                if (availableBytes > 0) {
-                    bytes = new byte[1024];
-                    int receivedBytesCount = handler.Receive(bytes);
-                    System.Console.WriteLine("Kontrolpunkt 0-2");
-                    clerk.PublishEvent_ReceiveByteArray(bytes, receivedBytesCount);
-                    Console.WriteLine("ran loop once");
-                    receivedData += Encoding.ASCII.GetString(bytes, 0, receivedBytesCount);
-                    Console.WriteLine("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
-                    clerk.PublishEvent_AppendString(receivedData);
-                    //if (receivedData.IndexOf("<EOF>") > -1) {
-                    //    endOfFileReached = true;
-                    //}
-                    Console.WriteLine("Received Bytes=" + receivedBytesCount);
-                    if (availableBytes <= 0) {
+                System.Console.WriteLine("Kontrolpunkt 0-1 av=");
+                
+                bytes = new byte[1024];
+                int receivedBytesCount = handler.Receive(bytes);
+                System.Console.WriteLine("Kontrolpunkt 0-2");
+                clerk.PublishEvent_ReceiveByteArray(bytes, receivedBytesCount);
+                Console.WriteLine("ran loop once");
+                receivedData += Encoding.ASCII.GetString(bytes, 0, receivedBytesCount);
+                Console.WriteLine("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
+                clerk.PublishEvent_AppendString(receivedData);
+                //if (receivedData.IndexOf("<EOF>") > -1) {
+                //    endOfFileReached = true;
+                //}
+                Console.WriteLine("Received Bytes=" + receivedBytesCount);
 
-                        System.Console.WriteLine("Kontrolpunkt 1");
-                        bytesToReceiveExist = false;
-                    }
-                    System.Console.WriteLine("Kontrolpunkt 2");
-                    shouldCancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
-                    System.Console.WriteLine("Kontrolpunkt 2-1");
-                } else {
+                int availableBytes = handler.Available;
+                if (availableBytes <= 0) {
                     bytesToReceiveExist = false;
+                    // Achtung: Falls viele Datenpakete auf einmal geschickt werden, ist auch ein EndOfTransmission nötig
+                    // Ansonsten werden die Bytes direkt an die jetzige Sendung angehangen :)
                 }
+                System.Console.WriteLine("Kontrolpunkt 2");
+                shouldCancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
+                System.Console.WriteLine("Kontrolpunkt 2-1");
+                                 
             }
             System.Console.WriteLine("Kontrolpunkt 2-2");
             Console.WriteLine("Text received : {0}", receivedData);
