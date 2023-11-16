@@ -69,17 +69,26 @@ namespace ChatApp.Server {
 
             // Starte die eigene Methode bei Erhalt des Callback-Events nach erfolgten Accept (ähnlich einer Rekursion)           
             TcpServer.ConnectionAcceptedCallback _newConnectionAcceptedCallback = new TcpServer.ConnectionAcceptedCallback(AcceptConnections);
-            _publishAcceptedNewConnectionEvent(); // Kann eventuell raus?
-            
-            CommunicationEventClerk clerk = _defineConnectionClerk();//null on connect!
+            _publishAcceptedNewConnectionEvent(); // notwendig um immer einen neuen Callback zu erstellen, welcher immer einen neuen Clerk haben.
+
+            CommunicationEventClerk clerk = GetClerk();
             Thread serverHandler = new Thread(() => tcpServer.Accept(_newConnectionAcceptedCallback, clerk));
             serverHandler.Start();
             connectionThreads.Add(serverHandler);
-            if(_publishConnectionThread != null)
+            if (_publishConnectionThread != null)
                 _publishConnectionThread(serverHandler);
             _defineConnectionClerk = null;
             // TODO Abbruchbedingung für rekursives Verhalten
             // TODO Limit für Verbindungen
+        }
+        private static CommunicationEventClerk lastClerk;
+        private CommunicationEventClerk GetClerk() {
+            CommunicationEventClerk newClerk = _defineConnectionClerk();
+            if(newClerk == lastClerk) {
+                throw new InvalidOperationException("CommunicationClerk muss für jede Verbindung neu erstelt werden. Der benachrichtigende Callback über die Erstellung eines neuen Verbindungssockets ist 'OnAcceptedNewConnectionEvent'");
+            }
+            lastClerk = newClerk;
+            return newClerk;             
         }
 
         public void Abort() {

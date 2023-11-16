@@ -9,21 +9,21 @@ namespace ChatApp.Server.Listener{
         private LogPublisher msg = new LogPublisher();
         private ServerRunner serverRunner;
         private ServerRunner.OnDefineConnectionClerkEvent _onEvent_DefineConnectionClerk;
-        private ServerRunner.OnAcceptedNewConnectionEvent _newConnectionEvent;
+        private ServerRunner.OnAcceptedNewConnectionEvent _onAcceptedNewConnectionEvent;
         private ServerRunner.OnEvent_PublishConnectionThread _onEvent_PublishConnectionThread;
 
         private ConnectionManagerService() { }
         public ConnectionManagerService(ServerRunner serverRunner) {
             this.serverRunner = serverRunner;
             _onEvent_DefineConnectionClerk = new ServerRunner.OnDefineConnectionClerkEvent(OnEvent_DefineConnectionClerk);
-            _newConnectionEvent = new ServerRunner.OnAcceptedNewConnectionEvent(OnEvent_AcceptedNewConnection);
+            _onAcceptedNewConnectionEvent = new ServerRunner.OnAcceptedNewConnectionEvent(OnEvent_AcceptedNewConnection);
             _onEvent_PublishConnectionThread = new ServerRunner.OnEvent_PublishConnectionThread(OnEvent_PublishStartedThread);
         }
 
         public void Run() {
             msg.Publish("Bereit ThreadRunner.AcceptConnections vor...");
             
-            serverRunner.SubscribeTo_OnNewConnectionEvent(_newConnectionEvent);
+            serverRunner.SubscribeTo_OnNewConnectionEvent(_onAcceptedNewConnectionEvent);
             serverRunner.SubscribeTo_PublishConnectionThread(_onEvent_PublishConnectionThread);
             serverRunner.AcceptConnections();
             msg.Publish("AcceptConnections ThreadRunner gestarted");
@@ -35,6 +35,7 @@ namespace ChatApp.Server.Listener{
 
         private void OnEvent_AcceptedNewConnection() {
             msg.Publish("Bereite Verbindungsempfang vor...");
+            // Nach jedem Verbindungsaufbau ist ein neuer ConnectionClerk notwendig.
             serverRunner.SubscribeTo_OnDefineConnectionClerkEvent(_onEvent_DefineConnectionClerk);
         }
 
