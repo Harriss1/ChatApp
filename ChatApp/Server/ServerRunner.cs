@@ -70,7 +70,8 @@ namespace ChatApp.Server {
             // Starte die eigene Methode bei Erhalt des Callback-Events nach erfolgten Accept (ähnlich einer Rekursion)           
             TcpServer.ConnectionAcceptedCallback _newConnectionAcceptedCallback = new TcpServer.ConnectionAcceptedCallback(AcceptConnections);
             _publishAcceptedNewConnectionEvent(); // Kann eventuell raus?
-            CommunicationEventClerk clerk = _defineConnectionClerk();
+            
+            CommunicationEventClerk clerk = _defineConnectionClerk();//null on connect!
             Thread serverHandler = new Thread(() => tcpServer.Accept(_newConnectionAcceptedCallback, clerk));
             serverHandler.Start();
             connectionThreads.Add(serverHandler);

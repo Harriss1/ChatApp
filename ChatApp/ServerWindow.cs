@@ -21,7 +21,15 @@ namespace ChatApp {
 
         private void OnEvent_AddConsoleMessage(string message) {
             // Der Zugriff auf das Steuerelement Text_Console_Output erfolgte von einem anderen Thread als dem Thread, für den es erstellt wurde.
-            Text_Console_Output.Text += message + "\r\n";
+            //Text_Console_Output.Text += message + "\r\n";
+            //form.Label.Invoke((MethodInvoker)delegate {
+            //    // Running on the UI thread
+            //    form.Label.Text = newText;
+            //});
+            Text_Console_Output.Invoke((MethodInvoker)delegate {
+                // Running on the UI thread
+                Text_Console_Output.Text += message + "\r\n";
+            });
         }
 
         private void Button_Start_Server_Click(object sender, EventArgs e) {

@@ -20,10 +20,9 @@ namespace ChatApp.Server.Listener{
             _onEvent_PublishConnectionThread = new ServerRunner.OnEvent_PublishConnectionThread(OnEvent_PublishStartedThread);
         }
 
-
         public void Run() {
             msg.Publish("Bereit ThreadRunner.AcceptConnections vor...");
-            serverRunner.SubscribeTo_OnDefineConnectionClerkEvent(_onEvent_DefineConnectionClerk);
+            
             serverRunner.SubscribeTo_OnNewConnectionEvent(_newConnectionEvent);
             serverRunner.SubscribeTo_PublishConnectionThread(_onEvent_PublishConnectionThread);
             serverRunner.AcceptConnections();
@@ -36,8 +35,8 @@ namespace ChatApp.Server.Listener{
 
         private void OnEvent_AcceptedNewConnection() {
             msg.Publish("Bereite Verbindungsempfang vor...");
+            serverRunner.SubscribeTo_OnDefineConnectionClerkEvent(_onEvent_DefineConnectionClerk);
         }
-
 
         private bool On_CheckCancelConnection() {
             return false;
@@ -46,10 +45,16 @@ namespace ChatApp.Server.Listener{
         private bool On_CheckAbortTransmission() {
             return false;
         }
-
-        private byte[] On_CheckForBytesToSend() {
+        string mirrorMessage;
+        private byte[] On_CheckForBytesToSendLoopUntilAllSent() {
             msg.Publish("Prüfe ob Server Nachrichten zum versenden hat...");
-            string message = "nothing returned <EOF>";
+            if (mirrorMessage == null) {
+                msg.Publish("[keine Nachrichten]");
+                return null;
+            }
+            msg.Publish("Nachricht: " + mirrorMessage);
+            string message = mirrorMessage;
+            mirrorMessage = null;
             return Encoding.ASCII.GetBytes(message);
         }
 
@@ -57,12 +62,12 @@ namespace ChatApp.Server.Listener{
             msg.Publish("Message received:");
             string message = Encoding.ASCII.GetString(bytes, 0, receivedBytes);
             msg.Publish(message);
+            mirrorMessage = message;
         }
-
 
         private CommunicationEventClerk OnEvent_DefineConnectionClerk() {
             OnEvent_ReceiveByteArray _onReceiveByteArray = new OnEvent_ReceiveByteArray(On_ReceiveByteArray);
-            OnEvent_CheckForBytesToSend _onCheckForBytesToSend = new OnEvent_CheckForBytesToSend(On_CheckForBytesToSend);
+            OnEvent_CheckForBytesToSend _onCheckForBytesToSend = new OnEvent_CheckForBytesToSend(On_CheckForBytesToSendLoopUntilAllSent);
             OnEvent_CheckAbortTransmission _onCheckToAbortTransmission = new OnEvent_CheckAbortTransmission(On_CheckAbortTransmission);
             OnEvent_CheckCancelConnection _onCheckToCancelConnection = new OnEvent_CheckCancelConnection(On_CheckCancelConnection);
 
