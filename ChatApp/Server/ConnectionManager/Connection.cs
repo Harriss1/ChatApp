@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 namespace ChatApp.Server.ConnectionManager {
     internal class Connection {
         public Client Client { get; set; }
-        public Thread Thread { get; set; }
+        public Thread Thread { get; }
         public bool FlaggedToCancel { get; set; }
-        public Connection() {
+        public Connection(Thread thread) {
             FlaggedToCancel = false;
+            Thread = thread;
         }
-        public bool IsWellDefined() {
+        public bool HasDefinedClient() {
             if (Client != null && Thread != null) {
                 return true;
             } else {

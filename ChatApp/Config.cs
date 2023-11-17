@@ -12,5 +12,6 @@ namespace ChatApp {
         }
         public static readonly string ServerPort = Key("ServerPort");
         public static readonly string ServerAddress = Key("ServerAddress");
+        internal static readonly string ProtocolVersion = Key("ProtocolVersion");
     }
 }

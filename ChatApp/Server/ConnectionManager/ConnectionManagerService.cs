@@ -1,5 +1,6 @@
 ﻿using ChatApp.Server;
 using ChatApp.Server.ConnectionManager;
+using ChatApp.Server.MessageMediator;
 using System;
 using System.Text;
 using System.Threading;
@@ -7,27 +8,24 @@ using static ChatApp.Server.CommunicationEventClerk;
 
 namespace ChatApp.Server.Listener{
     internal class ConnectionManagerService {
+
+        MessageService messageService = new MessageService();
         private LogPublisher msg = new LogPublisher();
         private ServerRunner serverRunner;
         private ServerRunner.OnDefineConnectionClerkEventForEachNewConnection _onEvent_DefineConnectionClerk;
         private ServerRunner.OnAcceptedNewConnectionEvent _onAcceptedNewConnectionEvent;
         private ServerRunner.OnEvent_PublishConnectionThread _onEvent_PublishConnectionThread;
-        private static ConnectionRegister register;
+
+        private static ConnectionRegister connectionRegister = new ConnectionRegister();
 
         private ConnectionManagerService() { 
             
         }
-        public ConnectionManagerService(ServerRunner serverRunner, ConnectionRegister register) {
+        public ConnectionManagerService(ServerRunner serverRunner) {
             this.serverRunner = serverRunner;
             _onEvent_DefineConnectionClerk = new ServerRunner.OnDefineConnectionClerkEventForEachNewConnection(OnEvent_DefineConnectionClerk);
             _onAcceptedNewConnectionEvent = new ServerRunner.OnAcceptedNewConnectionEvent(OnEvent_AcceptedNewConnection);
             _onEvent_PublishConnectionThread = new ServerRunner.OnEvent_PublishConnectionThread(OnEvent_PublishStartedThread);
-
-            if (ConnectionManagerService.register != null) {
-                throw new InvalidOperationException("Es darf nur eine Instanz von Service geben.");
-            } else {
-                ConnectionManagerService.register = register;
-            }
         }
 
         public void Run() {
@@ -39,11 +37,20 @@ namespace ChatApp.Server.Listener{
             msg.Publish("AcceptConnections ThreadRunner gestarted");
         }
 
+        public void ShutdownAllConnections() {
+            msg.Publish("ConnectionManagerServer:ShutDown all connections not implemented!");
+        }
+
+        public void AbortAllConnections() {
+            foreach (Connection conn in connectionRegister.connections) {
+                conn.Thread.Abort();
+            }
+        }
+
         private void OnEvent_PublishStartedThread(Thread thread) {
             msg.Publish("neuer Thread für eine eben geöffnete Verbindung gestartet. ID=" + thread.ManagedThreadId);
-            Connection connection = new Connection();
-            connection.Thread = thread;
-            register.Add(connection);
+            Connection connection = new Connection(thread);
+            connectionRegister.Add(connection);
         }
 
         private void OnEvent_AcceptedNewConnection() {
@@ -77,6 +84,9 @@ namespace ChatApp.Server.Listener{
             string message = Encoding.ASCII.GetString(bytes, 0, receivedBytes);
             msg.Publish(message);
             mirrorMessage = message;
+            messageService.ProcessBytes(bytes, receivedBytes, 
+                connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
+
         }
 
         private CommunicationEventClerk OnEvent_DefineConnectionClerk() {

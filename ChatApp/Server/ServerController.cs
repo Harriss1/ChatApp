@@ -12,14 +12,13 @@ namespace ChatApp.Server {
         private LogPublisher msg = new LogPublisher();
         private static ServerRunner serverRunner = new ServerRunner();
         private static ConnectionManagerService connectionManager;
-        static ConnectionRegister register = new ConnectionRegister();
         public ServerController() {
         }
 
         internal void Start() {
             serverRunner.StartServer(Config.ServerAddress, Config.ServerPort);
             msg.Publish("Started Server at " + Config.ServerAddress + ":" + Config.ServerPort);
-            connectionManager = new ConnectionManagerService(serverRunner, register);
+            connectionManager = new ConnectionManagerService(serverRunner);
             connectionManager.Run();
         }
 
@@ -30,12 +29,13 @@ namespace ChatApp.Server {
             if (success) {
                 msg.Publish("Verbindungen wurden ordnungsgemäß abgebaut und der Server korrekt beendet.");
             } else {
-                msg.Publish("Server konnte nicht heruntergefahren werden. Bitte Logs konsultieren und ggf. Stop erzwingen.");
+                msg.Publish("FEHLER: Server konnte nicht heruntergefahren werden. Bitte Logs konsultieren und ggf. Stop erzwingen.");
             }
         }
 
         internal void Abort() {
             msg.Publish("Erzwinge Stop des Servers indem alle Threads beendet werden.");
+            connectionManager.AbortAllConnections();
             serverRunner.Abort();
         }
     }

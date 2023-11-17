@@ -15,5 +15,14 @@ namespace ChatApp.Server.ConnectionManager {
                 connections.Remove(connection);
             }
         }
+
+        internal Connection FindConnectionByThread(int managedThreadId) {
+            foreach (Connection connection in connections) {
+                if (connection.Thread.ManagedThreadId == managedThreadId) {
+                    return connection;
+                }
+            }
+            throw new InvalidOperationException("ConnectionRegister:FindConnectionByThread() Thread existiert nicht.");
+        }
     }
 }
