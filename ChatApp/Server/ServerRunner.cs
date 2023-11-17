@@ -14,16 +14,18 @@ namespace ChatApp.Server {
     /// 1: StartServer
     /// 2: Subscribe to OnNewConnectionEvent
     /// 3: Subscribe to PublishConnectionThread
-    /// 3: Set OnDefineConnectionEventClerk
+    /// 4: Set OnDefineConnectionEventClerk
+    /// --> 4 muss als Unterprozess nach OnNewConnectionEvent ausgeführt werden, da immer ein neuer
+    /// CommunicationClerk für jeden Thread notwendig ist.
     /// </summary>
     public class ServerRunner {
         TcpServer tcpServer;
         int threadCounter = 0;
         public delegate void OnAcceptedNewConnectionEvent();
-        public delegate CommunicationEventClerk OnDefineConnectionClerkEvent();
+        public delegate CommunicationEventClerk OnDefineConnectionClerkEventForEachNewConnection();
         public delegate void OnEvent_PublishConnectionThread(Thread thread);
         private OnAcceptedNewConnectionEvent _publishAcceptedNewConnectionEvent;
-        private OnDefineConnectionClerkEvent _defineConnectionClerk;
+        private OnDefineConnectionClerkEventForEachNewConnection _defineConnectionClerk;
         private OnEvent_PublishConnectionThread _publishConnectionThread;
 
         private List<Thread> connectionThreads = new List<Thread> ();
@@ -45,11 +47,11 @@ namespace ChatApp.Server {
         }
 
         /// <summary>
-        /// Kann nur einmal registriert werden!
+        /// Kann nur einmal pro Thread registriert werden!
         /// </summary>
         /// <param name="_registerClerkEvent"></param>
         /// <exception cref="InvalidOperationException"></exception>
-        public void SubscribeTo_OnDefineConnectionClerkEvent(OnDefineConnectionClerkEvent _registerClerkEvent) {
+        public void SubscribeTo_OnDefineConnectionClerkEvent(OnDefineConnectionClerkEventForEachNewConnection _registerClerkEvent) {
             if (this._defineConnectionClerk != null) {
                 throw new InvalidOperationException("Eine offene Verbindung darf nur von einer Instanz kontrolliert werden.");
             }

@@ -1,4 +1,5 @@
 ﻿using ChatApp.Server;
+using ChatApp.Server.ConnectionManager;
 using System;
 using System.Text;
 using System.Threading;
@@ -8,16 +9,25 @@ namespace ChatApp.Server.Listener{
     internal class ConnectionManagerService {
         private LogPublisher msg = new LogPublisher();
         private ServerRunner serverRunner;
-        private ServerRunner.OnDefineConnectionClerkEvent _onEvent_DefineConnectionClerk;
+        private ServerRunner.OnDefineConnectionClerkEventForEachNewConnection _onEvent_DefineConnectionClerk;
         private ServerRunner.OnAcceptedNewConnectionEvent _onAcceptedNewConnectionEvent;
         private ServerRunner.OnEvent_PublishConnectionThread _onEvent_PublishConnectionThread;
+        private static ConnectionRegister register;
 
-        private ConnectionManagerService() { }
-        public ConnectionManagerService(ServerRunner serverRunner) {
+        private ConnectionManagerService() { 
+            
+        }
+        public ConnectionManagerService(ServerRunner serverRunner, ConnectionRegister register) {
             this.serverRunner = serverRunner;
-            _onEvent_DefineConnectionClerk = new ServerRunner.OnDefineConnectionClerkEvent(OnEvent_DefineConnectionClerk);
+            _onEvent_DefineConnectionClerk = new ServerRunner.OnDefineConnectionClerkEventForEachNewConnection(OnEvent_DefineConnectionClerk);
             _onAcceptedNewConnectionEvent = new ServerRunner.OnAcceptedNewConnectionEvent(OnEvent_AcceptedNewConnection);
             _onEvent_PublishConnectionThread = new ServerRunner.OnEvent_PublishConnectionThread(OnEvent_PublishStartedThread);
+
+            if (ConnectionManagerService.register != null) {
+                throw new InvalidOperationException("Es darf nur eine Instanz von Service geben.");
+            } else {
+                ConnectionManagerService.register = register;
+            }
         }
 
         public void Run() {
@@ -31,6 +41,9 @@ namespace ChatApp.Server.Listener{
 
         private void OnEvent_PublishStartedThread(Thread thread) {
             msg.Publish("neuer Thread für eine eben geöffnete Verbindung gestartet. ID=" + thread.ManagedThreadId);
+            Connection connection = new Connection();
+            connection.Thread = thread;
+            register.Add(connection);
         }
 
         private void OnEvent_AcceptedNewConnection() {

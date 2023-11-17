@@ -26,6 +26,7 @@ namespace ChatApp {
             //    // Running on the UI thread
             //    form.Label.Text = newText;
             //});
+            // Quelle: https://stackoverflow.com/questions/661561/how-do-i-update-the-gui-from-another-thread
             Text_Console_Output.Invoke((MethodInvoker)delegate {
                 // Running on the UI thread
                 Text_Console_Output.Text += message + "\r\n";

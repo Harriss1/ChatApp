@@ -5,20 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ChatApp.Server.Listener;
+using ChatApp.Server.ConnectionManager;
 
 namespace ChatApp.Server {
     internal class ServerController {
         private LogPublisher msg = new LogPublisher();
         private static ServerRunner serverRunner = new ServerRunner();
         private static ConnectionManagerService connectionManager;
+        static ConnectionRegister register = new ConnectionRegister();
         public ServerController() {
-
         }
 
         internal void Start() {
             serverRunner.StartServer(Config.ServerAddress, Config.ServerPort);
             msg.Publish("Started Server at " + Config.ServerAddress + ":" + Config.ServerPort);
-            connectionManager = new ConnectionManagerService(serverRunner);
+            connectionManager = new ConnectionManagerService(serverRunner, register);
             connectionManager.Run();
         }
 

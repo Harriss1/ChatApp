@@ -9,7 +9,7 @@ namespace ChatApp.Server.Clients {
         public int Id { get; set; }
         public string Name { get; set; }
         public ConnectionStatus ConnectionStatus { get; set; }
-        public string ipAddress { get; set; }
-        public List<ChatPartner> Partners { get; set; } // Vorsicht, darf nur Tiefe von 1 haben
+        public string IpAddress { get; set; }
+        public List<ChatRequest> ChatRequest { get; set; } // Vorsicht, darf nur Tiefe von 1 haben
     }
 }

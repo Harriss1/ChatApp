@@ -63,12 +63,14 @@
       <DependentUpon>ServerWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Server\Clients\ChatMessage.cs" />
-    <Compile Include="Server\Clients\ChatPartner.cs" />
+    <Compile Include="Server\Clients\ChatRequest.cs" />
     <Compile Include="Server\Clients\Client.cs" />
     <Compile Include="Server\Clients\ConnectionStatus.cs" />
     <Compile Include="Server\Clients\MessageType.cs" />
     <Compile Include="Server\CommunicationEventClerk.cs" />
-    <Compile Include="Server\ConnectionManagerService.cs" />
+    <Compile Include="Server\ConnectionManager\Connection.cs" />
+    <Compile Include="Server\ConnectionManager\ConnectionManagerService.cs" />
+    <Compile Include="Server\ConnectionManager\ConnectionRegister.cs" />
     <Compile Include="Server\LogPublisher.cs" />
     <Compile Include="Server\ServerController.cs" />
     <Compile Include="Server\ServerRunner.cs" />
