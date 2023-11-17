@@ -25,11 +25,30 @@ namespace ChatApp.Protocol {
             return true;
         }
 
+        private static bool HasValidContentNode(XmlDocument doc) {
+            try {
+                if (doc.DocumentElement.ChildNodes[1] == null) {
+                    PublishBaseValidationError("ChildNode[1] (Content) existiert nicht");
+                    return false;
+                }
+                if (!doc.DocumentElement.ChildNodes[1].Name.Equals(
+                    NodeDescription.Message.Content.NAME
+                    )) {
+                    PublishBaseValidationError("Second Sub-Node <Content> falscher Name");
+                    return false;
+                }
+            }
+            catch (Exception e) {
+                PublishBaseValidationError("Exception: " + e.Message);
+                return false;
+            }
+            return true;
+        }
+
         private static bool HasValidTypeNode(XmlDocument doc) {
             try {
-
                 if (doc.DocumentElement.ChildNodes[0] == null) {
-                    PublishBaseValidationError("ChildNode[0] existiert nicht");
+                    PublishBaseValidationError("ChildNode[0] (Type) existiert nicht");
                     return false;
                 }
                 if (!doc.DocumentElement.ChildNodes[0].Name.Equals(
@@ -38,7 +57,7 @@ namespace ChatApp.Protocol {
                     PublishBaseValidationError("First Sub-Node <Type> falscher Name");
                     return false;
                 }
-                string messageType = doc.DocumentElement.ChildNodes[0].InnerText;
+                string messageType = Selector.Type(doc);
                 if (!MessageType.Values().Contains(messageType)) {
                     PublishBaseValidationError("<Type> Wert ist kein gültiger Enum-Wert");
                     return false;
@@ -60,9 +79,7 @@ namespace ChatApp.Protocol {
                         PublishBaseValidationError("First node has not Name=Message");
                         return false;
                     }
-                    if (doc.DocumentElement.Attributes[
-                        NodeDescription.Message.PROTOCOLVERSION
-                        ].Value == null) {
+                    if (Selector.ProtocolVersion(doc) == null) {
                         PublishBaseValidationError("First node has not Attribute ProtocolVersion");
                         return false;
                     }

@@ -29,7 +29,7 @@ namespace ChatApp.Server.MessageMediator {
             ProtocolMessage doc = new ProtocolMessage();
             doc.CreateBaseMessage();
             ProtocolMessage test = new ProtocolMessage();
-            test.Create(doc.GetXml().OuterXml);
+            test.Load(doc.GetXml().OuterXml);
             //doc.Create(message);
             if (doc != null) {
                 if (!byteMessage.connection.HasDefinedClient()) {

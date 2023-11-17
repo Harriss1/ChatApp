@@ -10,14 +10,20 @@ namespace ChatApp.Protocol {
     internal class ProtocolMessage {
         private static LogPublisher msg = new LogPublisher();
         XmlDocument xmlDocument;
+        private string protocolVersion;
+        private string messageType;
+
         public ProtocolMessage() { }
         public XmlDocument GetXml() {
             return xmlDocument;
         }
-        public MessageType GetMessageType() {
-            return MessageType.UNDEFINED;
+        public string GetMessageType() {
+            return messageType;
         }
-        public ProtocolMessage Create(string message) {
+        public string GetProtocolVersion() {
+            return protocolVersion;
+        }
+        public ProtocolMessage Load(string message) {
             if(this.xmlDocument != null) {
                 msg.Publish("FEHLER Create(): Würde Daten überschreiben.");
                 return this;
@@ -34,6 +40,8 @@ namespace ChatApp.Protocol {
                 return null;
             }
             this.xmlDocument = doc;
+            messageType = Selector.Type(doc);
+            protocolVersion = Selector.ProtocolVersion(doc);
             return this;
         }
         public ProtocolMessage CreateBaseMessage() {

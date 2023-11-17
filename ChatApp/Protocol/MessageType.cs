@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Protocol {
     internal class MessageType {
-        private static string[] enumValues = 
-            {CHAT_MESSAGE, 
+        private static string[] enumValues = {
+            CHAT_MESSAGE, 
             LOGIN_REQUEST, 
-            UNDEFINED};
+            UNDEFINED
+        };
 
         public const string CHAT_MESSAGE = "ChatMessage";
         public const string UNDEFINED = "Undefined";
