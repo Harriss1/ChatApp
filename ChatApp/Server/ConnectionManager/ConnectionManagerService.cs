@@ -66,23 +66,26 @@ namespace ChatApp.Server.Listener{
         private bool On_CheckAbortTransmission() {
             return false;
         }
-        string mirrorMessage;
+        //string mirrorMessage;
         private byte[] On_CheckForBytesToSendLoopUntilAllSent() {
             msg.Publish("Prüfe ob Server Nachrichten zum versenden hat...");
             //if (mirrorMessage == null) {
             //    msg.Publish("[keine Nachrichten]");
             //    return null;
             //}
-            msg.Publish("Nachricht: " + mirrorMessage);
-            string message = mirrorMessage;
-            mirrorMessage = null;
+            //msg.Publish("Nachricht: " + mirrorMessage);
+            //string message = mirrorMessage;
+            //mirrorMessage = null;
             //return Encoding.ASCII.GetBytes(message);
             byte[] response = messageService.GetNextByteMessage(connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
             if (response == null) {
                 msg.Publish("[keine Nachrichten]");
                 return null;
+            } else {
+                msg.Publish("[Outbox Nachricht gefunden:]");
+                msg.Publish(ByteConverter.ToString(response, response.Length));
+                return response;
             }
-            return response;
             
         }
 
@@ -90,10 +93,9 @@ namespace ChatApp.Server.Listener{
             msg.Publish("Message received:");
             string message = Encoding.ASCII.GetString(bytes, 0, receivedBytes);
             msg.Publish(message);
-            mirrorMessage = message;
+            //mirrorMessage = message;
             messageService.ProcessBytes(bytes, receivedBytes, 
                 connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
-
         }
 
         private CommunicationEventClerk OnEvent_DefineConnectionClerk() {

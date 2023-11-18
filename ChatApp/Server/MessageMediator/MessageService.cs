@@ -17,7 +17,6 @@ namespace ChatApp.Server.MessageMediator {
         }
 
         public byte[] GetNextByteMessage(Connection connection) {
-            // was null on second iteration?
             ByteMessage response = PopNextOutboxByteMessage(connection);
             if (response == null) {
                 return null;
@@ -33,18 +32,23 @@ namespace ChatApp.Server.MessageMediator {
                 }
             }
             if (response != null) {
-                inboxByteMessageStack.Remove(response);
+                outboxByteMessageStack.Remove(response);
                 return response;
             }
             return null;
         }
 
         private void ProcessByteMessageStack(Connection connection) {
-            foreach(ByteMessage message in inboxByteMessageStack) {
+            List<ByteMessage> processedSegments = new List<ByteMessage>();
+            foreach (ByteMessage message in inboxByteMessageStack) {
                 if(message.connection == connection) {
                     // TODO Auf mehrere Segmente verteilte Nachrichten verarbeiten.
+                    processedSegments.Add(message);
                     ProcessSingleByteSegment(message, connection);
                 }
+            }
+            foreach (ByteMessage finished in processedSegments) {
+                inboxByteMessageStack.Remove(finished);
             }
         }
 
