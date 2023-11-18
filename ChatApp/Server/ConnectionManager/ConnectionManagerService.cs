@@ -69,14 +69,21 @@ namespace ChatApp.Server.Listener{
         string mirrorMessage;
         private byte[] On_CheckForBytesToSendLoopUntilAllSent() {
             msg.Publish("Prüfe ob Server Nachrichten zum versenden hat...");
-            if (mirrorMessage == null) {
-                msg.Publish("[keine Nachrichten]");
-                return null;
-            }
+            //if (mirrorMessage == null) {
+            //    msg.Publish("[keine Nachrichten]");
+            //    return null;
+            //}
             msg.Publish("Nachricht: " + mirrorMessage);
             string message = mirrorMessage;
             mirrorMessage = null;
-            return Encoding.ASCII.GetBytes(message);
+            //return Encoding.ASCII.GetBytes(message);
+            byte[] response = messageService.GetNextByteMessage(connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
+            if (response == null) {
+                msg.Publish("[keine Nachrichten]");
+                return null;
+            }
+            return response;
+            
         }
 
         private void On_ReceiveByteArray(byte[] bytes, int receivedBytes) {

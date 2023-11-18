@@ -45,9 +45,9 @@ namespace ChatApp.Protocol {
                 return null;
             }
             this.xmlDocument = doc;
-            messageType = Getter.Value.TypeText(doc);
-            protocolVersion = Getter.Value.ProtocolVersion(doc);
-            messageSource = Getter.Value.SourceText(doc);
+            messageType = Selector.Value.TypeText(doc);
+            protocolVersion = Selector.Value.ProtocolVersion(doc);
+            messageSource = Selector.Value.SourceText(doc);
             return this;
         }
         public ProtocolMessage CreateBaseMessage() {
@@ -57,24 +57,24 @@ namespace ChatApp.Protocol {
             }
             XmlDocument doc = new XmlDocument();
 
-            // RootNode = <Message protocolVersion="1">
+            // RootNode = <message protocolVersion="1">
             XmlNode root = doc.CreateElement(NodeDescription.Message.NAME);
             doc.AppendChild(root);
             XmlAttribute protocolVersion = doc.CreateAttribute(NodeDescription.Message.PROTOCOLVERSION);
             protocolVersion.Value = Config.ProtocolVersion;
             root.Attributes.Append(protocolVersion);
 
-            // 1. Node = <Source>clientRequest</source>
+            // 1. Node = <source>clientRequest</source>
             XmlNode messageSource = doc.CreateElement(NodeDescription.Message.Source.NAME);
             messageSource.InnerText = MessageSourceEnum.UNDEFINED.ToString();
             root.AppendChild(messageSource);
 
-            // 2. Node = <Type>Login</Type>
+            // 2. Node = <type>Login</Type>
             XmlNode messageType = doc.CreateElement(NodeDescription.Message.Type.NAME);
             messageType.InnerText = MessageTypeEnum.UNDEFINED.ToString();
             root.AppendChild(messageType);
 
-            // 3. Node = <Content>[variable structure with optional elements]</content>
+            // 3. Node = <content>[variable structure with optional elements]</content>
             XmlNode content = doc.CreateElement(NodeDescription.Message.Content.NAME);
             root.AppendChild(content);
 
@@ -82,5 +82,6 @@ namespace ChatApp.Protocol {
             this.xmlDocument=doc;
             return this;
         }
+
     }
 }

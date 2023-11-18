@@ -57,7 +57,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol\MessageSourceEnum.cs" />
-    <Compile Include="Protocol\Getter.cs" />
+    <Compile Include="Protocol\Selector.cs" />
     <Compile Include="Protocol\ProtocolMessage.cs" />
     <Compile Include="Protocol\NodeDescription.cs" />
     <Compile Include="Protocol\MessageTypeEnum.cs" />
@@ -79,6 +79,7 @@
     <Compile Include="Server\ConnectionManager\ConnectionRegister.cs" />
     <Compile Include="Server\LogPublisher.cs" />
     <Compile Include="Server\MessageMediator\ByteMessage.cs" />
+    <Compile Include="Server\MessageMediator\MessageCreator.cs" />
     <Compile Include="Server\MessageMediator\MessageService.cs" />
     <Compile Include="Protocol\ProtocolValidator.cs" />
     <Compile Include="Server\MessageMediator\RetainFlag.cs" />

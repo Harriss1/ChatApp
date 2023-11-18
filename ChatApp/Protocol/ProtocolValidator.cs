@@ -31,14 +31,14 @@ namespace ChatApp.Protocol {
 
         private static bool HasValidRootNode(XmlDocument doc) {
             try {
-                if (Getter.Node.Root(doc) != null) {
-                    if (!Getter.Value.RootNodeName(doc).Equals(
+                if (Selector.Node.Root(doc) != null) {
+                    if (!Selector.Value.RootNodeName(doc).Equals(
                         NodeDescription.Message.NAME
                         )) {
                         PublishBaseValidationError("First node has not Name=Message");
                         return false;
                     }
-                    if (Getter.Value.ProtocolVersion(doc) == null) {
+                    if (Selector.Value.ProtocolVersion(doc) == null) {
                         PublishBaseValidationError("First node has not Attribute ProtocolVersion");
                         return false;
                     }
@@ -57,17 +57,17 @@ namespace ChatApp.Protocol {
 
         private static bool HasValidSourceNode(XmlDocument doc) {
             try {
-                if (Getter.Node.Source(doc) == null) {
+                if (Selector.Node.Source(doc) == null) {
                     PublishBaseValidationError("ChildNode[0] (Source) existiert nicht");
                     return false;
                 }
-                if (!Getter.Value.SourceNodeName(doc).Equals(
+                if (!Selector.Value.SourceNodeName(doc).Equals(
                     NodeDescription.Message.Source.NAME
                     )) {
                     PublishBaseValidationError("First Sub-Node <Source> falscher Name");
                     return false;
                 }
-                string allowedMessageSources = Getter.Value.SourceText(doc);
+                string allowedMessageSources = Selector.Value.SourceText(doc);
                 if (!MessageSourceEnum.Values().Contains(allowedMessageSources)) {
                     PublishBaseValidationError("<Source> Wert ist kein gültiger Enum-Wert");
                     return false;
@@ -82,17 +82,17 @@ namespace ChatApp.Protocol {
 
         private static bool HasValidTypeNode(XmlDocument doc) {
             try {
-                if (Getter.Node.Type(doc) == null) {
+                if (Selector.Node.Type(doc) == null) {
                     PublishBaseValidationError("ChildNode[1] (Type) existiert nicht");
                     return false;
                 }
-                if (!Getter.Value.TypeNodeName(doc).Equals(
+                if (!Selector.Value.TypeNodeName(doc).Equals(
                     NodeDescription.Message.Type.NAME
                     )) {
                     PublishBaseValidationError("Zweiter Sub-Node <Type> falscher Name");
                     return false;
                 }
-                string allowedMessageTypes = Getter.Value.TypeText(doc);
+                string allowedMessageTypes = Selector.Value.TypeText(doc);
                 if (!MessageTypeEnum.Values().Contains(allowedMessageTypes)) {
                     PublishBaseValidationError("<Type> Wert ist kein gültiger Enum-Wert");
                     return false;
@@ -107,11 +107,11 @@ namespace ChatApp.Protocol {
 
         private static bool HasValidContentNode(XmlDocument doc) {
             try {
-                if (Getter.Node.Content(doc) == null) {
+                if (Selector.Node.Content(doc) == null) {
                     PublishBaseValidationError("ChildNode[2] (Content) existiert nicht");
                     return false;
                 }
-                if (!Getter.Value.ContentNodeName(doc).Equals(
+                if (!Selector.Value.ContentNodeName(doc).Equals(
                     NodeDescription.Message.Content.NAME
                     )) {
                     PublishBaseValidationError("Dritter Sub-Node <Content> falscher Name");
