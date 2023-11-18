@@ -56,10 +56,11 @@
     <Compile Include="Config.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Protocol\Selector.cs" />
+    <Compile Include="Protocol\MessageSourceEnum.cs" />
+    <Compile Include="Protocol\Getter.cs" />
     <Compile Include="Protocol\ProtocolMessage.cs" />
     <Compile Include="Protocol\NodeDescription.cs" />
-    <Compile Include="Protocol\MessageType.cs" />
+    <Compile Include="Protocol\MessageTypeEnum.cs" />
     <Compile Include="ServerWindow.cs">
       <SubType>Form</SubType>
     </Compile>

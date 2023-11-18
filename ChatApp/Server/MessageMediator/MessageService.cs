@@ -33,7 +33,7 @@ namespace ChatApp.Server.MessageMediator {
             //doc.Create(message);
             if (doc != null) {
                 if (!byteMessage.connection.HasDefinedClient()) {
-                    if(test.GetMessageType().Equals(MessageType.UNDEFINED)) {
+                    if(test.GetMessageType().Equals(MessageTypeEnum.UNDEFINED)) {
                         msg.Publish("FEHLER Nachrichten Typ ist nicht definiert");
                     }
                 }

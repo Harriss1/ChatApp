@@ -12,6 +12,7 @@ namespace ChatApp.Protocol {
         XmlDocument xmlDocument;
         private string protocolVersion;
         private string messageType;
+        private string messageSource;
 
         public ProtocolMessage() { }
         public XmlDocument GetXml() {
@@ -22,6 +23,9 @@ namespace ChatApp.Protocol {
         }
         public string GetProtocolVersion() {
             return protocolVersion;
+        }
+        public string GetSource() {
+            return messageSource;
         }
         public ProtocolMessage Load(string message) {
             if(this.xmlDocument != null) {
@@ -37,11 +41,13 @@ namespace ChatApp.Protocol {
                 return null;
             }
             if (!ProtocolValidator.IsBaseProtocolConform(doc)) {
+                msg.Publish("FEHLER XML INVALID: \r\n" + doc.OuterXml);
                 return null;
             }
             this.xmlDocument = doc;
-            messageType = Selector.Type(doc);
-            protocolVersion = Selector.ProtocolVersion(doc);
+            messageType = Getter.Value.TypeText(doc);
+            protocolVersion = Getter.Value.ProtocolVersion(doc);
+            messageSource = Getter.Value.SourceText(doc);
             return this;
         }
         public ProtocolMessage CreateBaseMessage() {
@@ -51,17 +57,24 @@ namespace ChatApp.Protocol {
             }
             XmlDocument doc = new XmlDocument();
 
+            // RootNode = <Message protocolVersion="1">
             XmlNode root = doc.CreateElement(NodeDescription.Message.NAME);
             doc.AppendChild(root);
-
             XmlAttribute protocolVersion = doc.CreateAttribute(NodeDescription.Message.PROTOCOLVERSION);
             protocolVersion.Value = Config.ProtocolVersion;
             root.Attributes.Append(protocolVersion);
 
+            // 1. Node = <Source>clientRequest</source>
+            XmlNode messageSource = doc.CreateElement(NodeDescription.Message.Source.NAME);
+            messageSource.InnerText = MessageSourceEnum.UNDEFINED.ToString();
+            root.AppendChild(messageSource);
+
+            // 2. Node = <Type>Login</Type>
             XmlNode messageType = doc.CreateElement(NodeDescription.Message.Type.NAME);
-            messageType.InnerText = MessageType.UNDEFINED.ToString();
+            messageType.InnerText = MessageTypeEnum.UNDEFINED.ToString();
             root.AppendChild(messageType);
 
+            // 3. Node = <Content>[variable structure with optional elements]</content>
             XmlNode content = doc.CreateElement(NodeDescription.Message.Content.NAME);
             root.AppendChild(content);
 
