@@ -77,7 +77,7 @@ namespace ChatApp.Server.Listener{
             //string message = mirrorMessage;
             //mirrorMessage = null;
             //return Encoding.ASCII.GetBytes(message);
-            byte[] response = messageService.GetNextByteMessage(connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
+            byte[] response = messageService.GetNextOutboxByteArray(connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
             if (response == null) {
                 msg.Publish("[keine Nachrichten]");
                 return null;
@@ -94,7 +94,7 @@ namespace ChatApp.Server.Listener{
             string message = Encoding.ASCII.GetString(bytes, 0, receivedBytes);
             msg.Publish(message);
             //mirrorMessage = message;
-            messageService.ProcessBytes(bytes, receivedBytes, 
+            messageService.AddByteArrayToInbox(bytes, receivedBytes, 
                 connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
         }
 

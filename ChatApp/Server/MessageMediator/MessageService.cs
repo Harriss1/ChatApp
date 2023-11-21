@@ -11,12 +11,12 @@ namespace ChatApp.Server.MessageMediator {
         List<ByteMessage> inboxByteMessageStack = new List<ByteMessage>();
         List<ByteMessage> outboxByteMessageStack = new List<ByteMessage>();
         LogPublisher msg = new LogPublisher();
-        public void ProcessBytes(byte[] data, int length, Connection connection) {
+        public void AddByteArrayToInbox(byte[] data, int length, Connection connection) {
             inboxByteMessageStack.Add(new ByteMessage(data, length, connection));
             ProcessByteMessageStack(connection);
         }
 
-        public byte[] GetNextByteMessage(Connection connection) {
+        public byte[] GetNextOutboxByteArray(Connection connection) {
             ByteMessage response = PopNextOutboxByteMessage(connection);
             if (response == null) {
                 return null;
@@ -63,7 +63,7 @@ namespace ChatApp.Server.MessageMediator {
                 if (!byteMessage.connection.HasDefinedClient()) {
                     if(test.GetMessageType().Equals(MessageTypeEnum.UNDEFINED)) {
                         msg.Publish("FEHLER Nachrichten Typ ist nicht definiert");
-                        ProtocolMessage msg2 = MessageCreator.CreateServerStatusResponse();
+                        ProtocolMessage msg2 = ServerMessageCreator.CreateServerStatusResponse();
                         string msg3 = msg2.GetXml().OuterXml;
                         ByteMessage byteMessage1 = new ByteMessage(ByteConverter.ToByteArray(msg3), msg3.Length, byteMessage.connection);
                         outboxByteMessageStack.Add(byteMessage1);

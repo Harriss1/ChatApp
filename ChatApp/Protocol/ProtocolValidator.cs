@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace ChatApp.Protocol {
+namespace ChatApp.Protocol.Engine {
     internal class ProtocolValidator {
         private static LogPublisher msg = new LogPublisher();
         internal static bool IsBaseProtocolConform(XmlDocument doc) {

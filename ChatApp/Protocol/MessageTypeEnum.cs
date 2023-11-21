@@ -16,21 +16,21 @@ namespace ChatApp.Protocol {
             LOGIN,
             LOGOUT,
             LOGOUT_ORDER,
-            STATUS_UPDATE,
+            STATUS_EXCHANGE,
             CHAT_REQUEST,
             CHAT_MESSAGE_TRANSMISSION_STATUS,
             CHAT_PARTNER_STATUS
         };
 
-        public const string UNDEFINED = "Undefined";
-        public const string CHAT_MESSAGE = "ChatMessage";
-        public const string CHAT_MESSAGE_TRANSMISSION_STATUS = "ChatMessageTransmissionStatus";
-        public const string LOGIN = "Login";
-        public const string LOGOUT = "Logout";
-        public const string LOGOUT_ORDER = "LogoutOrder";
-        public const string STATUS_UPDATE = "StatusUpdate";
-        public const string CHAT_REQUEST = "ChatRequest";
-        public const string CHAT_PARTNER_STATUS = "ChatPartnerStatus";
+        public const string UNDEFINED = "undefined";
+        public const string CHAT_MESSAGE = "chatMessage";
+        public const string CHAT_MESSAGE_TRANSMISSION_STATUS = "chatMessageTransmissionStatus";
+        public const string LOGIN = "login";
+        public const string LOGOUT = "logout";
+        public const string LOGOUT_ORDER = "logoutOrder";
+        public const string STATUS_EXCHANGE = "statusExchange";
+        public const string CHAT_REQUEST = "chatRequest";
+        public const string CHAT_PARTNER_STATUS = "chatPartnerStatus";
         // TODO FileSendRequest usw...
         public static List<string> Values() {
             List<string> values = new List<string>();

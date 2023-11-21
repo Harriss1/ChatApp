@@ -61,6 +61,7 @@
     <Compile Include="Protocol\ProtocolMessage.cs" />
     <Compile Include="Protocol\NodeDescription.cs" />
     <Compile Include="Protocol\MessageTypeEnum.cs" />
+    <Compile Include="Protocol\StatusCodeEnum.cs" />
     <Compile Include="ServerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -79,7 +80,7 @@
     <Compile Include="Server\ConnectionManager\ConnectionRegister.cs" />
     <Compile Include="Server\LogPublisher.cs" />
     <Compile Include="Server\MessageMediator\ByteMessage.cs" />
-    <Compile Include="Server\MessageMediator\MessageCreator.cs" />
+    <Compile Include="Server\MessageMediator\ServerMessageCreator.cs" />
     <Compile Include="Server\MessageMediator\MessageService.cs" />
     <Compile Include="Protocol\ProtocolValidator.cs" />
     <Compile Include="Server\MessageMediator\RetainFlag.cs" />

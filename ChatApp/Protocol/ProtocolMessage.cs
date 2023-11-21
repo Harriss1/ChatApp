@@ -5,81 +5,112 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using ChatApp.Protocol.Engine;
 
 namespace ChatApp.Protocol {
     internal class ProtocolMessage {
         private static LogPublisher msg = new LogPublisher();
-        XmlDocument xmlDocument;
+        XmlDocument document;
         private string protocolVersion;
         private string messageType;
         private string messageSource;
-
-        public ProtocolMessage() { }
+        private bool alreadySet = false;
+        public ProtocolMessage() { 
+            document = new XmlDocument();
+        }
+        private XmlElement Root() {
+            return document.DocumentElement;
+        }
+        private XmlNode Source() {
+            return Root().ChildNodes[0];
+        }
+        public void SetSourceType(string type) {
+            Source().InnerText = type;
+            this.messageSource = type;
+        }
+        private XmlNode Type() {
+            return Root().ChildNodes[1];
+        }
+        public XmlNode Content() {
+            return Root().ChildNodes[2];
+        }
+        public void AppendStatusCodeIntoContent(string statusCode) {
+            XmlNode statusCodeNode = document.CreateElement(NodeDescription.Message.Content.StatusCode.NAME);
+            statusCodeNode.InnerText = statusCode;
+            Content().AppendChild(statusCodeNode);
+        }
         public XmlDocument GetXml() {
-            return xmlDocument;
+            return document;
         }
         public string GetMessageType() {
             return messageType;
         }
+        public void SetMessageType(string messageType) {
+            Type().InnerText = messageType;
+            this.messageType = messageType;
+        }
         public string GetProtocolVersion() {
             return protocolVersion;
+        }
+        public void SetProtocolVersion(string version) {
+            this.protocolVersion = version;
+            Root().SetAttribute(NodeDescription.Message.PROTOCOLVERSION, version);
         }
         public string GetSource() {
             return messageSource;
         }
         public ProtocolMessage Load(string message) {
-            if(this.xmlDocument != null) {
-                msg.Publish("FEHLER Create(): Würde Daten überschreiben.");
+            if(alreadySet) {
+                msg.Publish("FEHLER Create(): Würde Daten überschreiben, bitte neue Instanz erzeugen.");
                 return this;
             }
-            XmlDocument doc = new XmlDocument();
+            XmlDocument loadedDocument = new XmlDocument();
             try {
-                doc.LoadXml(message);
+                loadedDocument.LoadXml(message);
             }
             catch (XmlException e) {
                 msg.Publish("FEHLER ProtocolMessage.Create(): XmlDocument-Bibliothek kann String nicht zu Dokument umwandeln: " + e.Message);
                 return null;
             }
-            if (!ProtocolValidator.IsBaseProtocolConform(doc)) {
-                msg.Publish("FEHLER XML INVALID: \r\n" + doc.OuterXml);
+            if (!ProtocolValidator.IsBaseProtocolConform(loadedDocument)) {
+                msg.Publish("FEHLER XML INVALID: \r\n" + loadedDocument.OuterXml);
                 return null;
             }
-            this.xmlDocument = doc;
-            messageType = Selector.Value.TypeText(doc);
-            protocolVersion = Selector.Value.ProtocolVersion(doc);
-            messageSource = Selector.Value.SourceText(doc);
+            this.document = loadedDocument;
+            messageType = Selector.Value.TypeText(loadedDocument);
+            protocolVersion = Selector.Value.ProtocolVersion(loadedDocument);
+            messageSource = Selector.Value.SourceText(loadedDocument);
+            alreadySet = true;
             return this;
         }
         public ProtocolMessage CreateBaseMessage() {
-            if (this.xmlDocument != null) {
+            if (alreadySet) {
                 msg.Publish("FEHLER Create(): Würde Daten überschreiben.");
                 return this;
             }
-            XmlDocument doc = new XmlDocument();
-
+            alreadySet = true;
             // RootNode = <message protocolVersion="1">
-            XmlNode root = doc.CreateElement(NodeDescription.Message.NAME);
-            doc.AppendChild(root);
-            XmlAttribute protocolVersion = doc.CreateAttribute(NodeDescription.Message.PROTOCOLVERSION);
+            XmlNode root = document.CreateElement(NodeDescription.Message.NAME);
+            document.AppendChild(root);
+            XmlAttribute protocolVersion = document.CreateAttribute(NodeDescription.Message.PROTOCOLVERSION);
             protocolVersion.Value = Config.ProtocolVersion;
             root.Attributes.Append(protocolVersion);
 
             // 1. Node = <source>clientRequest</source>
-            XmlNode messageSource = doc.CreateElement(NodeDescription.Message.Source.NAME);
+            XmlNode messageSource = document.CreateElement(NodeDescription.Message.Source.NAME);
             messageSource.InnerText = MessageSourceEnum.UNDEFINED.ToString();
             root.AppendChild(messageSource);
 
             // 2. Node = <type>Login</Type>
-            XmlNode messageType = doc.CreateElement(NodeDescription.Message.Type.NAME);
+            XmlNode messageType = document.CreateElement(NodeDescription.Message.Type.NAME);
             messageType.InnerText = MessageTypeEnum.UNDEFINED.ToString();
             root.AppendChild(messageType);
 
             // 3. Node = <content>[variable structure with optional elements]</content>
-            XmlNode content = doc.CreateElement(NodeDescription.Message.Content.NAME);
+            XmlNode content = document.CreateElement(NodeDescription.Message.Content.NAME);
             root.AppendChild(content);
 
-            msg.Publish("Created:\r\n" + doc.OuterXml);
-            this.xmlDocument=doc;
+            msg.Publish("Created:\r\n" + document.OuterXml);
             return this;
         }
 

@@ -5,20 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ChatApp.Protocol {
-    internal class MessageSourceEnum {
+    internal class StatusCodeEnum {
         private static string[] enumValues = {
             UNDEFINED,
-            CLIENT_REQUEST,
-            CLIENT_RESPONSE,
-            SERVER_REQUEST,
-            SERVER_RESPONSE
+            ONLINE,
+            OFFLINE,
+            MAINTENANCE
         };
 
         public const string UNDEFINED = "undefined";
-        public const string CLIENT_REQUEST = "clientRequest";
-        public const string CLIENT_RESPONSE = "clientResponse";
-        public const string SERVER_REQUEST = "serverRequest";
-        public const string SERVER_RESPONSE = "serverResponse";
+        public const string ONLINE = "online";
+        public const string OFFLINE = "offline";
+        public const string MAINTENANCE = "maintenance";
         public static List<string> Values() {
             List<string> values = new List<string>();
             foreach (string value in enumValues) {

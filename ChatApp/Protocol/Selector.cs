@@ -46,7 +46,6 @@ namespace ChatApp.Protocol {
             public static string TypeText(XmlDocument doc) {
                 return Node.Type(doc).InnerText;
             }
-
             internal static object ContentNodeName(XmlDocument doc) {
                 return Node.Content(doc).Name;
             }

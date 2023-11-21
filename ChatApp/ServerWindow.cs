@@ -20,12 +20,8 @@ namespace ChatApp {
         }
 
         private void OnEvent_AddConsoleMessage(string message) {
-            // Der Zugriff auf das Steuerelement Text_Console_Output erfolgte von einem anderen Thread als dem Thread, für den es erstellt wurde.
-            //Text_Console_Output.Text += message + "\r\n";
-            //form.Label.Invoke((MethodInvoker)delegate {
-            //    // Running on the UI thread
-            //    form.Label.Text = newText;
-            //});
+            // Fix: Der Zugriff auf das Steuerelement Text_Console_Output erfolgte von einem anderen
+            // Thread als dem Thread, für den es erstellt wurde.
             // Quelle: https://stackoverflow.com/questions/661561/how-do-i-update-the-gui-from-another-thread
             Text_Console_Output.Invoke((MethodInvoker)delegate {
                 // Running on the UI thread
@@ -44,17 +40,13 @@ namespace ChatApp {
         private void Button_Abort_Server_Click(object sender, EventArgs e) {
             server.Abort();
         }
-
-        private void ServerWindow_FormClosing(object sender, FormClosingEventArgs e) {
-            // erweiterter Code: https://stackoverflow.com/a/17796192
-            if (e.CloseReason == CloseReason.UserClosing) {
-                e.Cancel = true;
-                MessageBox.Show("Der Server wird im Hintergrund weiter ausgeführt.", "Information", MessageBoxButtons.OK);
-                this.Hide();
-            }
-        }
-
+        /// <summary>
+        /// Die Wiederherstellung und Re-Fokusierung des Server-Fensters wird im ChatWindow behandelt.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ServerWindow_FormClosing_1(object sender, FormClosingEventArgs e) {
+            // erweiterter Code: https://stackoverflow.com/a/17796192
             if (e.CloseReason == CloseReason.UserClosing) {
                 e.Cancel = true;
                 MessageBox.Show("Der Server wird im Hintergrund weiter ausgeführt.", "Information", MessageBoxButtons.OK);
