@@ -60,14 +60,7 @@ namespace ChatApp.Server.MessageMediator {
             incommingMessage.LoadAndValidate(doc.GetXml().OuterXml);
             //doc.Create(message);
             if (doc != null) {
-                if (!byteMessage.connection.HasDefinedClient()) {
-                    if(false && incommingMessage.GetMessageType().Equals(MessageTypeEnum.UNDEFINED)) {
-                        msg.Publish("Warnung: Request mit Nachrichten Typ 'UNDEFINED'");
-                        ProtocolMessage msg2 = ServerMessageCreator.CreateServerStatusResponse();
-                        string msg3 = msg2.GetXml().OuterXml;
-                        ByteMessage byteMessage1 = new ByteMessage(ByteConverter.ToByteArray(msg3), msg3.Length, byteMessage.connection);
-                        outboxByteMessageStack.Add(byteMessage1);
-                    }
+                if (!byteMessage.connection.HasDefinedClient()) {                    
                     switch (incommingMessage.GetMessageType()) {
                         case MessageTypeEnum.UNDEFINED:
                             msg.Publish("Warnung: Request mit Nachrichten Typ 'UNDEFINED'");
