@@ -10,12 +10,25 @@ using System.Windows.Forms;
 
 namespace ChatApp {
     public partial class ChatWindow : Form {
+        private ServerWindow serverWindow;
         public ChatWindow() {
             InitializeComponent();
         }
 
         private void Button_Server_View_Click(object sender, EventArgs e) {
-            ServerWindow serverWindow = new ServerWindow();
+            if (serverWindow == null) {
+                serverWindow = new ServerWindow();
+            }
+            else {
+                if (serverWindow.IsDisposed) {
+                    throw new NotImplementedException();
+                }
+                serverWindow.WindowState = FormWindowState.Normal;
+                serverWindow.BringToFront();
+                serverWindow.Focus();
+                return;
+            }
+            
             serverWindow.StartPosition = FormStartPosition.Manual;
 
             // Position relative to the right of Main Window

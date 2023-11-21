@@ -24,18 +24,18 @@
         /// </summary>
         private void InitializeComponent() {
             this.tableLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.Button_Send_Message = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.Button_Server_View = new System.Windows.Forms.Button();
             this.Text_Connection_Status = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.Text_Server_Ip = new System.Windows.Forms.TextBox();
             this.Button_Login = new System.Windows.Forms.Button();
             this.Text_Username = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.Text_Message_Input = new System.Windows.Forms.TextBox();
-            this.Button_Send_Message = new System.Windows.Forms.Button();
-            this.Text_Chat_Partner = new System.Windows.Forms.TextBox();
-            this.Button_Request_Chat_Partner = new System.Windows.Forms.Button();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.Button_Request_Chat_Partner = new System.Windows.Forms.Button();
+            this.Text_Chat_Partner = new System.Windows.Forms.TextBox();
+            this.Text_Message_Input = new System.Windows.Forms.TextBox();
             this.Text_Chatmessages_Placeholder = new System.Windows.Forms.TextBox();
             this.tableLayout.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -70,6 +70,18 @@
             this.tableLayout.Size = new System.Drawing.Size(800, 450);
             this.tableLayout.TabIndex = 0;
             // 
+            // Button_Send_Message
+            // 
+            this.Button_Send_Message.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_Send_Message.Location = new System.Drawing.Point(3, 423);
+            this.Button_Send_Message.Name = "Button_Send_Message";
+            this.Button_Send_Message.Size = new System.Drawing.Size(794, 24);
+            this.Button_Send_Message.TabIndex = 4;
+            this.Button_Send_Message.Text = "Senden";
+            this.Button_Send_Message.UseVisualStyleBackColor = true;
+            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
@@ -81,7 +93,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(789, 34);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
@@ -119,7 +131,7 @@
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tableLayoutPanel2.Controls.Add(this.textBox1, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.Text_Server_Ip, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.Button_Login, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.Text_Username, 0, 0);
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 3);
@@ -128,6 +140,19 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(794, 34);
             this.tableLayoutPanel2.TabIndex = 2;
+            // 
+            // Text_Server_Ip
+            // 
+            this.Text_Server_Ip.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Text_Server_Ip.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.Text_Server_Ip.Font = new System.Drawing.Font("Cascadia Mono Light", 10F);
+            this.Text_Server_Ip.Location = new System.Drawing.Point(360, 3);
+            this.Text_Server_Ip.Name = "Text_Server_Ip";
+            this.Text_Server_Ip.Size = new System.Drawing.Size(351, 23);
+            this.Text_Server_Ip.TabIndex = 2;
+            this.Text_Server_Ip.Text = "(Server-IP eingeben)";
             // 
             // Button_Login
             // 
@@ -151,18 +176,48 @@
             this.Text_Username.TabIndex = 1;
             this.Text_Username.Text = "(Benutzername eingeben)";
             // 
-            // textBox1
+            // tableLayoutPanel3
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tableLayoutPanel3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.textBox1.Font = new System.Drawing.Font("Cascadia Mono Light", 10F);
-            this.textBox1.Location = new System.Drawing.Point(360, 3);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(351, 23);
-            this.textBox1.TabIndex = 2;
-            this.textBox1.Text = "(Server-IP eingeben)";
+            this.tableLayoutPanel3.ColumnCount = 2;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.Controls.Add(this.Button_Request_Chat_Partner, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.Text_Chat_Partner, 0, 0);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 80);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 1;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(800, 30);
+            this.tableLayoutPanel3.TabIndex = 3;
+            // 
+            // Button_Request_Chat_Partner
+            // 
+            this.Button_Request_Chat_Partner.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_Request_Chat_Partner.Location = new System.Drawing.Point(403, 3);
+            this.Button_Request_Chat_Partner.Name = "Button_Request_Chat_Partner";
+            this.Button_Request_Chat_Partner.Size = new System.Drawing.Size(394, 24);
+            this.Button_Request_Chat_Partner.TabIndex = 3;
+            this.Button_Request_Chat_Partner.Text = "Chat Anfragen";
+            this.Button_Request_Chat_Partner.UseVisualStyleBackColor = true;
+            // 
+            // Text_Chat_Partner
+            // 
+            this.Text_Chat_Partner.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Text_Chat_Partner.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.Text_Chat_Partner.Font = new System.Drawing.Font("Cascadia Mono Light", 10F);
+            this.Text_Chat_Partner.Location = new System.Drawing.Point(3, 3);
+            this.Text_Chat_Partner.Name = "Text_Chat_Partner";
+            this.Text_Chat_Partner.Size = new System.Drawing.Size(394, 23);
+            this.Text_Chat_Partner.TabIndex = 2;
+            this.Text_Chat_Partner.Text = "(Benutzername des Chatpartner eingeben)";
             // 
             // Text_Message_Input
             // 
@@ -178,61 +233,6 @@
             this.Text_Message_Input.Size = new System.Drawing.Size(794, 94);
             this.Text_Message_Input.TabIndex = 4;
             this.Text_Message_Input.Text = "(neue Nachricht verfassen)";
-            // 
-            // Button_Send_Message
-            // 
-            this.Button_Send_Message.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_Send_Message.Location = new System.Drawing.Point(3, 423);
-            this.Button_Send_Message.Name = "Button_Send_Message";
-            this.Button_Send_Message.Size = new System.Drawing.Size(794, 24);
-            this.Button_Send_Message.TabIndex = 4;
-            this.Button_Send_Message.Text = "Senden";
-            this.Button_Send_Message.UseVisualStyleBackColor = true;
-            // 
-            // Text_Chat_Partner
-            // 
-            this.Text_Chat_Partner.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.Text_Chat_Partner.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.Text_Chat_Partner.Font = new System.Drawing.Font("Cascadia Mono Light", 10F);
-            this.Text_Chat_Partner.Location = new System.Drawing.Point(3, 3);
-            this.Text_Chat_Partner.Name = "Text_Chat_Partner";
-            this.Text_Chat_Partner.Size = new System.Drawing.Size(394, 23);
-            this.Text_Chat_Partner.TabIndex = 2;
-            this.Text_Chat_Partner.Text = "(Benutzername des Chatpartner eingeben)";
-            // 
-            // Button_Request_Chat_Partner
-            // 
-            this.Button_Request_Chat_Partner.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_Request_Chat_Partner.Location = new System.Drawing.Point(403, 3);
-            this.Button_Request_Chat_Partner.Name = "Button_Request_Chat_Partner";
-            this.Button_Request_Chat_Partner.Size = new System.Drawing.Size(394, 24);
-            this.Button_Request_Chat_Partner.TabIndex = 3;
-            this.Button_Request_Chat_Partner.Text = "Chat Anfragen";
-            this.Button_Request_Chat_Partner.UseVisualStyleBackColor = true;
-            // 
-            // tableLayoutPanel3
-            // 
-            this.tableLayoutPanel3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel3.ColumnCount = 2;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Controls.Add(this.Button_Request_Chat_Partner, 1, 0);
-            this.tableLayoutPanel3.Controls.Add(this.Text_Chat_Partner, 0, 0);
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 80);
-            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 1;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(800, 30);
-            this.tableLayoutPanel3.TabIndex = 3;
             // 
             // Text_Chatmessages_Placeholder
             // 
@@ -278,7 +278,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button Button_Login;
         private System.Windows.Forms.TextBox Text_Username;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox Text_Server_Ip;
         private System.Windows.Forms.TextBox Text_Message_Input;
         private System.Windows.Forms.Button Button_Send_Message;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
