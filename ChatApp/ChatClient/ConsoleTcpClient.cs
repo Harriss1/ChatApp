@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ChatApp.ChatClient {
-    internal class ChatClient {
+    internal class ConsoleTcpClient {
         /// <summary>
         /// Senden einer Nachricht an eine spezifische IP-Adresse, Port
         /// </summary>

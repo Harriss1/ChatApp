@@ -81,6 +81,7 @@
             this.Button_Send_Message.TabIndex = 4;
             this.Button_Send_Message.Text = "Senden";
             this.Button_Send_Message.UseVisualStyleBackColor = true;
+            this.Button_Send_Message.Click += new System.EventHandler(this.Button_Send_Message_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -162,6 +163,7 @@
             this.Button_Login.TabIndex = 0;
             this.Button_Login.Text = "Anmelden";
             this.Button_Login.UseVisualStyleBackColor = true;
+            this.Button_Login.Click += new System.EventHandler(this.Button_Login_Click);
             // 
             // Text_Username
             // 
@@ -233,6 +235,7 @@
             this.Text_Message_Input.Size = new System.Drawing.Size(794, 94);
             this.Text_Message_Input.TabIndex = 4;
             this.Text_Message_Input.Text = "(neue Nachricht verfassen)";
+            this.Text_Message_Input.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Text_Message_Input_MouseDown);
             // 
             // Text_Chatmessages_Placeholder
             // 

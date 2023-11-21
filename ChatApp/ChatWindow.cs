@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatApp.ChatClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -40,6 +41,23 @@ namespace ChatApp {
             serverWindow.Location = PointToScreen(new Point(chatWindow.Location.X + xOffset, chatWindow.Location.Y-30));
             
             serverWindow.Show();
+        }
+
+        private void Button_Login_Click(object sender, EventArgs e) {
+            
+        }
+
+        private void Button_Send_Message_Click(object sender, EventArgs e) {
+            TcpClient client = new TcpClient();
+            client.Send("127.0.0.1", Config.ServerPort, Text_Message_Input.Text);
+            Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
+            Text_Message_Input.Text = "";
+        }
+
+        private void Text_Message_Input_MouseDown(object sender, MouseEventArgs e) {
+            if (Text_Message_Input.Text.Equals("(neue Nachricht verfassen)")){
+                Text_Message_Input.Text = "";
+            }
         }
     }
 }

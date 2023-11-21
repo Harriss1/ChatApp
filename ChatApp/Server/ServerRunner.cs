@@ -27,13 +27,14 @@ namespace ChatApp.Server {
         private OnAcceptedNewConnectionEvent _publishAcceptedNewConnectionEvent;
         private OnDefineConnectionClerkEventForEachNewConnection _defineConnectionClerk;
         private OnEvent_PublishConnectionThread _publishConnectionThread;
+        private static LogPublisher log = new LogPublisher();
 
         private List<Thread> connectionThreads = new List<Thread> ();
         public ServerRunner() {
         }
 
         public void StartServer(string ipAddress, string port) {
-            System.Console.WriteLine("Starting server at: " + ipAddress + ":" + port);            
+            log.Debug("Starting server at: " + ipAddress + ":" + port);            
             tcpServer = new TcpServer();
             tcpServer.StartAndListen(ipAddress,port);
         }
@@ -64,18 +65,20 @@ namespace ChatApp.Server {
         /// </summary>
         public void AcceptConnections() {
             if (_publishAcceptedNewConnectionEvent == null) {
-                Console.WriteLine("Warnung: NewConnectionEvent ohne Subscriber");
+                log.Debug("Warnung: NewConnectionEvent ohne Subscriber");
             }
-            Console.WriteLine("ThreadID ServerManager.AcceptConnections = " + Thread.CurrentThread.ManagedThreadId);
-            System.Console.WriteLine("ThreadCounter: " + threadCounter++);
+            log.Debug("[ServerRunner] ThreadID ServerManager.AcceptConnections = " + Thread.CurrentThread.ManagedThreadId);
+            log.Debug("[ServerRunner] ThreadCounter: " + threadCounter++);
 
             // Starte die eigene Methode bei Erhalt des Callback-Events nach erfolgten Accept (ähnlich einer Rekursion)           
             TcpServer.ConnectionAcceptedCallback _newConnectionAcceptedCallback = new TcpServer.ConnectionAcceptedCallback(AcceptConnections);
+            log.Debug("[ServerRunner] Zeile 74");
             _publishAcceptedNewConnectionEvent(); // notwendig um immer einen neuen Callback zu erstellen, welcher immer einen neuen Clerk haben.
-
+            log.Debug("[ServerRunner] NewConnectionEvent() signaled");
             CommunicationEventClerk clerk = GetClerk();
             Thread serverHandler = new Thread(() => tcpServer.Accept(_newConnectionAcceptedCallback, clerk));
             serverHandler.Start();
+            log.Debug("[ServerRunner] einzelner Accept-Thread gestartet");
             connectionThreads.Add(serverHandler);
             if (_publishConnectionThread != null)
                 _publishConnectionThread(serverHandler);
@@ -103,7 +106,7 @@ namespace ChatApp.Server {
         public bool GracefullyShutdown() {
             foreach (Thread connection in connectionThreads) {
                 if(connection.IsAlive) {
-                    Console.WriteLine("Warnung: Gracefully Shutdown nicht möglich, Thread einer Verbindung ist noch offen.");
+                    log.Debug("Warnung: Gracefully Shutdown nicht möglich, Thread einer Verbindung ist noch offen.");
                     return false;
                 }
             }

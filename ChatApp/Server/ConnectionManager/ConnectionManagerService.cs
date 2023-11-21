@@ -34,7 +34,7 @@ namespace ChatApp.Server.Listener{
             serverRunner.SubscribeTo_OnNewConnectionEvent(_onAcceptedNewConnectionEvent);
             serverRunner.SubscribeTo_PublishConnectionThread(_onEvent_PublishConnectionThread);
             serverRunner.AcceptConnections();
-            msg.Publish("AcceptConnections ThreadRunner gestarted");
+            msg.Publish("AcceptConnections ThreadRunner Start erfolgreich abgeschlossen und ersten wartenden Socket im Thread geöffnet.");
         }
 
         public void ShutdownAllConnections() {
@@ -55,6 +55,7 @@ namespace ChatApp.Server.Listener{
 
         private void OnEvent_AcceptedNewConnection() {
             msg.Publish("Bereite Verbindungsempfang vor...");
+            msg.Publish("[ConnectionManagerService] AcceptedNewConnection Event empfangen");
             // Nach jedem Verbindungsaufbau ist ein neuer ConnectionClerk notwendig.
             serverRunner.SubscribeTo_OnDefineConnectionClerkEvent(_onEvent_DefineConnectionClerk);
         }

@@ -10,13 +10,15 @@ namespace ChatApp.Server.MessageMediator {
     internal class MessageService {
         List<ByteMessage> inboxByteMessageStack = new List<ByteMessage>();
         List<ByteMessage> outboxByteMessageStack = new List<ByteMessage>();
-        LogPublisher msg = new LogPublisher();
+        LogPublisher log = new LogPublisher("MessageService");
         public void AddByteArrayToInbox(byte[] data, int length, Connection connection) {
+            log.Debug("AddByteArrayToInbox");
             inboxByteMessageStack.Add(new ByteMessage(data, length, connection));
             ProcessByteMessageStack(connection);
         }
 
         public byte[] GetNextOutboxByteArray(Connection connection) {
+            log.Debug("GetNextOutboxByteArray");
             ByteMessage response = PopNextOutboxByteMessage(connection);
             if (response == null) {
                 return null;
@@ -53,6 +55,7 @@ namespace ChatApp.Server.MessageMediator {
         }
 
         private void ProcessSingleByteSegment(ByteMessage byteMessage, Connection connection) {
+            log.Debug("ProcessSingleByteSegment");
             String message = ByteConverter.ToString(byteMessage.Data, byteMessage.Length);
             ProtocolMessage doc = new ProtocolMessage();
             doc.CreateBaseMessage();
@@ -63,7 +66,7 @@ namespace ChatApp.Server.MessageMediator {
                 if (!byteMessage.connection.HasDefinedClient()) {                    
                     switch (incommingMessage.GetMessageType()) {
                         case MessageTypeEnum.UNDEFINED:
-                            msg.Publish("Warnung: Request mit Nachrichten Typ 'UNDEFINED'");
+                            log.Publish("Warnung: Request mit Nachrichten Typ 'UNDEFINED'");
                             ProtocolMessage statusResponseXml = ServerMessageCreator.CreateServerStatusResponse();
                             string xmlAsString = statusResponseXml.GetXml().OuterXml;
                             ByteMessage outboxByteMessage = new ByteMessage(
@@ -73,7 +76,7 @@ namespace ChatApp.Server.MessageMediator {
                         case MessageTypeEnum.LOGIN:
                             string username = "[nicht extrahiert]";
                             username = incommingMessage.GetSenderUsername();
-                            msg.Publish("Loginversuch von username="+username);
+                            log.Publish("Loginversuch von username="+username);
                             break;
                         default:
                             break;

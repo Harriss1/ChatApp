@@ -13,6 +13,7 @@ namespace ChatApp.Server.Listener {
         private static bool alreadyStarted = false;
 
         public delegate void ConnectionAcceptedCallback();
+        private LogPublisher log = new LogPublisher();
         
         public TcpServer() {
         }
@@ -57,9 +58,11 @@ namespace ChatApp.Server.Listener {
                 // Länge der Warteliste für Anfragen, die versch. Clienten stellen.
                 // Es wird je Durchlauf nur ein Client abgearbeitet
                 this.listener.Listen(maxRequestLimit);
+
+                log.Debug("[TcpServer] Server Socket geöffnet");
             }
             catch (Exception e) {
-                System.Console.WriteLine(e);
+                log.Debug(e.ToString());
             }
         }
         /// <summary>
@@ -69,35 +72,36 @@ namespace ChatApp.Server.Listener {
             this.listener.Close(); // Entbindet alle Ressourcen für den aktuellen Socket
             this.listener.Dispose(); // Entbindet alle Ressourcen für die aktuelle listener-Instanz
             TcpServer.alreadyStarted = false;
-            Console.WriteLine("Socket Shutdown completed");
+            log.Debug("Socket Shutdown completed");
         }
         public void Accept(ConnectionAcceptedCallback _newConnectionEstablishedCallback, CommunicationEventClerk clerk) {
             try {
                 // Programm stoppt hier bis eine Verbindung aufgebaut wird.
-                Console.WriteLine("Waiting for a connection...");
+                log.Debug("[TcpServer] Stopping Thread " + Thread.CurrentThread.ManagedThreadId+
+                    " and waiting for a connection...");
                 Socket handler = this.listener.Accept();
+                log.Debug("[TcpServer] Resuming Thread " + Thread.CurrentThread.ManagedThreadId);
                 // Der Zugriff auf das Steuerelement Text_Console_Output erfolgte von einem anderen Thread als dem Thread, für den es erstellt wurde.
                 _newConnectionEstablishedCallback();
-                Console.WriteLine("connection established in TCPserver");
+                log.Debug("[TcpServer] connection established in TCPserver");
                 bool closeConnection = false;
                 closeConnection = clerk.PublishEvent_CheckForCancelConnection();
                 while (!closeConnection) {
                     
                     string receivedData = ReceiveText(handler, clerk);
-                    Console.WriteLine("Wait 1000");
-
-                    System.Console.WriteLine("Kontrolpunkt 3");
+                    log.Debug("[TcpServer] Kontrolpunkt 3"); 
+                    log.Debug("[TcpServer] Wait 1000");
                     System.Threading.Thread.Sleep(1000);
 
                     // bug
-                    System.Console.WriteLine("Kontrolpunkt 4: erster Callback CheckForBytesToSend");
+                    log.Debug("[TcpServer] Kontrolpunkt 4: erster Callback CheckForBytesToSend");
                     byte[] bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
 
                     while (bytesToSend != null && bytesToSend.Length > 0) {
 
-                        Console.WriteLine("Sending bytes...");
+                        log.Debug("Sending bytes...");
                         handler.Send(bytesToSend);
-                        System.Console.WriteLine("Kontrolpunkt 5: Loop Callback von CheckForBytesToSend");
+                        log.Debug("Kontrolpunkt 5: Loop Callback von CheckForBytesToSend");
                         bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
                     }
                     if (CheckTextForQuitMessage(receivedData)
@@ -110,7 +114,7 @@ namespace ChatApp.Server.Listener {
                 handler.Close();
             }
             catch (Exception e) {
-                Console.WriteLine(e.ToString());
+                log.Debug(e.ToString());
             }
         }
 
@@ -136,21 +140,21 @@ namespace ChatApp.Server.Listener {
             bool bytesToReceiveExist = true;
             // Bug
             bool shouldCancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
-            System.Console.WriteLine("receive loop start");
+            log.Debug("receive loop start");
             while (bytesToReceiveExist && !shouldCancelTransmission) {
-                System.Console.WriteLine("Kontrolpunkt 0-1");
+                log.Debug("Kontrolpunkt 0-1");
                 
                 bytes = new byte[1024];
                 int receivedBytesCount = handler.Receive(bytes);
-                System.Console.WriteLine("Kontrolpunkt 0-2");
+                log.Debug("Kontrolpunkt 0-2");
                 clerk.PublishEvent_ReceiveByteArray(bytes, receivedBytesCount);
-                System.Console.WriteLine("Kontrolpunkt 1");
+                log.Debug("Kontrolpunkt 1");
                 receivedData += Encoding.ASCII.GetString(bytes, 0, receivedBytesCount);
-                Console.WriteLine("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
+                log.Debug("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
                 //if (receivedData.IndexOf("<EOF>") > -1) {
                 //    endOfFileReached = true;
                 //}
-                Console.WriteLine("Received Bytes=" + receivedBytesCount);
+                log.Debug("Received Bytes=" + receivedBytesCount);
 
                 int availableBytes = handler.Available;
                 if (availableBytes <= 0) {
@@ -158,18 +162,18 @@ namespace ChatApp.Server.Listener {
                     // Achtung: Falls viele Datenpakete auf einmal geschickt werden, ist auch ein EndOfTransmission nötig
                     // Ansonsten werden die Bytes direkt an die jetzige Sendung angehangen :)
                 }
-                System.Console.WriteLine("Kontrolpunkt 2");
+                log.Debug("Kontrolpunkt 2");
                 shouldCancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
-                System.Console.WriteLine("Kontrolpunkt 2-1");
+                log.Debug("Kontrolpunkt 2-1");
                                  
             }
-            System.Console.WriteLine("Kontrolpunkt 2-2");
-            Console.WriteLine("Text received : {0}", receivedData);
+            log.Debug("Kontrolpunkt 2-2");
+            log.Debug("Text received : " + receivedData);
             // ReceiveText sollte nicht zweimal ausgeführt werden, beim zweiten mal kam nix zurück...
             //byte[] msg = Encoding.ASCII.GetBytes(receivedData);
             //handler.Send(msg); //könnte auskommentiert werden.
 
-            System.Console.WriteLine("Kontrolpunkt 2-3");
+            log.Debug("Kontrolpunkt 2-3");
             return receivedData;
         }
     }
