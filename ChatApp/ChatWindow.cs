@@ -19,10 +19,13 @@ namespace ChatApp {
             if (serverWindow == null) {
                 serverWindow = new ServerWindow();
             }
-            else {
-                if (serverWindow.IsDisposed) {
-                    throw new NotImplementedException();
-                }
+            if (serverWindow.IsDisposed) {
+                throw new NotImplementedException();
+            }
+            if (!serverWindow.Visible) {
+                serverWindow.Show();
+            } else {
+                
                 serverWindow.WindowState = FormWindowState.Normal;
                 serverWindow.BringToFront();
                 serverWindow.Focus();

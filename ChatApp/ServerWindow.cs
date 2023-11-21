@@ -44,5 +44,22 @@ namespace ChatApp {
         private void Button_Abort_Server_Click(object sender, EventArgs e) {
             server.Abort();
         }
+
+        private void ServerWindow_FormClosing(object sender, FormClosingEventArgs e) {
+            // erweiterter Code: https://stackoverflow.com/a/17796192
+            if (e.CloseReason == CloseReason.UserClosing) {
+                e.Cancel = true;
+                MessageBox.Show("Der Server wird im Hintergrund weiter ausgeführt.", "Information", MessageBoxButtons.OK);
+                this.Hide();
+            }
+        }
+
+        private void ServerWindow_FormClosing_1(object sender, FormClosingEventArgs e) {
+            if (e.CloseReason == CloseReason.UserClosing) {
+                e.Cancel = true;
+                MessageBox.Show("Der Server wird im Hintergrund weiter ausgeführt.", "Information", MessageBoxButtons.OK);
+                this.Hide();
+            }
+        }
     }
 }

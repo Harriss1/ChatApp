@@ -130,6 +130,7 @@
             this.Controls.Add(this.tableLayout);
             this.Name = "ServerWindow";
             this.Text = "Server";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ServerWindow_FormClosing_1);
             this.tableLayout.ResumeLayout(false);
             this.tableLayout.PerformLayout();
             this.Panel_Controls.ResumeLayout(false);
