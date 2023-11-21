@@ -10,11 +10,15 @@ namespace ChatApp.Server.MessageMediator {
 
         public static ProtocolMessage CreateServerStatusResponse() {
             ProtocolMessage statusResponse = (new ProtocolMessage()).CreateBaseMessage();
+
             string typeString = MessageTypeEnum.STATUS_EXCHANGE;
-            string sourceString = MessageSourceEnum.SERVER_RESPONSE;
             statusResponse.SetMessageType(typeString);
+
+            string sourceString = MessageSourceEnum.SERVER_RESPONSE;
             statusResponse.SetSourceType(sourceString);
+
             statusResponse.SetProtocolVersion(Config.ProtocolVersion);
+            
             statusResponse.AppendStatusCodeIntoContent(StatusCodeEnum.ONLINE);
             return statusResponse;
         }

@@ -21,8 +21,16 @@ namespace ChatApp.Protocol {
             public static XmlNode Type(XmlDocument doc) {
                 return Root(doc).ChildNodes[1];
             }
-            public static XmlNode Content(XmlDocument doc) {
+            public static XmlNode ContentNode(XmlDocument doc) {
                 return Root(doc).ChildNodes[2];
+            }
+            public class Content {
+                public static XmlNode Sender(XmlDocument doc) {
+                    return ContentNode(doc).ChildNodes[0];
+                }
+                public static XmlNode ServerStatusCode(XmlDocument doc) {
+                    return ContentNode(doc).ChildNodes[0];
+                }
             }
         }
         public class Value {
@@ -47,10 +55,10 @@ namespace ChatApp.Protocol {
                 return Node.Type(doc).InnerText;
             }
             internal static object ContentNodeName(XmlDocument doc) {
-                return Node.Content(doc).Name;
+                return Node.ContentNode(doc).Name;
             }
             internal static object ContentText(XmlDocument doc) {
-                return Node.Content(doc).InnerText;
+                return Node.ContentNode(doc).InnerText;
             }
 
         }

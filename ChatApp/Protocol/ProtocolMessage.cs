@@ -35,10 +35,37 @@ namespace ChatApp.Protocol {
             return Root().ChildNodes[2];
         }
         public void AppendStatusCodeIntoContent(string statusCode) {
-            XmlNode statusCodeNode = document.CreateElement(NodeDescription.Message.Content.StatusCode.NAME);
-            statusCodeNode.InnerText = statusCode;
-            Content().AppendChild(statusCodeNode);
+            string nodeName = NodeDescription.Message.Content.StatusCode.NAME;        
+            AppendNewContentChild(nodeName, statusCode);
         }
+        internal string GetSenderUsername() {
+            foreach (XmlNode node in Content().ChildNodes) {
+                if (node.Name.Equals(NodeDescription.Message.Content.Sender.NAME)) {
+                    return node.InnerText;
+                }
+            }
+            return null;
+        }
+        internal void AppendSenderIntoContent(string username) {
+            string nodeName = NodeDescription.Message.Content.Sender.NAME;
+            AppendNewContentChild(nodeName, username);
+        }
+        private void AppendNewContentChild(string nodeName, string innerText) {
+            ThrowIfContentChildNodeExists(nodeName);
+
+            XmlNode newNode = document.CreateElement(nodeName);
+            newNode.InnerText = innerText;
+            Content().AppendChild(newNode);
+        }
+
+        private void ThrowIfContentChildNodeExists(string nodeDescriptionName) {
+            foreach (XmlNode node in Content().ChildNodes) {
+                if (node.Name.Equals(NodeDescription.Message.Content.Sender.NAME)) {
+                    throw new InvalidOperationException(nodeDescriptionName+ " bereits angefügt");
+                }
+            }
+        }
+
         public XmlDocument GetXml() {
             return document;
         }
@@ -59,7 +86,7 @@ namespace ChatApp.Protocol {
         public string GetSource() {
             return messageSource;
         }
-        public ProtocolMessage Load(string message) {
+        public ProtocolMessage LoadAndValidate(string message) {
             if(alreadySet) {
                 msg.Publish("FEHLER Create(): Würde Daten überschreiben, bitte neue Instanz erzeugen.");
                 return this;
@@ -76,6 +103,7 @@ namespace ChatApp.Protocol {
                 msg.Publish("FEHLER XML INVALID: \r\n" + loadedDocument.OuterXml);
                 return null;
             }
+            
             this.document = loadedDocument;
             messageType = Selector.Value.TypeText(loadedDocument);
             protocolVersion = Selector.Value.ProtocolVersion(loadedDocument);

@@ -9,6 +9,72 @@ using System.Xml;
 namespace ChatApp.Protocol.Engine {
     internal class ProtocolValidator {
         private static LogPublisher msg = new LogPublisher();
+
+        /// <summary>
+        /// Eine Nachricht hat Protokoll-konformenen Content falls:
+        /// # source: client
+        /// type: login
+        /// content: sender
+        /// type: status_exchange
+        /// content: sender, status_code
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <returns></returns>
+        internal static bool HasValidContent(XmlDocument doc) {
+            string source = Selector.Node.Source(doc).InnerText;
+            
+            switch (source) {
+                case MessageSourceEnum.CLIENT_REQUEST:
+                    if (!HasValidClientRequest(doc)) {
+                        PublishContentValidationError("Client Request fehlerhaft");
+                        return false;
+                    }
+                    break;
+                case MessageSourceEnum.SERVER_RESPONSE:
+                    if (!HasValidServerResponse(doc)) {
+                        PublishContentValidationError("Server Response fehlerhaft");
+                        return false;
+                    }
+                    break;
+                //default:
+            }
+            return true;
+        }
+
+        private static bool HasValidServerResponse(XmlDocument doc) {
+            string messageType = Selector.Node.Type(doc).InnerText;
+            switch (messageType) {
+                case MessageTypeEnum.STATUS_EXCHANGE:
+                    XmlNode StatusCodeNode = Selector.Node.Content.ServerStatusCode(doc);
+                    if (!StatusCodeNode.Name.Equals(NodeDescription.Message.Content.StatusCode.NAME)) {
+                        return false;
+                    }
+                    break;
+            }
+            return true;
+        }
+
+        private static bool HasValidClientRequest(XmlDocument doc) {
+            string messageType = Selector.Node.Type(doc).InnerText;
+            switch (messageType) {
+                case MessageTypeEnum.LOGIN:
+                    XmlNode SenderNode = Selector.Node.Content.Sender(doc);
+                    if (!SenderNode.Name.Equals(NodeDescription.Message.Content.Sender.NAME)) {
+                        return false;
+                    }
+                    break;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Eine Nachricht ist Basis-Protokoll-konform falls:
+        /// 1) Hauptelement Message mit protocolVersion existiert
+        /// 2) Nodes Source, Type und Content existieren
+        /// 3) Node Source und Type ihren möglichen Enum-Werten entsprechen
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <returns></returns>
         internal static bool IsBaseProtocolConform(XmlDocument doc) {
             if (!HasValidRootNode(doc)) {
                 PublishBaseValidationError("Haupt-Knoten <message> falsch definiert");
@@ -107,7 +173,7 @@ namespace ChatApp.Protocol.Engine {
 
         private static bool HasValidContentNode(XmlDocument doc) {
             try {
-                if (Selector.Node.Content(doc) == null) {
+                if (Selector.Node.ContentNode(doc) == null) {
                     PublishBaseValidationError("ChildNode[2] (Content) existiert nicht");
                     return false;
                 }
@@ -126,6 +192,9 @@ namespace ChatApp.Protocol.Engine {
         }
         private static void PublishBaseValidationError(string v) {
             msg.Publish("[ProtocolValidator:IsBaseProtocolConform:Violation] " + v);
+        }
+        private static void PublishContentValidationError(string v) {
+            msg.Publish("[ProtocolValidator:HasValidContent:Violation] " + v);
         }
     }
 }
