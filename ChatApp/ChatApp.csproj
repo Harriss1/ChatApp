@@ -81,7 +81,7 @@
     <Compile Include="Server\ConnectionManager\Connection.cs" />
     <Compile Include="Server\ConnectionManager\ConnectionManagerService.cs" />
     <Compile Include="Server\ConnectionManager\ConnectionRegister.cs" />
-    <Compile Include="Server\LogPublisher.cs" />
+    <Compile Include="LogPublisher.cs" />
     <Compile Include="Server\MessageMediator\ByteMessage.cs" />
     <Compile Include="Server\MessageMediator\ServerMessageCreator.cs" />
     <Compile Include="Server\MessageMediator\MessageService.cs" />

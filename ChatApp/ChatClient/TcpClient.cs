@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.ChatClient {
     internal class TcpClient {
+        LogPublisher log = new LogPublisher("TcpClient");
         /// <summary>
         /// Senden einer Nachricht an eine spezifische IP-Adresse, Port
         /// </summary>
@@ -17,11 +18,11 @@ namespace ChatApp.ChatClient {
         public string Send(string ipAddressText, string port, string content) {
             int portNum = Int32.Parse(port);
             string received = "[nothing received]";
-            Console.WriteLine("[start send] Zu übermittelnde Nachricht:" + content);
-            Console.WriteLine("Client Kontrollpunkt 1");
+            log.Debug("[start send] Zu übermittelnde Nachricht:" + content);
+            log.Debug("Client Kontrollpunkt 1");
             IPAddress endpointAdress = IPAddress.Parse(ipAddressText);
             IPEndPoint remoteEndpoint = new IPEndPoint(endpointAdress, portNum);
-            Console.WriteLine("Client Kontrollpunkt 2");
+            log.Debug("Client Kontrollpunkt 2");
             byte[] bytes = new byte[1024];
             try {
                 // Connect to a Remote server
@@ -30,55 +31,55 @@ namespace ChatApp.ChatClient {
                 Socket sender = new Socket(endpointAdress.AddressFamily,
                     SocketType.Stream, ProtocolType.Tcp);
 
-                Console.WriteLine("Client Kontrollpunkt 3");
+                log.Debug("Client Kontrollpunkt 3");
                 // Connect the socket to the remote endpoint. Catch any errors.
                 try {
                     // Connect to Remote EndPoint
                     sender.Connect(remoteEndpoint);
 
-                    Console.WriteLine("Client Socket verbunden zu {0} \r\n [quit] beendet Verbindung.",
-                        sender.RemoteEndPoint.ToString());
+                    log.Debug("Client Socket verbunden zu "+ sender.RemoteEndPoint.ToString()+ 
+                        " \r\n [quit] beendet Verbindung.");
                     
                     // Encode the data string into a byte array.
                         
                     byte[] msg = Encoding.ASCII.GetBytes(content);
 
-                    Console.WriteLine("Client Kontrollpunkt 4");
+                    log.Debug("Client Kontrollpunkt 4");
                     // Send the data through the socket.
                     int bytesSent = sender.Send(msg);
-                    Console.WriteLine("Client Kontrollpunkt 5 - byteanzahl gesendet:" + bytesSent);
+                    log.Debug("Client Kontrollpunkt 5 - byteanzahl gesendet:" + bytesSent);
 
                     // Receive the response from the remote device.
                     int bytesRec = sender.Receive(bytes);
                     // Hier beginnt ein Loop, da der Host die Verbindung / das Senden nicht beendet.
-                    Console.WriteLine("Client Kontrollpunkt 6"); // hier kommen wir nicht hin :D
+                    log.Debug("Client Kontrollpunkt 6"); // hier kommen wir nicht hin :D
                     received = Encoding.ASCII.GetString(bytes, 0, bytesRec);
 
-                    Console.WriteLine("Client Kontrollpunkt 7");
-                    Console.WriteLine("Echo = {0}", received);
+                    log.Debug("Client Kontrollpunkt 7");
+                    log.Debug("Echo = " + received);
                     // Release the socket.
 
-                    Console.WriteLine("Client Kontrollpunkt 8");
+                    log.Debug("Client Kontrollpunkt 8");
                     sender.Shutdown(SocketShutdown.Both);
                     sender.Close();
 
-                    Console.WriteLine("Client Kontrollpunkt 9");
+                    log.Debug("Client Kontrollpunkt 9");
                 }
                 // Falls ein Null-String übergeben wurde
                 catch (ArgumentNullException ane) {
-                    Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
+                    log.Debug("ArgumentNullException : " + ane.ToString());
                 }
                 // Verbindungsfehler
                 catch (SocketException se) {
-                    Console.WriteLine("SocketException : {0}", se.ToString());
+                    log.Debug("SocketException : " + se.ToString());
                 }
                 // Nicht vorhergesehene Fehler
                 catch (Exception e) {
-                    Console.WriteLine("Unexpected exception : {0}", e.ToString());
+                    log.Debug("Unexpected exception : " + e.ToString());
                 }
             }
             catch (Exception e) {
-                Console.WriteLine(e.ToString());
+                log.Debug(e.ToString());
             }
             return received;
         }

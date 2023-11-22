@@ -10,7 +10,7 @@ namespace ChatApp.Server.Listener{
     internal class ConnectionManagerService {
 
         MessageService messageService = new MessageService();
-        private LogPublisher msg = new LogPublisher();
+        private LogPublisher log = new LogPublisher("ConnectionManagerService");
         private ServerRunner serverRunner;
         private ServerRunner.OnDefineConnectionClerkEventForEachNewConnection _onEvent_DefineConnectionClerk;
         private ServerRunner.OnAcceptedNewConnectionEvent _onAcceptedNewConnectionEvent;
@@ -29,16 +29,16 @@ namespace ChatApp.Server.Listener{
         }
 
         public void Run() {
-            msg.Publish("Bereit ThreadRunner.AcceptConnections vor...");
+            log.Publish("Bereite ThreadRunner.AcceptConnections vor...");
             
             serverRunner.SubscribeTo_OnNewConnectionEvent(_onAcceptedNewConnectionEvent);
             serverRunner.SubscribeTo_PublishConnectionThread(_onEvent_PublishConnectionThread);
             serverRunner.AcceptConnections();
-            msg.Publish("AcceptConnections ThreadRunner Start erfolgreich abgeschlossen und ersten wartenden Socket im Thread geöffnet.");
+            log.Publish("AcceptConnections ThreadRunner Start erfolgreich abgeschlossen und ersten wartenden Socket im Thread geöffnet.");
         }
 
         public void ShutdownAllConnections() {
-            msg.Publish("ConnectionManagerServer:ShutDown all connections not implemented!");
+            log.Publish("ShutDown all connections not implemented!");
         }
 
         public void AbortAllConnections() {
@@ -48,14 +48,14 @@ namespace ChatApp.Server.Listener{
         }
 
         private void OnEvent_PublishStartedThread(Thread thread) {
-            msg.Publish("neuer Thread für eine eben geöffnete Verbindung gestartet. ID=" + thread.ManagedThreadId);
+            log.Publish("neuer Thread für eine eben geöffnete Verbindung gestartet. ID=" + thread.ManagedThreadId);
             Connection connection = new Connection(thread);
             connectionRegister.Add(connection);
         }
 
         private void OnEvent_AcceptedNewConnection() {
-            msg.Publish("Bereite Verbindungsempfang vor...");
-            msg.Publish("[ConnectionManagerService] AcceptedNewConnection Event empfangen");
+            log.Publish("Bereite Verbindungsempfang vor...");
+            log.Publish("AcceptedNewConnection Event empfangen. Thread ID = " + Thread.CurrentThread.ManagedThreadId);
             // Nach jedem Verbindungsaufbau ist ein neuer ConnectionClerk notwendig.
             serverRunner.SubscribeTo_OnDefineConnectionClerkEvent(_onEvent_DefineConnectionClerk);
         }
@@ -69,7 +69,7 @@ namespace ChatApp.Server.Listener{
         }
         //string mirrorMessage;
         private byte[] On_CheckForBytesToSendLoopUntilAllSent() {
-            msg.Publish("Prüfe ob Server Nachrichten zum versenden hat...");
+            log.Publish("Prüfe ob Server Nachrichten zum versenden hat... ThreadId= " + Thread.CurrentThread.ManagedThreadId);
             //if (mirrorMessage == null) {
             //    msg.Publish("[keine Nachrichten]");
             //    return null;
@@ -80,26 +80,27 @@ namespace ChatApp.Server.Listener{
             //return Encoding.ASCII.GetBytes(message);
             byte[] response = messageService.GetNextOutboxByteArray(connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
             if (response == null) {
-                msg.Publish("[keine Nachrichten]");
+                log.Publish("[keine Nachrichten]");
                 return null;
             } else {
-                msg.Publish("[Outbox Nachricht gefunden:]");
-                msg.Publish(ByteConverter.ToString(response, response.Length));
+                log.Publish("[Outbox Nachricht gefunden:]");
+                log.Publish(ByteConverter.ToString(response, response.Length));
                 return response;
             }
             
         }
 
         private void On_ReceiveByteArray(byte[] bytes, int receivedBytes) {
-            msg.Publish("Message received:");
+            log.Publish("Message received: ThreadId= " + Thread.CurrentThread.ManagedThreadId);
             string message = Encoding.ASCII.GetString(bytes, 0, receivedBytes);
-            msg.Publish(message);
+            log.Publish(message);
             //mirrorMessage = message;
             messageService.AddByteArrayToInbox(bytes, receivedBytes, 
                 connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
         }
 
         private CommunicationEventClerk OnEvent_DefineConnectionClerk() {
+            log.Debug("definiere neuen connectionClerk");
             OnEvent_ReceiveByteArray _onReceiveByteArray = new OnEvent_ReceiveByteArray(On_ReceiveByteArray);
             OnEvent_CheckForBytesToSend _onCheckForBytesToSend = new OnEvent_CheckForBytesToSend(On_CheckForBytesToSendLoopUntilAllSent);
             OnEvent_CheckAbortTransmission _onCheckToAbortTransmission = new OnEvent_CheckAbortTransmission(On_CheckAbortTransmission);

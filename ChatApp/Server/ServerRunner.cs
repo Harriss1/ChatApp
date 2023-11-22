@@ -27,7 +27,7 @@ namespace ChatApp.Server {
         private OnAcceptedNewConnectionEvent _publishAcceptedNewConnectionEvent;
         private OnDefineConnectionClerkEventForEachNewConnection _defineConnectionClerk;
         private OnEvent_PublishConnectionThread _publishConnectionThread;
-        private static LogPublisher log = new LogPublisher();
+        private static LogPublisher log = new LogPublisher("ServerRunner");
 
         private List<Thread> connectionThreads = new List<Thread> ();
         public ServerRunner() {
@@ -67,18 +67,19 @@ namespace ChatApp.Server {
             if (_publishAcceptedNewConnectionEvent == null) {
                 log.Debug("Warnung: NewConnectionEvent ohne Subscriber");
             }
-            log.Debug("[ServerRunner] ThreadID ServerManager.AcceptConnections = " + Thread.CurrentThread.ManagedThreadId);
-            log.Debug("[ServerRunner] ThreadCounter: " + threadCounter++);
+            log.Debug("ThreadID ServerManager.AcceptConnections = " + Thread.CurrentThread.ManagedThreadId);
+            log.Debug("ThreadCounter: " + threadCounter++);
 
             // Starte die eigene Methode bei Erhalt des Callback-Events nach erfolgten Accept (ähnlich einer Rekursion)           
             TcpServer.ConnectionAcceptedCallback _newConnectionAcceptedCallback = new TcpServer.ConnectionAcceptedCallback(AcceptConnections);
-            log.Debug("[ServerRunner] Zeile 74");
+            Thread.Sleep(1000);
+            log.Debug("Zeile 74");
             _publishAcceptedNewConnectionEvent(); // notwendig um immer einen neuen Callback zu erstellen, welcher immer einen neuen Clerk haben.
-            log.Debug("[ServerRunner] NewConnectionEvent() signaled");
+            log.Debug("NewConnectionEvent() signaled");
             CommunicationEventClerk clerk = GetClerk();
             Thread serverHandler = new Thread(() => tcpServer.Accept(_newConnectionAcceptedCallback, clerk));
             serverHandler.Start();
-            log.Debug("[ServerRunner] einzelner Accept-Thread gestartet");
+            log.Debug("einzelner Accept-Thread gestartet");
             connectionThreads.Add(serverHandler);
             if (_publishConnectionThread != null)
                 _publishConnectionThread(serverHandler);

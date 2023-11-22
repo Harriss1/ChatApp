@@ -13,7 +13,7 @@ namespace ChatApp.Server.Listener {
         private static bool alreadyStarted = false;
 
         public delegate void ConnectionAcceptedCallback();
-        private LogPublisher log = new LogPublisher();
+        private LogPublisher log = new LogPublisher("TcpServer");
         
         public TcpServer() {
         }
@@ -59,7 +59,7 @@ namespace ChatApp.Server.Listener {
                 // Es wird je Durchlauf nur ein Client abgearbeitet
                 this.listener.Listen(maxRequestLimit);
 
-                log.Debug("[TcpServer] Server Socket geöffnet");
+                log.Debug("Server Socket geöffnet");
             }
             catch (Exception e) {
                 log.Debug(e.ToString());
@@ -77,31 +77,31 @@ namespace ChatApp.Server.Listener {
         public void Accept(ConnectionAcceptedCallback _newConnectionEstablishedCallback, CommunicationEventClerk clerk) {
             try {
                 // Programm stoppt hier bis eine Verbindung aufgebaut wird.
-                log.Debug("[TcpServer] Stopping Thread " + Thread.CurrentThread.ManagedThreadId+
-                    " and waiting for a connection...");
+                log.Debug("Stopping Thread " + Thread.CurrentThread.ManagedThreadId+
+                    " and waiting for a connection... ThreadId= " + Thread.CurrentThread.ManagedThreadId);
                 Socket handler = this.listener.Accept();
-                log.Debug("[TcpServer] Resuming Thread " + Thread.CurrentThread.ManagedThreadId);
+                log.Debug("Resuming Thread " + Thread.CurrentThread.ManagedThreadId);
                 // Der Zugriff auf das Steuerelement Text_Console_Output erfolgte von einem anderen Thread als dem Thread, für den es erstellt wurde.
                 _newConnectionEstablishedCallback();
-                log.Debug("[TcpServer] connection established in TCPserver");
+                log.Debug("connection established in TCPserver ThreadId= " + Thread.CurrentThread.ManagedThreadId);
                 bool closeConnection = false;
                 closeConnection = clerk.PublishEvent_CheckForCancelConnection();
                 while (!closeConnection) {
                     
+                    log.Debug("Kontrolpunkt 3 [Start des Empfangs-Sende-Loop] ThreadId= " + Thread.CurrentThread.ManagedThreadId);
                     string receivedData = ReceiveText(handler, clerk);
-                    log.Debug("[TcpServer] Kontrolpunkt 3"); 
-                    log.Debug("[TcpServer] Wait 1000");
+                    log.Debug("Kontrolpunkt 3.1: Wait 1000");
                     System.Threading.Thread.Sleep(1000);
-
                     // bug
-                    log.Debug("[TcpServer] Kontrolpunkt 4: erster Callback CheckForBytesToSend");
+                    log.Debug("Kontrolpunkt 4: erster Callback CheckForBytesToSend");
                     byte[] bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
 
                     while (bytesToSend != null && bytesToSend.Length > 0) {
+                        log.Debug("Kontrolpunkt 5  [Start Sende-Loop] ThreadId= " + Thread.CurrentThread.ManagedThreadId);
 
                         log.Debug("Sending bytes...");
                         handler.Send(bytesToSend);
-                        log.Debug("Kontrolpunkt 5: Loop Callback von CheckForBytesToSend");
+                        log.Debug("Kontrolpunkt 5.1: Loop Callback von CheckForBytesToSend");
                         bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
                     }
                     if (CheckTextForQuitMessage(receivedData)

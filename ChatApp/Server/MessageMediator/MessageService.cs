@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ChatApp.Server.MessageMediator {
@@ -18,7 +19,7 @@ namespace ChatApp.Server.MessageMediator {
         }
 
         public byte[] GetNextOutboxByteArray(Connection connection) {
-            log.Debug("GetNextOutboxByteArray");
+            log.Debug("### GetNextOutboxByteArray ThreadId= " + Thread.CurrentThread.ManagedThreadId);
             ByteMessage response = PopNextOutboxByteMessage(connection);
             if (response == null) {
                 return null;
