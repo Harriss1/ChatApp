@@ -146,7 +146,7 @@ namespace ChatApp.Server.Listener {
                 
                 bytes = new byte[1024];
                 int receivedBytesCount = handler.Receive(bytes);
-                log.Debug("Kontrolpunkt 0-2");
+                log.Debug("Kontrolpunkt 0-2 EVENT PUBLISH BYTES RECEIVED");
                 clerk.PublishEvent_ReceiveByteArray(bytes, receivedBytesCount);
                 log.Debug("Kontrolpunkt 1");
                 receivedData += Encoding.ASCII.GetString(bytes, 0, receivedBytesCount);

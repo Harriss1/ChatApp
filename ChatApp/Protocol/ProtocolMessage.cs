@@ -9,7 +9,7 @@ using ChatApp.Protocol.Engine;
 
 namespace ChatApp.Protocol {
     internal class ProtocolMessage {
-        private static LogPublisher msg = new LogPublisher();
+        private static LogPublisher log = new LogPublisher("ProtocollMessage");
         XmlDocument document;
         private string protocolVersion;
         private string messageType;
@@ -88,7 +88,7 @@ namespace ChatApp.Protocol {
         }
         public ProtocolMessage LoadAndValidate(string message) {
             if(alreadySet) {
-                msg.Publish("FEHLER Create(): Würde Daten überschreiben, bitte neue Instanz erzeugen.");
+                log.Publish("FEHLER Create(): Würde Daten überschreiben, bitte neue Instanz erzeugen.");
                 return this;
             }
             XmlDocument loadedDocument = new XmlDocument();
@@ -96,11 +96,11 @@ namespace ChatApp.Protocol {
                 loadedDocument.LoadXml(message);
             }
             catch (XmlException e) {
-                msg.Publish("FEHLER ProtocolMessage.Create(): XmlDocument-Bibliothek kann String nicht zu Dokument umwandeln: " + e.Message);
+                log.Publish("FEHLER ProtocolMessage.Create(): XmlDocument-Bibliothek kann String nicht zu Dokument umwandeln: " + e.Message);
                 return null;
             }
             if (!ProtocolValidator.IsBaseProtocolConform(loadedDocument)) {
-                msg.Publish("FEHLER XML INVALID: \r\n" + loadedDocument.OuterXml);
+                log.Publish("FEHLER XML INVALID: \r\n" + loadedDocument.OuterXml);
                 return null;
             }
             
@@ -113,7 +113,7 @@ namespace ChatApp.Protocol {
         }
         public ProtocolMessage CreateBaseMessage() {
             if (alreadySet) {
-                msg.Publish("FEHLER Create(): Würde Daten überschreiben.");
+                log.Publish("FEHLER Create(): Würde Daten überschreiben.");
                 return this;
             }
             alreadySet = true;
@@ -138,7 +138,7 @@ namespace ChatApp.Protocol {
             XmlNode content = document.CreateElement(NodeDescription.Message.Content.NAME);
             root.AppendChild(content);
 
-            msg.Publish("Created:\r\n" + document.OuterXml);
+            log.Publish("Created:\r\n" + document.OuterXml);
             return this;
         }
 

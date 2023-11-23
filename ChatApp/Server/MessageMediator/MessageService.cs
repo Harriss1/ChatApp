@@ -51,17 +51,23 @@ namespace ChatApp.Server.MessageMediator {
                 }
             }
             foreach (ByteMessage finished in processedSegments) {
+                log.Debug("inbox_length = " + inboxByteMessageStack.Count);
+                log.Debug("Entferne INBOX Nachricht nach Processing:" + ByteConverter.ToString(finished.Data, finished.Length));
                 inboxByteMessageStack.Remove(finished);
+                log.Debug("inbox_length = " + inboxByteMessageStack.Count);
             }
         }
 
         private void ProcessSingleByteSegment(ByteMessage byteMessage, Connection connection) {
             log.Debug("ProcessSingleByteSegment");
             String message = ByteConverter.ToString(byteMessage.Data, byteMessage.Length);
+
+            log.Debug("INBOX ProcessSingleByteSegment : erhaltene Nachricht: " + message);
             ProtocolMessage doc = new ProtocolMessage();
             doc.CreateBaseMessage();
             ProtocolMessage incommingMessage = new ProtocolMessage();
             incommingMessage.LoadAndValidate(doc.GetXml().OuterXml);
+            log.Debug("INBOX ProcessSingleByteSegment : erstelle entsprechende Reaktion (im Debug: add irgendwas to Outbox)");
             //doc.Create(message);
             if (doc != null) {
                 if (!byteMessage.connection.HasDefinedClient()) {                    

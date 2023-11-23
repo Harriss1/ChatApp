@@ -41,9 +41,11 @@ namespace ChatApp.Server {
         // Kann eventuell raus?
         public void SubscribeTo_OnNewConnectionEvent(OnAcceptedNewConnectionEvent _newConnectionEvent) {
             // Zweck: mehrere Observer sollen informiert werden können, falls es eine neue Verbindung gibt.
+            log.Debug("DELEGATE subscribe SubscribeTo_OnNewConnectionEvent");
             this._publishAcceptedNewConnectionEvent += _newConnectionEvent;
         }
         public void SubscribeTo_PublishConnectionThread(OnEvent_PublishConnectionThread _newThreadEvent) {
+            log.Debug("DELEGATE subscribe SubscribeTo_PublishConnectionThread");
             _publishConnectionThread += _newThreadEvent;
         }
 
@@ -57,6 +59,7 @@ namespace ChatApp.Server {
                 throw new InvalidOperationException("Eine offene Verbindung darf nur von einer Instanz kontrolliert werden.");
             }
             this._defineConnectionClerk = _registerClerkEvent;
+            log.Debug("DELEGATE subscribe SubscribeTo_OnDefineConnectionClerkEvent");
         }
 
         /// <summary>
@@ -77,6 +80,8 @@ namespace ChatApp.Server {
             _publishAcceptedNewConnectionEvent(); // notwendig um immer einen neuen Callback zu erstellen, welcher immer einen neuen Clerk haben.
             log.Debug("NewConnectionEvent() signaled");
             CommunicationEventClerk clerk = GetClerk();
+
+            log.Debug("DELEGATE subscribe AcceptConnections(): Übergebe Clerk with registered Threads");
             Thread serverHandler = new Thread(() => tcpServer.Accept(_newConnectionAcceptedCallback, clerk));
             serverHandler.Start();
             log.Debug("einzelner Accept-Thread gestartet");

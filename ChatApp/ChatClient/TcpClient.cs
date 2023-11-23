@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace ChatApp.ChatClient {
     internal class TcpClient {
+        public void Connect(string ipAddressText, string port) { 
+        
+        }
+
         LogPublisher log = new LogPublisher("TcpClient");
         /// <summary>
         /// Senden einer Nachricht an eine spezifische IP-Adresse, Port
