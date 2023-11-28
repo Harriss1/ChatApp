@@ -7,11 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ChatApp.ChatClient.Connection.Implementation {
-    internal class ClientSocketSender {
+    internal class ClientTcpSocket {
         private LogPublisher log = new LogPublisher("TcpClient");
         private Socket sender;
 
-        public ClientSocketSender() {
+        public ClientTcpSocket() {
         }
 
         public void Connect(string ipAddressText, string port) {     

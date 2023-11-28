@@ -9,14 +9,14 @@ namespace ChatApp.ChatClient.Connection.Implementation {
     internal class ClientConnection {
         private Queue<string> outboxMessages = new Queue<string>();
         private Queue<string> inboxMessages = new Queue<string>();
-        private static ClientSocketSender socket;
+        private static ClientTcpSocket socket;
         private static bool stopSendReceiveLoop = false;
         internal ClientConnection() { 
             if(socket != null) {
                 throw new InvalidOperationException(
                     "[ClientConnection] Instanz darf nur einmalig erstellt und verwendet werden.");
             }
-            socket = new ClientSocketSender();
+            socket = new ClientTcpSocket();
         }
         internal void Connect(string ipAddress, string port) {
             socket.Connect(ipAddress, port);
@@ -47,7 +47,7 @@ namespace ChatApp.ChatClient.Connection.Implementation {
             }
             return inboxMessages.Dequeue();
         }
-        internal void PushMessageToOutbox(string message) {
+        internal void EnqueueMessageToOutbox(string message) {
             outboxMessages.Enqueue(message);
         }
     }

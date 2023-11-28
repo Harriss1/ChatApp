@@ -8,17 +8,17 @@ using ChatApp.ChatClient.Connection;
 
 namespace ChatApp.ChatClient {
     internal class ChatController {
-        private static SynchronisedClientConnection tcpClientThread = new SynchronisedClientConnection();
+        private static SynchronisedClientConnection connection = new SynchronisedClientConnection();
         internal void LoginToServer(string username, string ipAddress) {
-            tcpClientThread.StartTcpConnection(ipAddress, Config.ServerPort);
+            connection.StartConnection(ipAddress, Config.ServerPort);
         }
 
         internal void SendMessage(string message) {
-            tcpClientThread.EnqueueMessageToOutBox(message);
+            connection.EnqueueMessageToOutBox(message);
         }
 
         internal string GetLastReceivedMessage() {
-            return tcpClientThread.DequeueMessageFromInbox();
+            return connection.DequeueMessageFromInbox();
         }
     }
 }
