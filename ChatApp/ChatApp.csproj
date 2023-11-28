@@ -47,9 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatClient\Connection\ClientConnection.cs" />
     <Compile Include="ChatClient\ConsoleTcpClient.cs" />
-    <Compile Include="ChatClient\TcpClient.cs" />
+    <Compile Include="ChatClient\Connection\ClientSocketSender.cs" />
     <Compile Include="ChatClient\ChatController.cs" />
+    <Compile Include="ChatClient\Connection\SynchronisedClientConnection.cs" />
     <Compile Include="ChatWindow.cs">
       <SubType>Form</SubType>
     </Compile>

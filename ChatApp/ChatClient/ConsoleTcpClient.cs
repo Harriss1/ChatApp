@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatApp.ChatClient {
+namespace ChatApp.ChatClient.Connection {
     internal class ConsoleTcpClient {
         /// <summary>
         /// Senden einer Nachricht an eine spezifische IP-Adresse, Port

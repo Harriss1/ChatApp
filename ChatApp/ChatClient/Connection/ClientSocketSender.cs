@@ -6,12 +6,15 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatApp.ChatClient {
-    internal class TcpClient {
+namespace ChatApp.ChatClient.Connection.Implementation {
+    internal class ClientSocketSender {
         private LogPublisher log = new LogPublisher("TcpClient");
         private Socket sender;
 
-        public void Connect(string ipAddressText, string port) {
+        public ClientSocketSender() {
+        }
+
+        public void Connect(string ipAddressText, string port) {     
             int portNum = Int32.Parse(port);
             log.Debug("Connect() Starting...");
             IPAddress endpointAdress = IPAddress.Parse(ipAddressText);

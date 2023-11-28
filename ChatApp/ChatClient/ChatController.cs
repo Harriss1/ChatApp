@@ -2,23 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using ChatApp.ChatClient.Connection;
 
 namespace ChatApp.ChatClient {
     internal class ChatController {
-        TcpClient client = new TcpClient();
-        private string lastReceivedMessage = "";
-        public void LoginToServer(string username, string ipAddress) {
-
-            client.Connect(ipAddress, Config.ServerPort);
+        private static SynchronisedClientConnection tcpClientThread = new SynchronisedClientConnection();
+        internal void LoginToServer(string username, string ipAddress) {
+            tcpClientThread.StartTcpConnection(ipAddress, Config.ServerPort);
         }
 
-        internal void SendMessage(string text) {
-            lastReceivedMessage = client.Send(text);
+        internal void SendMessage(string message) {
+            tcpClientThread.EnqueueMessageToOutBox(message);
         }
 
         internal string GetLastReceivedMessage() {
-            return lastReceivedMessage;
+            return tcpClientThread.DequeueMessageFromInbox();
         }
     }
 }
