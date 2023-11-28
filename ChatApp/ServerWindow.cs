@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -23,10 +24,19 @@ namespace ChatApp {
             // Fix: Der Zugriff auf das Steuerelement Text_Console_Output erfolgte von einem anderen
             // Thread als dem Thread, für den es erstellt wurde.
             // Quelle: https://stackoverflow.com/questions/661561/how-do-i-update-the-gui-from-another-thread
-            Text_Console_Output.Invoke((MethodInvoker)delegate {
-                // Running on the UI thread
-                Text_Console_Output.Text += message + "\r\n";
-            });
+            object _lock = new object();
+            lock (_lock) {
+                Text_Console_Output.Invoke((MethodInvoker)delegate {
+
+                    // Running on the UI thread
+
+                    if (message.Contains("Details:")) {
+                        Console.WriteLine("UI Thread =" + Thread.CurrentThread.ManagedThreadId);
+                    }
+                    Text_Console_Output.Text = message + "\r\n";
+
+                });
+            }
         }
 
         private void Button_Start_Server_Click(object sender, EventArgs e) {

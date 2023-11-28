@@ -44,14 +44,16 @@ namespace ChatApp {
         }
 
         private void Button_Login_Click(object sender, EventArgs e) {
-            
+            client.Connect("127.0.0.1", Config.ServerPort);
+            Text_Chatmessages_Placeholder.Text = "connecting to: " + "127.0.0.1:" + Config.ServerPort;
         }
-
+        TcpClient client = new TcpClient();
         private void Button_Send_Message_Click(object sender, EventArgs e) {
-            TcpClient client = new TcpClient();
-            client.Send("127.0.0.1", Config.ServerPort, Text_Message_Input.Text);
+            
+            string received = client.Send(Text_Message_Input.Text);
             Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
             Text_Message_Input.Text = "";
+            Text_Chatmessages_Placeholder.Text += received;
         }
 
         private void Text_Message_Input_MouseDown(object sender, MouseEventArgs e) {

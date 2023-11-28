@@ -91,9 +91,20 @@ namespace ChatApp.Server.Listener{
         }
 
         private void On_ReceiveByteArray(byte[] bytes, int receivedBytes) {
-            log.Publish("Message received: ThreadId= " + Thread.CurrentThread.ManagedThreadId);
-            string message = Encoding.ASCII.GetString(bytes, 0, receivedBytes);
-            log.Publish(message);
+            string message = "[unable to parse]";
+            //log.Debug("On_ReceiveByteArray Message received in ThreadId= " + Thread.CurrentThread.ManagedThreadId);
+            //log.Debug("Details: int receivedBytes=" + receivedBytes);
+            try {
+                message = Encoding.ASCII.GetString(bytes, 0, receivedBytes);
+            }
+            catch (Exception e) {
+                log.Debug("FEHLER On_ReceiveByteArray Kann bytes nicht verarbeiten: " + e.ToString());
+            }
+            log.Debug("Details: ERHALTEN: " + message);
+
+            log.Debug("Details: int receivedBytes=" + receivedBytes);
+            log.Debug("Details: byte[] bytes.Length=" + bytes.Length);
+            log.Debug("Details: byte[] bytes.ToString=" + bytes.ToString());
             //mirrorMessage = message;
             messageService.AddByteArrayToInbox(bytes, receivedBytes, 
                 connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
