@@ -12,6 +12,7 @@ using System.Windows.Forms;
 namespace ChatApp {
     public partial class ChatWindow : Form {
         private ServerWindow serverWindow;
+        private ChatController chatController = new ChatController();
         public ChatWindow() {
             InitializeComponent();
         }
@@ -44,13 +45,12 @@ namespace ChatApp {
         }
 
         private void Button_Login_Click(object sender, EventArgs e) {
-            client.Connect("127.0.0.1", Config.ServerPort);
+            chatController.LoginToServer("Rudi", "127.0.0.1");
             Text_Chatmessages_Placeholder.Text = "connecting to: " + "127.0.0.1:" + Config.ServerPort;
         }
-        TcpClient client = new TcpClient();
         private void Button_Send_Message_Click(object sender, EventArgs e) {
-            
-            string received = client.Send(Text_Message_Input.Text);
+            chatController.SendMessage(Text_Message_Input.Text);
+            string received = chatController.GetLastReceivedMessage();
             Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
             Text_Message_Input.Text = "";
             Text_Chatmessages_Placeholder.Text += received;
