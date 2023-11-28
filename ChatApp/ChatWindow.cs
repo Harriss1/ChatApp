@@ -53,7 +53,9 @@ namespace ChatApp {
             string received = chatController.GetLastReceivedMessage();
             Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
             Text_Message_Input.Text = "";
-            Text_Chatmessages_Placeholder.Text += received;
+            if (received != null) {
+                Text_Chatmessages_Placeholder.Text += received;
+            }
         }
 
         private void Text_Message_Input_MouseDown(object sender, MouseEventArgs e) {

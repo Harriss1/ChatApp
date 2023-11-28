@@ -42,7 +42,7 @@ namespace ChatApp.ChatClient.Connection.Implementation {
             }
         }
         internal string DequeueMessageFromInbox() {
-            if (outboxMessages.Count == 0) {
+            if (inboxMessages.Count == 0) {
                 return null;
             }
             return inboxMessages.Dequeue();
