@@ -34,10 +34,40 @@ namespace ChatApp.Protocol {
         public XmlNode Content() {
             return Root().ChildNodes[2];
         }
+        public XmlNode StatusCode() {
+            return Content().ChildNodes[0];
+        }
+
+
+        public XmlNode ResultCode() {
+            return Content().ChildNodes[0];
+        }
+
+        public void AppendResultCodeIntoContent(string code) {
+            string nodeName = NodeDescription.Message.Content.ResultCode.NAME;
+            AppendNewContentChild(nodeName, code);
+        }
+        public string GetResultCode() {
+            return ResultCode().InnerXml;
+        }
         public void AppendStatusCodeIntoContent(string statusCode) {
-            string nodeName = NodeDescription.Message.Content.StatusCode.NAME;        
+            string nodeName = NodeDescription.Message.Content.StatusCode.NAME;
             AppendNewContentChild(nodeName, statusCode);
         }
+        public string GetStatusCode() {
+            return StatusCode().InnerXml;
+        }
+
+        internal void AppendTextMessageIntoContent(string textMessage) {
+            string nodeName = NodeDescription.Message.Content.TextMessage.NAME;
+            AppendNewContentChild(nodeName, textMessage);
+        }
+
+        internal void AppendReceiverIntoContent(string receiver) {
+            string nodeName = NodeDescription.Message.Content.Receiver.NAME;
+            AppendNewContentChild(nodeName, receiver);
+        }
+
         internal string GetSenderUsername() {
             foreach (XmlNode node in Content().ChildNodes) {
                 if (node.Name.Equals(NodeDescription.Message.Content.Sender.NAME)) {
@@ -60,7 +90,7 @@ namespace ChatApp.Protocol {
 
         private void ThrowIfContentChildNodeExists(string nodeDescriptionName) {
             foreach (XmlNode node in Content().ChildNodes) {
-                if (node.Name.Equals(NodeDescription.Message.Content.Sender.NAME)) {
+                if (node.Name.Equals(nodeDescriptionName)) {
                     throw new InvalidOperationException(nodeDescriptionName+ " bereits angefügt");
                 }
             }

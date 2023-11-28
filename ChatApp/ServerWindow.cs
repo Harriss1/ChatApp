@@ -33,7 +33,7 @@ namespace ChatApp {
                     if (message.Contains("Details:")) {
                         Console.WriteLine("UI Thread =" + Thread.CurrentThread.ManagedThreadId);
                     }
-                    Text_Console_Output.Text = message + "\r\n";
+                    Text_Console_Output.Text += message + "\r\n";
 
                 });
             }

@@ -10,7 +10,7 @@ namespace ChatApp.Protocol {
     /// Dient nur zum Selektieren der Werte und Elemente aus einer
     /// Protokoll konformen Xml-Datei
     /// </summary>
-    internal class Selector {
+    public class Selector {
         public class Node {
             public static XmlElement Root(XmlDocument doc) {
                 return doc.DocumentElement;
@@ -28,7 +28,13 @@ namespace ChatApp.Protocol {
                 public static XmlNode Sender(XmlDocument doc) {
                     return ContentNode(doc).ChildNodes[0];
                 }
+                public static XmlNode Receiver(XmlDocument doc) {
+                    return ContentNode(doc).ChildNodes[1];
+                }
                 public static XmlNode ServerStatusCode(XmlDocument doc) {
+                    return ContentNode(doc).ChildNodes[0];
+                }
+                public static XmlNode ResultCode(XmlDocument doc) {
                     return ContentNode(doc).ChildNodes[0];
                 }
             }

@@ -4,21 +4,110 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ChatApp.ChatClient.Connection;
+using ChatApp.ChatClient.Network;
+using ChatApp.Protocol;
 
 namespace ChatApp.ChatClient {
     internal class ChatController {
-        private static SynchronisedClientConnection connection = new SynchronisedClientConnection();
+        LogPublisher log = new LogPublisher("ChatController");
+        private static SynchronisedServerlink serverlink = new SynchronisedServerlink();
+        private static ChatSession chatSession;
+        private static Queue<ProtocolMessage> chatMessages = new Queue<ProtocolMessage>();
+        private static ProtocolMessage lastServerStatus;
         internal void LoginToServer(string username, string ipAddress) {
-            connection.StartConnection(ipAddress, Config.ServerPort);
+            serverlink.StartConnection(ipAddress, Config.ServerPort);
+            chatSession = new ChatSession("username");
+            SendLoginRequest();
+            HandleNetworkMessages();
+            if(lastServerStatus == null) {
+                return;
+            }
+            if (lastServerStatus.GetStatusCode().Equals(StatusCodeEnum.ONLINE)) {
+                log.Debug("sollte mich jetzt einloggen...");
+                // login
+            } else {
+                log.Debug("WARN kann nicht einloggen, da Server offline.");
+            }
+        }
+
+        private void SendStatusExchangeRequest() {
+            ProtocolMessage statusExchange = ClientMessageCreator.CreateStatusExchangeRequest();
+            statusExchange.AppendSenderIntoContent(chatSession.Username);
+            serverlink.EnqueueMessageToOutBox(statusExchange.GetXml().OuterXml);
+        }
+        private void SendLoginRequest() {
+            ProtocolMessage loginRequest = ClientMessageCreator.CreateLoginRequest(chatSession.Username);
+            serverlink.EnqueueMessageToOutBox(loginRequest.GetXml().OuterXml);
+        }
+
+        internal void HandleNetworkMessages() {
+            if (!ValidateSession()) {
+                return;
+            }
+            SendStatusExchangeRequest();
+
+            string receivedMessage = serverlink.DequeueMessageFromInbox();
+            while (receivedMessage != null) {
+                ProtocolMessage message = new ProtocolMessage();
+                if (message.LoadAndValidate(receivedMessage) != null) {
+                    if (message.GetSource() == MessageSourceEnum.SERVER_RESPONSE) {
+                        if (message.GetMessageType().Equals(MessageTypeEnum.STATUS_EXCHANGE)) {
+                            lastServerStatus = message;
+                        }
+                        if (message.GetMessageType().Equals(MessageTypeEnum.CHAT_MESSAGE)) {
+                            log.Debug("CLIENT HAT NACHRICHT ERHALTEN:" + message.GetXml().OuterXml);
+                            chatMessages.Enqueue(message);
+                        }
+                        if (message.GetMessageType().Equals(MessageTypeEnum.CHAT_MESSAGE_TRANSMISSION_STATUS)) {
+                            log.Debug("CLIENT HAT TRANSMISSION STATUS ERHALTEN:" + message.GetXml().OuterXml);
+                            chatMessages.Enqueue(message);
+                        }
+                        if (message.GetMessageType().Equals(MessageTypeEnum.LOGIN)) {
+                            log.Debug("LOGIN SUCCESSFUL?");
+                            chatMessages.Enqueue(message);
+                        }
+                    }
+                }
+                receivedMessage = serverlink.DequeueMessageFromInbox();
+            }
         }
 
         internal void SendMessage(string message) {
-            connection.EnqueueMessageToOutBox(message);
+            ValidateSession();
+            ProtocolMessage protocolMessage = new ProtocolMessage();
+            string receiver = "unknown";
+            protocolMessage = ClientMessageCreator.CreateChatMessageRequest(chatSession.Username, receiver, message);
+
+            serverlink.EnqueueMessageToOutBox(protocolMessage.GetXml().OuterXml);
         }
 
-        internal string GetLastReceivedMessage() {
-            return connection.DequeueMessageFromInbox();
+        internal string DequeueReceivedChatMessage() {
+            ValidateSession();
+            if(chatMessages.Count == 0) {
+                return null;
+            }
+            ProtocolMessage protocolMessage = chatMessages.Dequeue();
+            return protocolMessage.GetXml().OuterXml;
         }
+        internal void LogoutFromServer() {
+            ValidateSession();
+            serverlink.ShutdownConnection();
+        }
+
+        internal string GetServerlinkStatusMessage() {
+            if (lastServerStatus != null) {
+                return lastServerStatus.GetStatusCode();
+            }
+            return "(keine Verbindung)";
+        }
+
+        private bool ValidateSession() {
+            if (chatSession == null) {
+                log.Debug("WARN Bitte zuerst auf Server verbinden");
+                return false;
+            }
+            return true;
+        }
+
     }
 }

@@ -25,6 +25,10 @@ namespace ChatApp.Protocol {
                     public const string NAME = "statusCode";
                     public const bool isOptional = true;
                 }
+                public struct ResultCode {
+                    public const string NAME = "resultCode";
+                    public const bool isOptional = true;
+                }
 
                 public struct Sender {
                     public static string NAME = "sender";

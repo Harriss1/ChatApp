@@ -13,6 +13,7 @@ namespace ChatApp {
     public partial class ChatWindow : Form {
         private ServerWindow serverWindow;
         private ChatController chatController = new ChatController();
+        private Timer updateTimer;
         public ChatWindow() {
             InitializeComponent();
         }
@@ -47,15 +48,30 @@ namespace ChatApp {
         private void Button_Login_Click(object sender, EventArgs e) {
             chatController.LoginToServer("Rudi", "127.0.0.1");
             Text_Chatmessages_Placeholder.Text = "connecting to: " + "127.0.0.1:" + Config.ServerPort;
+
+            updateTimer = new Timer();
+            updateTimer.Tick += new EventHandler(UpdateUI);
+            updateTimer.Interval = 2000;
+            updateTimer.Start();            
         }
-        private void Button_Send_Message_Click(object sender, EventArgs e) {
-            chatController.SendMessage(Text_Message_Input.Text);
-            string received = chatController.GetLastReceivedMessage();
-            Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
-            Text_Message_Input.Text = "";
+
+        private void UpdateUI(object sender, EventArgs e) {
+            chatController.HandleNetworkMessages();
+            
+            string received = chatController.DequeueReceivedChatMessage();
             if (received != null) {
                 Text_Chatmessages_Placeholder.Text += received;
             }
+
+            string serverlinkStatusMessage = chatController.GetServerlinkStatusMessage();
+            Text_Connection_Status.Text = serverlinkStatusMessage;
+
+        }
+
+        private void Button_Send_Message_Click(object sender, EventArgs e) {
+            chatController.SendMessage(Text_Message_Input.Text);
+            Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
+            Text_Message_Input.Text = "";
         }
 
         private void Text_Message_Input_MouseDown(object sender, MouseEventArgs e) {

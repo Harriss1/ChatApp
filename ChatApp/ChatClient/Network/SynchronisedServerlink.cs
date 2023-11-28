@@ -4,23 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
-using ChatApp.ChatClient.Connection.Implementation;
+using ChatApp.ChatClient.Network.Serverlink;
 
-namespace ChatApp.ChatClient.Connection {
+namespace ChatApp.ChatClient.Network {
     /// <summary>
     /// Verwaltet den Zugriff auf die im Thread laufende Client-Verbindung
     /// </summary>
-    internal class SynchronisedClientConnection {
-        private static ClientConnection clientConnection;
+    internal class SynchronisedServerlink {
+        private static Serverlink.Serverlink clientConnection;
         private static Thread clientThread;
         private static Thread handlerThread;
 
-        public SynchronisedClientConnection() {
+        public SynchronisedServerlink() {
             if (clientConnection != null) {
                 throw new InvalidOperationException(
                     "[SynchronisedClientConnection] Instanz darf nur einmalig erstellt und verwendet werden.");
             }
-            clientConnection = new ClientConnection();
+            clientConnection = new Serverlink.Serverlink();
             handlerThread = Thread.CurrentThread;
         }
 

@@ -5,18 +5,18 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ChatApp.ChatClient.Connection.Implementation {
-    internal class ClientConnection {
+namespace ChatApp.ChatClient.Network.Serverlink {
+    internal class Serverlink {
         private Queue<string> outboxMessages = new Queue<string>();
         private Queue<string> inboxMessages = new Queue<string>();
-        private static ClientTcpSocket socket;
+        private static TcpSocket socket;
         private static bool stopSendReceiveLoop = false;
-        internal ClientConnection() { 
+        internal Serverlink() { 
             if(socket != null) {
                 throw new InvalidOperationException(
                     "[ClientConnection] Instanz darf nur einmalig erstellt und verwendet werden.");
             }
-            socket = new ClientTcpSocket();
+            socket = new TcpSocket();
         }
         internal void Connect(string ipAddress, string port) {
             socket.Connect(ipAddress, port);
