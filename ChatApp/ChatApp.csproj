@@ -90,6 +90,7 @@
     <Compile Include="Protocol\ServerMessageCreator.cs" />
     <Compile Include="Server\MessageMediator\MessageService.cs" />
     <Compile Include="Protocol\ProtocolValidator.cs" />
+    <Compile Include="Server\MessageMediator\PostalWorker.cs" />
     <Compile Include="Server\MessageMediator\RetainFlag.cs" />
     <Compile Include="Server\ServerController.cs" />
     <Compile Include="Server\ServerRunner.cs" />

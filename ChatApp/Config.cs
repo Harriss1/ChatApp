@@ -16,6 +16,7 @@ namespace ChatApp {
         //internal static readonly string ProtocolVersion = Key("ProtocolVersion");
         public static readonly string ServerPort = "10015";
         public static readonly string ServerAddress = "127.0.0.1";
-        internal static readonly string ProtocolVersion = "2023_11_21";
+        public static readonly string ProtocolVersion = "2023_11_21";
+        public static readonly string LogLevel = "debug";
     }
 }

@@ -9,6 +9,7 @@ using static ChatApp.Server.CommunicationEventClerk;
 namespace ChatApp.Server.Listener{
     internal class ConnectionManagerService {
 
+        private static ConnectionRegister connectionRegister = ConnectionRegister.GetInstance();
         MessageService messageService = new MessageService();
         private LogPublisher log = new LogPublisher("ConnectionManagerService");
         private ServerRunner serverRunner;
@@ -16,7 +17,6 @@ namespace ChatApp.Server.Listener{
         private ServerRunner.OnAcceptedNewConnectionEvent _onAcceptedNewConnectionEvent;
         private ServerRunner.OnEvent_PublishConnectionThread _onEvent_PublishConnectionThread;
 
-        private static ConnectionRegister connectionRegister = new ConnectionRegister();
 
         private ConnectionManagerService() { 
             

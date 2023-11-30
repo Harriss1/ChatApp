@@ -10,6 +10,13 @@ namespace ChatApp {
         public delegate void OnEvent_PublishServerMessage(string message);
         private static OnEvent_PublishServerMessage _publishServerMessage;
         string sourceIdentifier = "";
+        enum Level {
+            TRACE,
+            DEBUG,
+            INFO,
+            WARN,
+            ERROR
+        }
         public LogPublisher() {
         }
         public LogPublisher(string sourceIdentifier) {
@@ -47,8 +54,48 @@ namespace ChatApp {
             }
         }
 
-        internal void Debug(string v) {
-            Publish(v);
+        internal void Error(string message) {
+            if (LogLevel() >= Level.ERROR) {
+                Publish(message);
+            }
+        }
+        internal void Warn(string message) {
+            if (LogLevel() >= Level.WARN) {
+                Publish(message);
+            }
+        }
+        internal void Info(string message) {
+            if (LogLevel() >= Level.INFO) {
+                Publish(message);
+            }
+        }
+
+        internal void Debug(string message) {
+            if (LogLevel() >= Level.DEBUG) {
+                Publish(message);
+            }
+        }
+
+        internal void Trace(string message) {
+            if(LogLevel() >= Level.TRACE) {
+                Publish(message);
+            }
+        }
+
+        private Level LogLevel() {
+            switch (Config.LogLevel) {
+                case "trace":
+                    return Level.TRACE;
+                case "debug":
+                    return Level.DEBUG;
+                case "info":
+                    return Level.INFO;
+                case "warn":
+                    return Level.WARN;
+                case "error":
+                    return Level.ERROR;
+                default: return Level.INFO;
+            }
         }
     }
 }

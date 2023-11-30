@@ -15,7 +15,7 @@ namespace ChatApp.Server.ConnectionManager {
             FlaggedToCancel = false;
             Thread = thread;
         }
-        public bool HasDefinedClient() {
+        public bool IsLoggedIn() {
             if (Client != null && Thread != null) {
                 return true;
             } else {

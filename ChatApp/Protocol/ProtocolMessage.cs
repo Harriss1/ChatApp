@@ -62,7 +62,14 @@ namespace ChatApp.Protocol {
             string nodeName = NodeDescription.Message.Content.TextMessage.NAME;
             AppendNewContentChild(nodeName, textMessage);
         }
-
+        internal string GetReceiverUsername() {
+            foreach (XmlNode node in Content().ChildNodes) {
+                if (node.Name.Equals(NodeDescription.Message.Content.Receiver.NAME)) {
+                    return node.InnerText;
+                }
+            }
+            return null;
+        }
         internal void AppendReceiverIntoContent(string receiver) {
             string nodeName = NodeDescription.Message.Content.Receiver.NAME;
             AppendNewContentChild(nodeName, receiver);
