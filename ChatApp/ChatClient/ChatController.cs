@@ -16,7 +16,8 @@ namespace ChatApp.ChatClient {
         private static ProtocolMessage lastServerStatus;
         internal void LoginToServer(string username, string ipAddress) {
             serverlink.StartConnection(ipAddress, Config.ServerPort);
-            chatSession = new ChatSession("username");
+            chatSession = new ChatSession(username);
+            chatSession.IsLoggedIn = false;
             SendLoginRequest();
             HandleNetworkMessages();
             if(lastServerStatus == null) {
@@ -38,6 +39,11 @@ namespace ChatApp.ChatClient {
         private void SendLoginRequest() {
             ProtocolMessage loginRequest = ClientMessageCreator.CreateLoginRequest(chatSession.Username);
             serverlink.EnqueueMessageToOutBox(loginRequest.GetXml().OuterXml);
+        }
+        private void SendLogoutRequest() {
+            ProtocolMessage logout = ClientMessageCreator.CreateLogoutRequest(chatSession.Username);
+            serverlink.EnqueueMessageToOutBox(logout.GetXml().OuterXml);
+            chatSession.IsLoggedIn = false;
         }
 
         internal void HandleNetworkMessages() {
@@ -63,8 +69,13 @@ namespace ChatApp.ChatClient {
                             chatMessages.Enqueue(message);
                         }
                         if (message.GetMessageType().Equals(MessageTypeEnum.LOGIN)) {
-                            log.Debug("LOGIN SUCCESSFUL?");
-                            chatMessages.Enqueue(message);
+                            if (message.GetResultCode().Equals(ResultCodeEnum.SUCCESS)) {
+                                chatSession.IsLoggedIn = true;
+                                log.Debug("LOGIN SUCCESSFUL");
+                            } else {
+                                log.Warn("LOGIN FAILURE");
+                                chatMessages.Enqueue(message);
+                            }
                         }
                     }
                 }
@@ -90,6 +101,7 @@ namespace ChatApp.ChatClient {
             return protocolMessage.GetXml().OuterXml;
         }
         internal void LogoutFromServer() {
+            SendLogoutRequest();
             ValidateSession();
             serverlink.ShutdownConnection();
         }
@@ -107,6 +119,15 @@ namespace ChatApp.ChatClient {
                 return false;
             }
             return true;
+        }
+
+        public bool IsLoggedIn() {
+            if (chatSession == null || !chatSession.IsLoggedIn) {
+                return false;
+            }
+            else {
+                return true;
+            }
         }
 
     }

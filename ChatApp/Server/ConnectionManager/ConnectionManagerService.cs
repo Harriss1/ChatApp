@@ -29,16 +29,16 @@ namespace ChatApp.Server.Listener{
         }
 
         public void Run() {
-            log.Publish("Bereite ThreadRunner.AcceptConnections vor...");
+            log.Debug("Bereite ThreadRunner.AcceptConnections vor...");
             
             serverRunner.SubscribeTo_OnNewConnectionEvent(_onAcceptedNewConnectionEvent);
             serverRunner.SubscribeTo_PublishConnectionThread(_onEvent_PublishConnectionThread);
             serverRunner.AcceptConnections();
-            log.Publish("AcceptConnections ThreadRunner Start erfolgreich abgeschlossen und ersten wartenden Socket im Thread geöffnet.");
+            log.Debug("AcceptConnections ThreadRunner Start erfolgreich abgeschlossen und ersten wartenden Socket im Thread geöffnet.");
         }
 
         public void ShutdownAllConnections() {
-            log.Publish("ShutDown all connections not implemented!");
+            log.Debug("ShutDown all connections not implemented!");
         }
 
         public void AbortAllConnections() {
@@ -48,14 +48,14 @@ namespace ChatApp.Server.Listener{
         }
 
         private void OnEvent_PublishStartedThread(Thread thread) {
-            log.Publish("neuer Thread für eine eben geöffnete Verbindung gestartet. ID=" + thread.ManagedThreadId);
+            log.Debug("neuer Thread für eine eben geöffnete Verbindung gestartet. ID=" + thread.ManagedThreadId);
             Connection connection = new Connection(thread);
             connectionRegister.Add(connection);
         }
 
         private void OnEvent_AcceptedNewConnection() {
-            log.Publish("Bereite Verbindungsempfang vor...");
-            log.Publish("AcceptedNewConnection Event empfangen. Thread ID = " + Thread.CurrentThread.ManagedThreadId);
+            log.Debug("Bereite Verbindungsempfang vor...");
+            log.Debug("AcceptedNewConnection Event empfangen. Thread ID = " + Thread.CurrentThread.ManagedThreadId);
             // Nach jedem Verbindungsaufbau ist ein neuer ConnectionClerk notwendig.
             serverRunner.SubscribeTo_OnDefineConnectionClerkEvent(_onEvent_DefineConnectionClerk);
         }
@@ -69,22 +69,22 @@ namespace ChatApp.Server.Listener{
         }
         //string mirrorMessage;
         private byte[] On_CheckForBytesToSendLoopUntilAllSent() {
-            log.Publish("Prüfe ob Server Nachrichten zum versenden hat... ThreadId= " + Thread.CurrentThread.ManagedThreadId);
+            log.Debug("Prüfe ob Server Nachrichten zum versenden hat... ThreadId= " + Thread.CurrentThread.ManagedThreadId);
             //if (mirrorMessage == null) {
-            //    msg.Publish("[keine Nachrichten]");
+            //    msg.Debug("[keine Nachrichten]");
             //    return null;
             //}
-            //msg.Publish("Nachricht: " + mirrorMessage);
+            //msg.Debug("Nachricht: " + mirrorMessage);
             //string message = mirrorMessage;
             //mirrorMessage = null;
             //return Encoding.ASCII.GetBytes(message);
             byte[] response = messageService.GetNextOutboxByteArray(connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
             if (response == null) {
-                log.Publish("[keine Nachrichten]");
+                log.Debug("[keine Nachrichten]");
                 return null;
             } else {
-                log.Publish("[Outbox Nachricht gefunden:]");
-                log.Publish(ByteConverter.ToString(response, response.Length));
+                log.Debug("[Outbox Nachricht gefunden:]");
+                log.Debug(ByteConverter.ToString(response, response.Length));
                 return response;
             }
             

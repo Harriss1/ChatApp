@@ -11,21 +11,23 @@ namespace ChatApp.ChatClient.Network {
     /// Verwaltet den Zugriff auf die im Thread laufende Client-Verbindung
     /// </summary>
     internal class SynchronisedServerlink {
-        private static Serverlink.Serverlink clientConnection;
+        LogPublisher log = new LogPublisher("SynchronisedServerlink");
+        private static Serverlink.Serverlink serverlink;
         private static Thread clientThread;
         private static Thread handlerThread;
+        CancellationTokenSource cancelToken = new CancellationTokenSource();
 
         public SynchronisedServerlink() {
-            if (clientConnection != null) {
+            if (serverlink != null) {
                 throw new InvalidOperationException(
                     "[SynchronisedClientConnection] Instanz darf nur einmalig erstellt und verwendet werden.");
             }
-            clientConnection = new Serverlink.Serverlink();
+            serverlink = new Serverlink.Serverlink();
             handlerThread = Thread.CurrentThread;
         }
 
         internal void StartConnection(string ipAddress, string serverPort) {
-            clientThread = new Thread(() => RunTcpClientLoop(ipAddress, serverPort));
+            clientThread = new Thread(() => RunTcpClientLoop(ipAddress, serverPort, cancelToken));
             clientThread.Start();            
         }
 
@@ -35,16 +37,20 @@ namespace ChatApp.ChatClient.Network {
         /// </summary>
         /// <param name="ipAddress"></param>
         /// <param name="port"></param>
-        private void RunTcpClientLoop(string ipAddress, string port) {
-            clientConnection.Connect(ipAddress, port);
-            clientConnection.RunSendReceiveLoop();
+        private void RunTcpClientLoop(string ipAddress, string port, CancellationTokenSource cancelToken) {
+            serverlink.Connect(ipAddress, port);
+            serverlink.RunConnectionLoop();
+            // beendet den Kinder-Thread
+            // nachdem seine Hauptschleife ausläuft und hier hin gelangt.
+            log.Info("Beende Thread - Rufe Cancel() über CancelationTokenSource auf.");
+            cancelToken.Cancel();
         }
         internal void EnqueueMessageToOutBox(string message) {
             ValidateThreadSafety();
 
             object _lock = new object();
             lock (_lock) {
-                clientConnection.EnqueueMessageToOutbox(message);
+                serverlink.EnqueueMessageToOutbox(message);
             }
         }
 
@@ -54,7 +60,7 @@ namespace ChatApp.ChatClient.Network {
             string received = null;
             object _lock = new object();
             lock (_lock) {
-                received = clientConnection.DequeueMessageFromInbox();
+                received = serverlink.DequeueMessageFromInbox();
             }
             return received;
         }
@@ -65,7 +71,7 @@ namespace ChatApp.ChatClient.Network {
         internal void CancelTransmission() {
             ValidateThreadSafety();
 
-            clientConnection.StopSendReceiveLoop();
+            serverlink.TransmissionFlaggedToCancel = true;
         }
 
         /// <summary>
@@ -76,14 +82,25 @@ namespace ChatApp.ChatClient.Network {
         internal void ShutdownConnection() {
             ValidateThreadSafety();
 
+            log.Info("Stoppe Übertragungsloop.");
             CancelTransmission();
-            clientConnection.StopConnection();
-            clientThread.Join(TimeSpan.FromSeconds(2));
-            if (clientThread.ThreadState != ThreadState.Stopped) {
-                throw new InvalidProgramException("[SynchronisedClientConnection] Client-Thread konnte nicht erfolgreich beendet werden.");
-            }
-        }
+            // er setzt die Flags nicht im Thread?!
+            serverlink.ConnectionFlaggedToShutdown = true;
+            log.Info("Beende Verbindung");
+            log.Info("Current Thread ID=" + Thread.CurrentThread.ManagedThreadId + "Client Thread Id = " + clientThread.ManagedThreadId);
+            // .Net 4+ erlaubt es nicht mehr Threads zu stoppen ohne Join
+            // Deshalb nutze ich ein CTS Token (siehe oben).
 
+            //bool stopped = clientThread.Join(TimeSpan.FromSeconds(5));
+            //if (!stopped) {
+            //    throw new InvalidProgramException("[SynchronisedClientConnection] Client-Thread konnte nicht erfolgreich beendet werden. Sein Status = " + clientThread.ThreadState);
+            //}
+            //if(clientThread.ThreadState == ThreadState.WaitSleepJoin) {
+            //    clientThread.Interrupt();
+            //} else {
+            //    throw new InvalidProgramException("[SynchronisedClientConnection] Client-Thread konnte nicht erfolgreich beendet werden. Sein Status = " + clientThread.ThreadState);
+            //}
+        }
 
         private static void ValidateThreadSafety() {
             Check_IsTcpClientThreadRunning();

@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace ChatApp.ChatClient.Network.Serverlink {
     internal class TcpSocket {
-        private LogPublisher log = new LogPublisher("TcpClient");
+        private LogPublisher log = new LogPublisher("TcpSocket");
         private Socket sender;
-
+        public bool useTimeoutForResponse = true;
+        public TimeSpan maxResponseWaitTimeout = TimeSpan.FromSeconds(4);
         public TcpSocket() {
         }
 
@@ -94,11 +95,29 @@ namespace ChatApp.ChatClient.Network.Serverlink {
                 log.Debug("Client Kontrollpunkt 5 - byteanzahl gesendet:" + bytesSent);
 
                 // Receive the response from the remote device.
-                int bytesRec = sender.Receive(bytes);
-                // Hier beginnt ein Loop, da der Host die Verbindung / das Senden nicht beendet.
-                log.Debug("Client Kontrollpunkt 6"); // hier kommen wir nicht hin :D
-                received = Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                int bytesRec = 0;
+                
+                if (useTimeoutForResponse) {
+                    log.Debug("Benutze Timeout für Response");
+                    IAsyncResult result;
+                    Action action = () =>
+                    {
+                        bytesRec = sender.Receive(bytes);
+                    };
+                    result = action.BeginInvoke(null, null);
+                    if (result.AsyncWaitHandle.WaitOne(maxResponseWaitTimeout))
+                        log.Debug("Method successful.");
+                    else
+                        log.Warn("Method timed out.");
+                } else {
+                    log.Debug("erhalte Response (ohne Timeout)");
+                    bytesRec = sender.Receive(bytes);
+                }
 
+
+                log.Debug("Client Kontrollpunkt 6");
+                received = Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                log.Debug("Breche Empfang ab, da Server nichts gesendet hat");
                 log.Debug("Client Kontrollpunkt 7");
                 log.Debug("Echo = " + received);
                 // Release the socket.
@@ -117,6 +136,7 @@ namespace ChatApp.ChatClient.Network.Serverlink {
             catch (Exception e) {
                 log.Debug("Unexpected exception : " + e.ToString());
             }
+            log.Info("beende Send with received=" + received);
             return received;
         }
     }

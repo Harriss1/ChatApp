@@ -61,6 +61,11 @@ namespace ChatApp.Server.MessageMediator {
         private void ProcessSingleInboxByteSegment(ByteMessage byteMessage, Connection senderConnection) {
             log.Debug("ProcessSingleByteSegment");
             String incommingString = ByteConverter.ToString(byteMessage.Data, byteMessage.Length);
+            if(incommingString.Length == 0) {
+                log.Warn("Nachricht wurde möglicherweise unvollständig übermittelt.");
+                log.Warn("Breche Bearbeitung des Segments ab.");
+                return;
+            }
             log.Debug("INBOX ProcessSingleByteSegment : erhaltene Nachricht: " + incommingString);
             
             ProtocolMessage incommingMessage = new ProtocolMessage();

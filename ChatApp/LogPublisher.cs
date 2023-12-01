@@ -10,42 +10,33 @@ namespace ChatApp {
         public delegate void OnEvent_PublishServerMessage(string message);
         private static OnEvent_PublishServerMessage _publishServerMessage;
         string sourceIdentifier = "";
+        private Level level;
         enum Level {
-            TRACE,
-            DEBUG,
-            INFO,
-            WARN,
-            ERROR
+            TRACE = 0,
+            DEBUG = 1,
+            INFO = 2,
+            WARN= 3,
+            ERROR = 4,
         }
-        public LogPublisher() {
-        }
+        private LogPublisher() { }
         public LogPublisher(string sourceIdentifier) {
-            this.sourceIdentifier = "[" + sourceIdentifier + "] ";
+            this.sourceIdentifier = sourceIdentifier;
+            level = ReadLevelFromConfig();
         }
 
         public static void SubscribeTo_PublishServerMessage(OnEvent_PublishServerMessage _publishServerMessage) {
             LogPublisher._publishServerMessage = _publishServerMessage;
             //LogPublisher._publishServerMessage += _publishServerMessage;
         }
-        public void Publish(string message) {
-            if (message.Contains("Details:")) {
-                Console.WriteLine("kurz vorm senden");
-            }
+        private void Publish(string message) {
             Console.WriteLine("[Log " +
                 System.DateTime.Now.TimeOfDay + "][" +
                 "Thread="
                 +Thread.CurrentThread.ManagedThreadId+"]" + 
-                sourceIdentifier + 
+                "["+ sourceIdentifier + "]" +
                 message);
             if (_publishServerMessage != null) {
-                if (message.Contains("Details:")) {
-                    Console.WriteLine("sende es...");
-                }
                 _publishServerMessage(message);
-
-                if (message.Contains("Details:")) {
-                    Console.WriteLine("habs gesendet!");
-                }
             }
             else {
                 if (message.Contains("Details:")) {
@@ -55,46 +46,53 @@ namespace ChatApp {
         }
 
         internal void Error(string message) {
-            if (LogLevel() >= Level.ERROR) {
-                Publish(message);
+            if (level <= Level.ERROR) {
+                Publish("[ERROR] " + message);
             }
         }
         internal void Warn(string message) {
-            if (LogLevel() >= Level.WARN) {
-                Publish(message);
+            if (level <= Level.WARN) {
+                Publish("[WARN] " + message);
             }
         }
         internal void Info(string message) {
-            if (LogLevel() >= Level.INFO) {
-                Publish(message);
+            if (level <= Level.INFO) {
+                Publish("[INFO] " + message);
             }
         }
 
         internal void Debug(string message) {
-            if (LogLevel() >= Level.DEBUG) {
-                Publish(message);
+            if (level <= Level.DEBUG) {
+                Publish("[DEBUG] " + message);
             }
         }
 
         internal void Trace(string message) {
-            if(LogLevel() >= Level.TRACE) {
-                Publish(message);
+            if(level <= Level.TRACE) {
+                Publish("[TRACE] " + message);
             }
         }
 
-        private Level LogLevel() {
+        private Level ReadLevelFromConfig() {
             switch (Config.LogLevel) {
                 case "trace":
+                    Info("LogLevel=TRACE");
                     return Level.TRACE;
                 case "debug":
+                    Info("LogLevel=DEBUG");
                     return Level.DEBUG;
                 case "info":
+                    Info("LogLevel=INFO");
                     return Level.INFO;
                 case "warn":
+                    Info("LogLevel=WARN");
                     return Level.WARN;
                 case "error":
+                    Info("LogLevel=ERROR");
                     return Level.ERROR;
-                default: return Level.INFO;
+                default:
+                    Info("LogLevel=default(INFO)"); 
+                    return Level.INFO;
             }
         }
     }

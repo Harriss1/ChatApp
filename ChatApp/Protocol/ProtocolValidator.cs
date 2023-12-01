@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace ChatApp.Protocol.Engine {
     internal class ProtocolValidator {
-        private static LogPublisher msg = new LogPublisher();
+        private static LogPublisher msg = new LogPublisher("ProtocolValidator");
 
         /// <summary>
         /// Eine Nachricht hat Protokoll-konformenen Content falls:
@@ -191,10 +191,10 @@ namespace ChatApp.Protocol.Engine {
             return true;
         }
         private static void PublishBaseValidationError(string v) {
-            msg.Publish("[ProtocolValidator:IsBaseProtocolConform:Violation] " + v);
+            msg.Debug("[ProtocolValidator:IsBaseProtocolConform:Violation] " + v);
         }
         private static void PublishContentValidationError(string v) {
-            msg.Publish("[ProtocolValidator:HasValidContent:Violation] " + v);
+            msg.Debug("[ProtocolValidator:HasValidContent:Violation] " + v);
         }
     }
 }

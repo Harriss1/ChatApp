@@ -46,8 +46,16 @@ namespace ChatApp {
         }
 
         private void Button_Login_Click(object sender, EventArgs e) {
-            chatController.LoginToServer("Rudi", "127.0.0.1");
-            Text_Chatmessages_Placeholder.Text = "connecting to: " + "127.0.0.1:" + Config.ServerPort;
+            if (Button_Login.Text.Equals("Anmelden") && 
+                !chatController.IsLoggedIn()) {
+                string username = Text_Username.Text;
+                string ipAddress = "127.0.0.1";
+                chatController.LoginToServer(username, ipAddress);
+                Text_Chatmessages_Placeholder.Text = "connecting to: " + ipAddress + ":" + Config.ServerPort;
+            } else {
+                chatController.LogoutFromServer();
+                Text_Chatmessages_Placeholder.Text = "Abmeldevorgang gestartet...";
+            }
 
             updateTimer = new Timer();
             updateTimer.Tick += new EventHandler(UpdateUI);
@@ -65,6 +73,14 @@ namespace ChatApp {
 
             string serverlinkStatusMessage = chatController.GetServerlinkStatusMessage();
             Text_Connection_Status.Text = serverlinkStatusMessage;
+
+            if (chatController.IsLoggedIn()){
+                Button_Login.Text = "Abmelden";
+                Text_Connection_Status.Text = "Server online und erfolgreich angemeldet.";
+            }
+            else {
+                Button_Login.Text = "Anmelden";
+            }
 
         }
 

@@ -24,6 +24,15 @@ namespace ChatApp.Protocol {
             return message;
         }
 
+        internal static ProtocolMessage CreateLogoutRequest(string username) {
+            ProtocolMessage message = CreateBaseClientRequest();
+            message.SetMessageType(MessageTypeEnum.LOGOUT);
+
+            message.AppendSenderIntoContent(username);
+
+            return message;
+        }
+
         internal static ProtocolMessage CreateChatMessageRequest(string sender, string receiver, string textMessage) {
             ProtocolMessage message = CreateBaseClientRequest();
             message.SetMessageType(MessageTypeEnum.CHAT_MESSAGE);
@@ -41,6 +50,5 @@ namespace ChatApp.Protocol {
             message.SetSourceType(MessageSourceEnum.CLIENT_REQUEST);
             return message;
         }
-
     }
 }

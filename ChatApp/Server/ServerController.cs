@@ -17,7 +17,7 @@ namespace ChatApp.Server {
 
         internal void Start() {
             serverRunner.StartServer(Config.ServerAddress, Config.ServerPort);
-            log.Publish("Started Server at " + Config.ServerAddress + ":" + Config.ServerPort);
+            log.Debug("Started Server at " + Config.ServerAddress + ":" + Config.ServerPort);
             connectionManager = new ConnectionManagerService(serverRunner);
             connectionManager.Run();
         }
@@ -27,14 +27,14 @@ namespace ChatApp.Server {
         internal void GracefullyShutdown() {
             bool success = serverRunner.GracefullyShutdown();
             if (success) {
-                log.Publish("Verbindungen wurden ordnungsgemäß abgebaut und der Server korrekt beendet.");
+                log.Debug("Verbindungen wurden ordnungsgemäß abgebaut und der Server korrekt beendet.");
             } else {
-                log.Publish("FEHLER: Server konnte nicht heruntergefahren werden. Bitte Logs konsultieren und ggf. Stop erzwingen.");
+                log.Debug("FEHLER: Server konnte nicht heruntergefahren werden. Bitte Logs konsultieren und ggf. Stop erzwingen.");
             }
         }
 
         internal void Abort() {
-            log.Publish("Erzwinge Stop des Servers indem alle Threads beendet werden.");
+            log.Debug("Erzwinge Stop des Servers indem alle Threads beendet werden.");
             connectionManager.AbortAllConnections();
             serverRunner.Abort();
         }
