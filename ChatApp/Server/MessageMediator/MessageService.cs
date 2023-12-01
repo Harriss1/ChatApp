@@ -52,7 +52,8 @@ namespace ChatApp.Server.MessageMediator {
             }
             foreach (ByteMessage finished in processedSegments) {
                 log.Trace("inbox_length = " + inboxByteMessageStack.Count);
-                log.Trace("Entferne INBOX Nachricht nach Processing:" + ByteConverter.ToString(finished.Data, finished.Length));
+                log.Trace("Entferne INBOX Nachricht nach Processing:" 
+                    + ByteConverter.ToString(finished.Data, finished.Length));
                 inboxByteMessageStack.Remove(finished);
                 log.Trace("inbox_length = " + inboxByteMessageStack.Count);
             }
@@ -61,7 +62,9 @@ namespace ChatApp.Server.MessageMediator {
         private void ProcessSingleInboxByteSegment(ByteMessage byteMessage, Connection senderConnection) {
             log.Debug("ProcessSingleByteSegment");
             String incommingString = ByteConverter.ToString(byteMessage.Data, byteMessage.Length);
-            if(incommingString.Length == 0) {
+            if(incommingString == null
+                || incommingString.Length <= Config.MessageMinLength
+                || incommingString.Equals("")) {
                 log.Warn("Nachricht wurde möglicherweise unvollständig übermittelt.");
                 log.Warn("Breche Bearbeitung des Segments ab.");
                 return;
@@ -71,10 +74,12 @@ namespace ChatApp.Server.MessageMediator {
             ProtocolMessage incommingMessage = new ProtocolMessage();
             incommingMessage.LoadAndValidate(incommingString);
             if (incommingMessage == null) {
-                log.Debug("ProcessSingleInboxByteSegment(): WARN leere Nachricht erhalten, breche Segment-Bearbeitung ab.");
+                log.Debug("ProcessSingleInboxByteSegment(): WARN leere Nachricht erhalten" +
+                    ", breche Segment-Bearbeitung ab.");
                 return;
             }
-            log.Debug("INBOX ProcessSingleByteSegment : erstelle entsprechende Reaktion (im Debug: add irgendwas to Outbox)");
+            log.Debug("INBOX ProcessSingleByteSegment : erstelle entsprechende Reaktion" +
+                " (im Debug: add irgendwas to Outbox)");
                         
             foreach (ByteMessage outboxMessage 
                 in PostalWorker.RedistributeInboxMessage(incommingMessage, senderConnection)) {

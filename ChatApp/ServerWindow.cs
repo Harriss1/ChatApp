@@ -34,7 +34,8 @@ namespace ChatApp {
                         Console.WriteLine("UI Thread =" + Thread.CurrentThread.ManagedThreadId);
                     }
                     Text_Console_Output.Text += message + "\r\n";
-
+                    Text_Console_Output.SelectionStart = Text_Console_Output.Text.Length;
+                    Text_Console_Output.ScrollToCaret();
                 });
             }
         }

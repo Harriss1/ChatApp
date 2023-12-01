@@ -81,11 +81,10 @@ namespace ChatApp {
             else {
                 Button_Login.Text = "Anmelden";
             }
-
         }
 
         private void Button_Send_Message_Click(object sender, EventArgs e) {
-            chatController.SendMessage(Text_Message_Input.Text);
+            chatController.SendMessage(Text_Message_Input.Text, Text_Chat_Partner.Text);
             Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
             Text_Message_Input.Text = "";
         }

@@ -34,12 +34,10 @@ namespace ChatApp.Protocol {
         public XmlNode Content() {
             return Root().ChildNodes[2];
         }
-        public XmlNode StatusCode() {
+        private XmlNode StatusCode() {
             return Content().ChildNodes[0];
         }
-
-
-        public XmlNode ResultCode() {
+        private XmlNode ResultCode() {
             return Content().ChildNodes[0];
         }
 
@@ -47,28 +45,27 @@ namespace ChatApp.Protocol {
             string nodeName = NodeDescription.Message.Content.ResultCode.NAME;
             AppendNewContentChild(nodeName, code);
         }
-        public string GetResultCode() {
-            return ResultCode().InnerXml;
+        public string GetResultCodeFromContent() {
+            return GetTextValueFromContentChild(NodeDescription.Message.Content.ResultCode.NAME);
         }
         public void AppendStatusCodeIntoContent(string statusCode) {
             string nodeName = NodeDescription.Message.Content.StatusCode.NAME;
             AppendNewContentChild(nodeName, statusCode);
         }
-        public string GetStatusCode() {
-            return StatusCode().InnerXml;
+        public string GetStatusCodeFromContent() {
+            return GetTextValueFromContentChild(NodeDescription.Message.Content.StatusCode.NAME);
         }
 
         internal void AppendTextMessageIntoContent(string textMessage) {
             string nodeName = NodeDescription.Message.Content.TextMessage.NAME;
             AppendNewContentChild(nodeName, textMessage);
         }
+        internal string GetTextMessageFromContent() {
+            return GetTextValueFromContentChild(NodeDescription.Message.Content.TextMessage.NAME);
+        }
+
         internal string GetReceiverUsername() {
-            foreach (XmlNode node in Content().ChildNodes) {
-                if (node.Name.Equals(NodeDescription.Message.Content.Receiver.NAME)) {
-                    return node.InnerText;
-                }
-            }
-            return null;
+            return GetTextValueFromContentChild(NodeDescription.Message.Content.Receiver.NAME);
         }
         internal void AppendReceiverIntoContent(string receiver) {
             string nodeName = NodeDescription.Message.Content.Receiver.NAME;
@@ -76,12 +73,7 @@ namespace ChatApp.Protocol {
         }
 
         internal string GetSenderUsername() {
-            foreach (XmlNode node in Content().ChildNodes) {
-                if (node.Name.Equals(NodeDescription.Message.Content.Sender.NAME)) {
-                    return node.InnerText;
-                }
-            }
-            return null;
+            return GetTextValueFromContentChild(NodeDescription.Message.Content.Sender.NAME);
         }
         internal void AppendSenderIntoContent(string username) {
             string nodeName = NodeDescription.Message.Content.Sender.NAME;
@@ -95,6 +87,20 @@ namespace ChatApp.Protocol {
             Content().AppendChild(newNode);
         }
 
+        /// <summary>
+        /// Übergabewert muss einem Wert aus der Klasse NodeDescription.Name entsprechen
+        /// </summary>
+        /// <param name="nodeName"></param>
+        /// <returns>null falls Node nicht gefunden im Content</returns>
+        private string GetTextValueFromContentChild(string nodeName) {
+            string nodeText = null;
+            foreach (XmlNode node in Content().ChildNodes) {
+                if (node.Name.Equals(nodeName)) {
+                    return node.InnerText;
+                }
+            }
+            return nodeText;
+        }
         private void ThrowIfContentChildNodeExists(string nodeDescriptionName) {
             foreach (XmlNode node in Content().ChildNodes) {
                 if (node.Name.Equals(nodeDescriptionName)) {

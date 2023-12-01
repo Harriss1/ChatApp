@@ -26,7 +26,7 @@ namespace ChatApp.Protocol {
             return message;
         }
 
-        public static ProtocolMessage CreateChatMessageTransmissionResponse(string resultCode) {
+        public static ProtocolMessage CreateChatMessageTransmissionStatusResponse(string resultCode) {
             ProtocolMessage message = CreateBaseServerResponse();
             message.SetMessageType(MessageTypeEnum.CHAT_MESSAGE_TRANSMISSION_STATUS);
 

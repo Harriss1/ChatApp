@@ -33,44 +33,44 @@ namespace ChatApp.ChatClient.Network.Serverlink {
                     // Connect to Remote EndPoint
                     sender.Connect(remoteEndpoint);
 
-                    log.Debug("Socket() Verbindung aufgebaut zu: " + sender.RemoteEndPoint.ToString());
+                    log.Info("Socket() Verbindung aufgebaut zu: " + sender.RemoteEndPoint.ToString());
                 }
                 // Falls ein Null-String übergeben wurde
                 catch (ArgumentNullException ane) {
-                    log.Debug("ArgumentNullException : " + ane.ToString());
+                    log.Warn("ArgumentNullException : " + ane.ToString());
                 }
                 // Verbindungsfehler
                 catch (SocketException se) {
-                    log.Debug("SocketException : " + se.ToString());
+                    log.Warn("SocketException : " + se.ToString());
                 }
                 // Nicht vorhergesehene Fehler
                 catch (Exception e) {
-                    log.Debug("Unexpected exception : " + e.ToString());
+                    log.Error("Unexpected exception : " + e.ToString());
                 }
             }
             catch (Exception e) {
-                log.Debug(e.ToString());
+                log.Error(e.ToString());
             }
         }
         public void Stop() {
-            log.Debug("Client Socket Shutdown initiating...");
+            log.Info("Client Socket Shutdown initiating...");
             try {
                 sender.Shutdown(SocketShutdown.Both);
                 sender.Close();
 
-                log.Debug("Client Socket Shutdown komplett");
+                log.Info("Client Socket Shutdown komplett");
             }
             // Falls ein Null-String übergeben wurde
             catch (ArgumentNullException ane) {
-                log.Debug("ArgumentNullException : " + ane.ToString());
+                log.Warn("ArgumentNullException : " + ane.ToString());
             }
             // Verbindungsfehler
             catch (SocketException se) {
-                log.Debug("SocketException : " + se.ToString());
+                log.Error("SocketException : " + se.ToString());
             }
             // Nicht vorhergesehene Fehler
             catch (Exception e) {
-                log.Debug("Unexpected exception : " + e.ToString());
+                log.Error("Unexpected exception : " + e.ToString());
             }
         }
 
@@ -83,22 +83,22 @@ namespace ChatApp.ChatClient.Network.Serverlink {
         public string Send(string content) {
             string received = "[nothing received]";
             log.Debug("[start send] Zu übermittelnde Nachricht:" + content);
-            log.Debug("Client Kontrollpunkt 1");
+            log.Trace("Client Kontrollpunkt 1");
             byte[] bytes = new byte[1024];
             try {
                 // Encode the data string into a byte array.                        
                 byte[] msg = Encoding.ASCII.GetBytes(content);
 
-                log.Debug("Client Kontrollpunkt 4");
+                log.Trace("Client Kontrollpunkt 4");
                 // Send the data through the socket.
                 int bytesSent = sender.Send(msg);
-                log.Debug("Client Kontrollpunkt 5 - byteanzahl gesendet:" + bytesSent);
+                log.Trace("Client Kontrollpunkt 5 - byteanzahl gesendet:" + bytesSent);
 
                 // Receive the response from the remote device.
                 int bytesRec = 0;
                 
                 if (useTimeoutForResponse) {
-                    log.Debug("Benutze Timeout für Response");
+                    log.Trace("Benutze Timeout für Response");
                     IAsyncResult result;
                     Action action = () =>
                     {
@@ -106,37 +106,37 @@ namespace ChatApp.ChatClient.Network.Serverlink {
                     };
                     result = action.BeginInvoke(null, null);
                     if (result.AsyncWaitHandle.WaitOne(maxResponseWaitTimeout))
-                        log.Debug("Method successful.");
+                        log.Trace("Method successful.");
                     else
-                        log.Warn("Method timed out.");
+                        log.Debug("Method timed out.");
+                        log.Warn("Breche Empfang ab, da Server nichts gesendet hat");
                 } else {
                     log.Debug("erhalte Response (ohne Timeout)");
                     bytesRec = sender.Receive(bytes);
                 }
 
 
-                log.Debug("Client Kontrollpunkt 6");
+                log.Trace("Client Kontrollpunkt 6");
                 received = Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                log.Debug("Breche Empfang ab, da Server nichts gesendet hat");
-                log.Debug("Client Kontrollpunkt 7");
-                log.Debug("Echo = " + received);
+                log.Trace("Client Kontrollpunkt 7");
+                log.Trace("Empfange Nachricht = " + received);
                 // Release the socket.
 
-                log.Debug("Client Kontrollpunkt 8");
+                log.Trace("Client Kontrollpunkt 8");
             }
             // Falls ein Null-String übergeben wurde
             catch (ArgumentNullException ane) {
-                log.Debug("ArgumentNullException : " + ane.ToString());
+                log.Warn("ArgumentNullException : " + ane.ToString());
             }
             // Verbindungsfehler
             catch (SocketException se) {
-                log.Debug("SocketException : " + se.ToString());
+                log.Error("SocketException : " + se.ToString());
             }
             // Nicht vorhergesehene Fehler
             catch (Exception e) {
-                log.Debug("Unexpected exception : " + e.ToString());
+                log.Error("Unexpected exception : " + e.ToString());
             }
-            log.Info("beende Send with received=" + received);
+            log.Info("### Ende Send/Receive ### erhalten:\r\n" + received);
             return received;
         }
     }

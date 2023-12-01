@@ -32,7 +32,8 @@ namespace ChatApp.Server.ConnectionManager {
 
         internal Connection SearchByUsername(string username) {
             foreach (Connection connection in connections) {
-                if (connection.Client.Name.Equals(username)) {
+                if (connection.Client != null &&
+                    connection.Client.Name.Equals(username)) {
                     return connection;
                 }
             }

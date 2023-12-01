@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatClient\ChatSession.cs" />
+    <Compile Include="ChatClient\ClientRoutineTimeouts.cs" />
     <Compile Include="ChatClient\Network\Serverlink.cs" />
     <Compile Include="ChatClient\Network\TcpSocket.cs" />
     <Compile Include="ChatClient\ChatController.cs" />
@@ -76,11 +77,11 @@
       <DependentUpon>ServerWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="ByteConverter.cs" />
-    <Compile Include="Server\Clients\ChatMessage.cs" />
-    <Compile Include="Server\Clients\ChatRequest.cs" />
-    <Compile Include="Server\Clients\Client.cs" />
-    <Compile Include="Server\Clients\ConnectionStatus.cs" />
-    <Compile Include="Server\Clients\MessageType.cs" />
+    <Compile Include="Server\Repository\ChatMessage.cs" />
+    <Compile Include="Server\Repository\ChatRequest.cs" />
+    <Compile Include="Server\Repository\Client.cs" />
+    <Compile Include="Server\Repository\ConnectionStatus.cs" />
+    <Compile Include="Server\Repository\MessageType.cs" />
     <Compile Include="Server\CommunicationEventClerk.cs" />
     <Compile Include="Server\ConnectionManager\Connection.cs" />
     <Compile Include="Server\ConnectionManager\ConnectionManagerService.cs" />

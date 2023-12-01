@@ -8,6 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ChatApp.Server.MessageMediator {
+    /// <summary>
+    /// Verarbeitung und Weitergabe aller Protokoll-konformen Nachrichten
+    /// entweder in andere Programmteile z.B. Modell, oder an Empfänger
+    /// </summary>
     internal class PostalWorker {
         private static ConnectionRegister connectionRegister = ConnectionRegister.GetInstance();
         static LogPublisher log = new LogPublisher("PostalWorker");
@@ -19,12 +23,13 @@ namespace ChatApp.Server.MessageMediator {
                 log.Debug("Warnung: Request mit Nachrichten Typ 'UNDEFINED'");
                 ProtocolMessage statusResponse = ServerMessageCreator.CreateServerStatusResponse();
                 outbox.Add(CreateByteMessage(statusResponse, sender));
-                ProtocolMessage failureResponse = ServerMessageCreator.CreateChatMessageTransmissionResponse(ResultCodeEnum.FAILURE);
+                ProtocolMessage failureResponse = ServerMessageCreator.CreateChatMessageTransmissionStatusResponse(ResultCodeEnum.FAILURE);
                 outbox.Add(CreateByteMessage(failureResponse, sender));
                 return outbox;
             }
 
-            // Verbindungen ohne Login erhalten nur Statusnachrichten und die Möglichkeit sich einzuloggen
+            // Verbindungen ohne Login
+            // --> erhalten nur Statusnachrichten und die Möglichkeit sich einzuloggen
             if (!sender.IsLoggedIn()) {
                 if (messageType.Equals(MessageTypeEnum.STATUS_EXCHANGE)) {
                     log.Debug("status austausch");
@@ -34,7 +39,7 @@ namespace ChatApp.Server.MessageMediator {
                 if (messageType.Equals(MessageTypeEnum.LOGIN)) {
                     string username = "[nicht extrahiert]";
                     username = inboxMessage.GetSenderUsername();
-                    log.Debug("Loginversuch von username=" + username);
+                    log.Info("Loginversuch von username=" + username);
                     string result = ResultCodeEnum.FAILURE;
                     if (LoginUser(username, sender)) {
                         result = ResultCodeEnum.SUCCESS;
@@ -42,30 +47,46 @@ namespace ChatApp.Server.MessageMediator {
                     ProtocolMessage response = ServerMessageCreator.CreateLoginResponse(result);
                     outbox.Add(CreateByteMessage(response, sender));
                 }
-            } else {
-                log.Debug("EINGELOGGTER CLIENT Prüfe Antwortmöglichkeiten");
-                if (messageType.Equals(MessageTypeEnum.CHAT_MESSAGE)) {
-                    string receiverUsername = inboxMessage.GetReceiverUsername();
-                    Connection receiver = connectionRegister.SearchByUsername(receiverUsername);
-                    string transmissionCode = ResultCodeEnum.FAILURE;
-                    if (receiver == null) {
-                        log.Debug("Empfänger hat sich noch nicht registriert");
-                    } else {
-                        transmissionCode = ResultCodeEnum.SUCCESS;
-                        ProtocolMessage messageToChatPartner = inboxMessage;
-                        outbox.Add(CreateByteMessage(messageToChatPartner, receiver));
-                    }
-                    log.Debug("chat message transmission result");
-                    ProtocolMessage response = ServerMessageCreator.CreateChatMessageTransmissionResponse(transmissionCode);
-                    outbox.Add(CreateByteMessage(response, sender));
-                    //Connection chatPartnerConnection =
-                }
-                if (messageType.Equals(MessageTypeEnum.STATUS_EXCHANGE)) {
-                    log.Debug("Antwort: Status Austausch");
-                    ProtocolMessage response = ServerMessageCreator.CreateServerStatusResponse();
-                    outbox.Add(CreateByteMessage(response, sender));
-                }
+                return outbox;
             }
+
+            // Verbindungen mit Login
+
+            log.Debug("EINGELOGGTER CLIENT Prüfe Antwortmöglichkeiten");
+
+            // Chatnachricht
+            if (messageType.Equals(MessageTypeEnum.CHAT_MESSAGE)) {
+                log.Debug("Chatnachricht Verwaltung");
+                string receiverUsername = inboxMessage.GetReceiverUsername();
+                log.Debug("Suche Benutzer: " + receiverUsername);
+                Connection receiver = connectionRegister.SearchByUsername(receiverUsername);
+                string transmissionCode = ResultCodeEnum.FAILURE;
+                // Suche nach dem Empfänger
+                if (receiver == null) {
+                    log.Warn("Empfänger hat sich noch nicht registriert");
+                } else {
+                    log.Debug("Empfänger gefunden");
+                    log.Trace("Sende Nachricht von [" + inboxMessage.GetSenderUsername() + "]"
+                        +"an [" + inboxMessage.GetReceiverUsername() + "] \r\n" +
+                        "Inhalt=" + inboxMessage.GetTextMessageFromContent());
+                    transmissionCode = ResultCodeEnum.SUCCESS;
+                    ProtocolMessage messageToChatPartner = inboxMessage;
+                    outbox.Add(CreateByteMessage(messageToChatPartner, receiver));
+                }
+                // Ergebnis der Übermittlung an Server (nicht ob der Empfänger die Nachricht hat)
+                // dem Client mitteilen:
+                log.Debug("chat message transmission result");
+                ProtocolMessage transmissionStatusResponse = 
+                    ServerMessageCreator.CreateChatMessageTransmissionStatusResponse(transmissionCode);
+                outbox.Add(CreateByteMessage(transmissionStatusResponse, sender));
+            }
+            // Status Austausch
+            if (messageType.Equals(MessageTypeEnum.STATUS_EXCHANGE)) {
+                log.Debug("Antwort: Status Austausch");
+                ProtocolMessage response = ServerMessageCreator.CreateServerStatusResponse();
+                outbox.Add(CreateByteMessage(response, sender));
+            }
+            
             return outbox;
         }
 

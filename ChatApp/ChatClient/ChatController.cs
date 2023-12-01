@@ -14,6 +14,7 @@ namespace ChatApp.ChatClient {
         private static ChatSession chatSession;
         private static Queue<ProtocolMessage> chatMessages = new Queue<ProtocolMessage>();
         private static ProtocolMessage lastServerStatus;
+        private static int mainRoutineCounter = 0;
         internal void LoginToServer(string username, string ipAddress) {
             serverlink.StartConnection(ipAddress, Config.ServerPort);
             chatSession = new ChatSession(username);
@@ -23,7 +24,7 @@ namespace ChatApp.ChatClient {
             if(lastServerStatus == null) {
                 return;
             }
-            if (lastServerStatus.GetStatusCode().Equals(StatusCodeEnum.ONLINE)) {
+            if (lastServerStatus.GetStatusCodeFromContent().Equals(StatusCodeEnum.ONLINE)) {
                 log.Debug("sollte mich jetzt einloggen...");
                 // login
             } else {
@@ -50,7 +51,10 @@ namespace ChatApp.ChatClient {
             if (!ValidateSession()) {
                 return;
             }
-            SendStatusExchangeRequest();
+            if (mainRoutineCounter++ >= 10) {
+                SendStatusExchangeRequest();
+                mainRoutineCounter = 0;
+            }
 
             string receivedMessage = serverlink.DequeueMessageFromInbox();
             while (receivedMessage != null) {
@@ -69,7 +73,7 @@ namespace ChatApp.ChatClient {
                             chatMessages.Enqueue(message);
                         }
                         if (message.GetMessageType().Equals(MessageTypeEnum.LOGIN)) {
-                            if (message.GetResultCode().Equals(ResultCodeEnum.SUCCESS)) {
+                            if (message.GetResultCodeFromContent().Equals(ResultCodeEnum.SUCCESS)) {
                                 chatSession.IsLoggedIn = true;
                                 log.Debug("LOGIN SUCCESSFUL");
                             } else {
@@ -83,11 +87,11 @@ namespace ChatApp.ChatClient {
             }
         }
 
-        internal void SendMessage(string message) {
+        internal void SendMessage(string message, string receiver) {
             ValidateSession();
-            ProtocolMessage protocolMessage = new ProtocolMessage();
-            string receiver = "unknown";
-            protocolMessage = ClientMessageCreator.CreateChatMessageRequest(chatSession.Username, receiver, message);
+
+            ProtocolMessage protocolMessage = ClientMessageCreator.
+                CreateChatMessageRequest(chatSession.Username, receiver, message);
 
             serverlink.EnqueueMessageToOutBox(protocolMessage.GetXml().OuterXml);
         }
@@ -108,7 +112,7 @@ namespace ChatApp.ChatClient {
 
         internal string GetServerlinkStatusMessage() {
             if (lastServerStatus != null) {
-                return lastServerStatus.GetStatusCode();
+                return lastServerStatus.GetStatusCodeFromContent();
             }
             return "(keine Verbindung)";
         }
