@@ -30,6 +30,7 @@ namespace ChatApp.Server.MessageMediator {
         private ByteMessage PopNextOutboxByteMessage(Connection connection) {
             ByteMessage response = null;
             foreach (ByteMessage message in outboxByteMessageStack) {
+                // Hier liegt vielleicht der Fehler: Die Nachricht entspricht nicht der Verbindung des aktuellen server-Threads!
                 if (message.connection == connection) {
                      response = message;
                 }
@@ -85,7 +86,8 @@ namespace ChatApp.Server.MessageMediator {
                 in PostalWorker.RedistributeInboxMessage(incommingMessage, senderConnection)) {
 
                 outboxByteMessageStack.Add(outboxMessage);
-                log.Debug("Nachricht zur OUTBOX hinzugefügt.");
+
+                log.Debug("Nachricht zur OUTBOX hinzugefügt:" + ByteConverter.ToString(outboxMessage.Data, outboxMessage.Data.Length));
             }
         }
     }

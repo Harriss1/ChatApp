@@ -42,5 +42,15 @@ namespace ChatApp.Protocol {
             message.SetSourceType(sourceString);
             return message;
         }
+        internal static ProtocolMessage CreateChatMessageResponse(string sender, string receiver, string textMessage) {
+            ProtocolMessage message = CreateBaseServerResponse();
+            message.SetMessageType(MessageTypeEnum.CHAT_MESSAGE);
+
+            message.AppendSenderIntoContent(sender);
+            message.AppendReceiverIntoContent(receiver);
+            message.AppendTextMessageIntoContent(textMessage);
+
+            return message;
+        }
     }
 }

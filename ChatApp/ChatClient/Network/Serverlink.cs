@@ -30,34 +30,34 @@ namespace ChatApp.ChatClient.Network.Serverlink {
             socket.Connect(ipAddress, port);
         }
         internal void RunConnectionLoop() {
-            log.Info("STARTE LOOP");
+            log.Info("Starte Verbindungs-Schleife");
             // TODO FLAG TO CANCEL und STOP muss von hier ausgelesen werden.
             while (!stopSendReceiveLoop) {
-                log.Info("Send");
+                log.Trace("Send");
                 string received = null;
                 if (outboxMessages.Count > 0) {
                     string outmsg = outboxMessages.Dequeue();
                     log.Info("outmsg=" + outmsg);
                     received = socket.Send(outmsg);
                 }
-                log.Info("enqueue");
+                log.Trace("enqueue");
                 if (received != null) {
                     inboxMessages.Enqueue(received);
                 }
                 Thread.Sleep(200);
                 CheckFlags();
             }
-            log.Info("Send Receive Loop beendet.");
+            log.Info("Verbindungs-Schleife beendet.");
         }
         private void CheckFlags() {
-            log.Info("check Flags");
+            log.Trace("check Flags");
             if (TransmissionFlaggedToCancel) {
-                log.Info("stop");
+                log.Info("CheckFlags() Stop Flag erkannt");
                 StopSendReceiveLoop();
                 Thread.Sleep(1000);
             }
             if (ConnectionFlaggedToShutdown) {
-                log.Info("shutdown");
+                log.Info("CheckFlags() Shutdown Flag erkannt");
                 StopConnection();
             }
         }

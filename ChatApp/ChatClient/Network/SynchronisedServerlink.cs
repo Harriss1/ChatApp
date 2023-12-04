@@ -15,7 +15,7 @@ namespace ChatApp.ChatClient.Network {
         private static Serverlink.Serverlink serverlink;
         private static Thread clientThread;
         private static Thread handlerThread;
-        CancellationTokenSource cancelToken = new CancellationTokenSource();
+        CancellationTokenSource cancelToken;
 
         public SynchronisedServerlink() {
             if (serverlink != null) {
@@ -27,6 +27,12 @@ namespace ChatApp.ChatClient.Network {
         }
 
         internal void StartConnection(string ipAddress, string serverPort) {
+            if (cancelToken != null) {
+                // Falls wir den Thread erneut starten, befreien wir die Ressourcen des alten
+                // Thread-übergreifenden und über das Block-Level hinaus persistenten Token-Objekts
+                cancelToken.Dispose();
+            }
+            cancelToken = new CancellationTokenSource();
             clientThread = new Thread(() => RunTcpClientLoop(ipAddress, serverPort, cancelToken));
             clientThread.Start();            
         }

@@ -88,20 +88,20 @@ namespace ChatApp.Server.Listener {
                 closeConnection = clerk.PublishEvent_CheckForCancelConnection();
                 while (!closeConnection) {
                     
-                    log.Debug("Kontrolpunkt 3 [Start des Empfangs-Sende-Loop] ThreadId= " + Thread.CurrentThread.ManagedThreadId);
+                    log.Trace("Kontrolpunkt 3 [Start des Empfangs-Sende-Loop] ThreadId= " + Thread.CurrentThread.ManagedThreadId);
                     string receivedData = ReceiveText(handler, clerk);
-                    log.Debug("Kontrolpunkt 3.1: Wait 1000");
+                    log.Trace("Kontrolpunkt 3.1: Wait 1000");
                     System.Threading.Thread.Sleep(1000);
                     // bug
-                    log.Debug("Kontrolpunkt 4: erster Callback CheckForBytesToSend");
+                    log.Trace("Kontrolpunkt 4: erster Callback CheckForBytesToSend");
                     byte[] bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
 
                     while (bytesToSend != null && bytesToSend.Length > 0) {
                         log.Debug("Kontrolpunkt 5  [Start Sende-Loop] ThreadId= " + Thread.CurrentThread.ManagedThreadId);
 
-                        log.Debug("Sending bytes...");
+                        log.Trace("Sending bytes...");
                         handler.Send(bytesToSend);
-                        log.Debug("Kontrolpunkt 5.1: Loop Callback von CheckForBytesToSend");
+                        log.Trace("Kontrolpunkt 5.1: Loop Callback von CheckForBytesToSend");
                         bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
                     }
                     if (CheckTextForQuitMessage(receivedData)
@@ -142,20 +142,20 @@ namespace ChatApp.Server.Listener {
             bool shouldCancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
             log.Debug("receive loop start");
             while (bytesToReceiveExist && !shouldCancelTransmission) {
-                log.Debug("Kontrolpunkt 0-1");
+                log.Trace("Kontrolpunkt 0-1");
                 
                 bytes = new byte[1024];
                 int receivedBytesCount = handler.Receive(bytes);
-                log.Debug("Kontrolpunkt 0-2 EVENT PUBLISH BYTES RECEIVED");
+                log.Trace("Kontrolpunkt 0-2 EVENT PUBLISH BYTES RECEIVED");
                 try {
                     clerk.PublishEvent_ReceiveByteArray(bytes, receivedBytesCount);
                 }
                 catch (Exception e) {
                     throw new InvalidOperationException(e.ToString());
                 }
-                log.Debug("Kontrolpunkt 1");
+                log.Trace("Kontrolpunkt 1");
                 receivedData += Encoding.ASCII.GetString(bytes, 0, receivedBytesCount);
-                log.Debug("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
+                log.Trace("ThreadID TcpServer = " + Thread.CurrentThread.ManagedThreadId);
                 //if (receivedData.IndexOf("<EOF>") > -1) {
                 //    endOfFileReached = true;
                 //}
@@ -167,18 +167,14 @@ namespace ChatApp.Server.Listener {
                     // Achtung: Falls viele Datenpakete auf einmal geschickt werden, ist auch ein EndOfTransmission nötig
                     // Ansonsten werden die Bytes direkt an die jetzige Sendung angehangen :)
                 }
-                log.Debug("Kontrolpunkt 2");
+                log.Trace("Kontrolpunkt 2");
                 shouldCancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
-                log.Debug("Kontrolpunkt 2-1");
+                log.Trace("Kontrolpunkt 2-1");
                                  
             }
-            log.Debug("Kontrolpunkt 2-2");
+            log.Trace("Kontrolpunkt 2-2");
             log.Debug("Text received : " + receivedData);
-            // ReceiveText sollte nicht zweimal ausgeführt werden, beim zweiten mal kam nix zurück...
-            //byte[] msg = Encoding.ASCII.GetBytes(receivedData);
-            //handler.Send(msg); //könnte auskommentiert werden.
 
-            log.Debug("Kontrolpunkt 2-3");
             return receivedData;
         }
     }

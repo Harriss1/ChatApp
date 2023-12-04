@@ -56,7 +56,7 @@ namespace ChatApp.Server.MessageMediator {
 
             // Chatnachricht
             if (messageType.Equals(MessageTypeEnum.CHAT_MESSAGE)) {
-                log.Debug("Chatnachricht Verwaltung");
+                log.Debug("Verarbeitung der  erkannten Chatnachricht");
                 string receiverUsername = inboxMessage.GetReceiverUsername();
                 log.Debug("Suche Benutzer: " + receiverUsername);
                 Connection receiver = connectionRegister.SearchByUsername(receiverUsername);
@@ -66,16 +66,20 @@ namespace ChatApp.Server.MessageMediator {
                     log.Warn("Empfänger hat sich noch nicht registriert");
                 } else {
                     log.Debug("Empfänger gefunden");
-                    log.Trace("Sende Nachricht von [" + inboxMessage.GetSenderUsername() + "]"
+                    log.Info("Sende Nachricht von [" + inboxMessage.GetSenderUsername() + "]"
                         +"an [" + inboxMessage.GetReceiverUsername() + "] \r\n" +
-                        "Inhalt=" + inboxMessage.GetTextMessageFromContent());
+                        "Inhalt=" + inboxMessage.GetTextMessageFromContent() + "\r\n" +
+                        "XML=" + inboxMessage.GetXml().OuterXml);
                     transmissionCode = ResultCodeEnum.SUCCESS;
-                    ProtocolMessage messageToChatPartner = inboxMessage;
+                    ProtocolMessage messageToChatPartner = ServerMessageCreator.CreateChatMessageResponse(
+                        inboxMessage.GetSenderUsername(),
+                         inboxMessage.GetReceiverUsername(),
+                         inboxMessage.GetTextMessageFromContent());
                     outbox.Add(CreateByteMessage(messageToChatPartner, receiver));
                 }
                 // Ergebnis der Übermittlung an Server (nicht ob der Empfänger die Nachricht hat)
                 // dem Client mitteilen:
-                log.Debug("chat message transmission result");
+                log.Trace("erstelle Übermittlungsergebnis der Chatnachricht von Client an Server:");
                 ProtocolMessage transmissionStatusResponse = 
                     ServerMessageCreator.CreateChatMessageTransmissionStatusResponse(transmissionCode);
                 outbox.Add(CreateByteMessage(transmissionStatusResponse, sender));
