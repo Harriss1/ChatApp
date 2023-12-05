@@ -16,7 +16,12 @@ namespace ChatApp.Server.MessageMediator {
         private static ConnectionRegister connectionRegister = ConnectionRegister.GetInstance();
         static LogPublisher log = new LogPublisher("PostalWorker");
         internal static List<ByteMessage> RedistributeInboxMessage(ProtocolMessage inboxMessage, Connection sender) {
+            
             List<ByteMessage> outbox = new List<ByteMessage>();
+            if (inboxMessage == null || inboxMessage.GetMessageType() == null) {
+                log.Error("inboxMessage nicht korrekt geparst");
+                return outbox;
+            }
 
             string messageType = inboxMessage.GetMessageType();
             if (messageType.Equals(MessageTypeEnum.UNDEFINED)) {

@@ -30,7 +30,7 @@ namespace ChatApp.Server.MessageMediator {
 
         public void AddByteArrayToInbox(byte[] data, int length, Connection connection) {
             lock (_lock) {
-                log.Debug("AddByteArrayToInbox");
+                log.Trace("AddByteArrayToInbox()");
                 inboxByteMessageStack.Add(new ByteMessage(data, length, connection));
                 ProcessInboxByteMessageStack(connection);
             }
@@ -63,9 +63,6 @@ namespace ChatApp.Server.MessageMediator {
         }
 
         private void ProcessInboxByteMessageStack(Connection connection) {
-            //<issue>3</issue> Die Sammlung wurde geändert...
-            // welche der beiden Sammlungen?
-            // Fehler ist bei Zeile 68, also inboxByteMessageStack
             List<ByteMessage> processedMessages = new List<ByteMessage>();
             foreach (ByteMessage message in inboxByteMessageStack) {
                 if (message.connection == connection) {
@@ -90,36 +87,72 @@ namespace ChatApp.Server.MessageMediator {
         private void ProcessSingleInboxByteSegment(ByteMessage byteMessage, Connection senderConnection) {
             log.Debug("ProcessSingleByteSegment");
             String incommingString = ByteConverter.ToString(byteMessage.Data, byteMessage.Length);
-            if(incommingString == null
+            if (incommingString == null
                 || incommingString.Length <= Config.MessageMinLength
                 || incommingString.Equals("")) {
                 log.Warn("Nachricht wurde möglicherweise unvollständig übermittelt.");
                 log.Warn("Breche Bearbeitung des Segments ab.");
                 return;
             }
-            log.Debug("INBOX ProcessSingleByteSegment : erhaltene Nachricht: " + incommingString);
-            
+            log.Debug("ProcessSingleByteSegment() erhaltener String in INBOX: " + incommingString);
+            List<string> incommingMessages = new List<string>();
+            // In vielen Fällen erhalten wir mehrere Nachrichten in einem byteMessage-Packet:
+            if (incommingString.Substring(Config.protocolMsgStart.Length).Contains(Config.protocolMsgStart)) {
+                log.Warn("ProcessSingleInboxByteSegment() mehrere Nachrichten in einem Segment: " + incommingString);
+                
+                foreach (string soloMessage in SplitIntoSoloMessages(incommingString)) {
+                    incommingMessages.Add(soloMessage);
+                    log.Info("Erhaltene Einzelnachricht: " + soloMessage);
+                }
+            }
+            else {
+                incommingMessages.Add(incommingString);
+            }
+
+            foreach (string message in incommingMessages) {
+                AdministrateSingleInboxMessage(senderConnection, message);
+            }            
+        }
+
+        private string[] SplitIntoSoloMessages(string incommingString) {
+            string separator = Config.protocolMsgEnd + Config.protocolMsgStart;
+
+            string[] result = incommingString.Split(
+                new string[] { separator }, 
+                StringSplitOptions.RemoveEmptyEntries);
+
+            // seperator muss wieder hinzugefügt werden.
+            for (int i = 0; i < result.Length; i++) {
+                string finalMessage = result[i];
+                if (!finalMessage.Contains(Config.protocolMsgStart)) {
+                    finalMessage = Config.protocolMsgStart + finalMessage;
+                }
+                if (!finalMessage.Contains(Config.protocolMsgEnd)) {
+                    finalMessage = finalMessage + Config.protocolMsgEnd;
+                }
+                result[i] = finalMessage;
+            }
+
+            return result;
+        }
+
+        private void AdministrateSingleInboxMessage(Connection senderConnection, string incommingString) {
             ProtocolMessage incommingMessage = new ProtocolMessage();
             incommingMessage.LoadAndValidate(incommingString);
             if (incommingMessage == null) {
-                log.Debug("ProcessSingleInboxByteSegment(): WARN leere Nachricht erhalten" +
-                    ", breche Segment-Bearbeitung ab.");
+                log.Error("AdministrateSingleInboxMessage(): leere Nachricht erhalten" +
+                    ", breche Verarbeitung dieser einzelnen Nachricht ab.");
                 return;
             }
 
-            if (incommingString.Substring(Config.protocolMsgStart.Length).Contains(Config.protocolMsgStart)){
-                log.Warn("ProcessSingleInboxByteSegment() mehrere Nachrichten in einem Segment: " + incommingString);
-                throw new NotImplementedException("mehrere Nachrichten in einem Segment");
-            }
-            log.Debug("INBOX ProcessSingleByteSegment : erstelle entsprechende Reaktion" +
-                " (im Debug: add irgendwas to Outbox)");
-                        
-            foreach (ByteMessage outboxMessage 
+            log.Debug("AdministrateSingleInboxMessage : verwalte die erhaltene Nachricht (Weiterleitung, Modelupdate)");
+
+            foreach (ByteMessage outboxMessage
                 in PostalWorker.RedistributeInboxMessage(incommingMessage, senderConnection)) {
 
                 outboxByteMessageStack.Add(outboxMessage);
 
-                log.Debug("Nachricht zur OUTBOX hinzugefügt:" + ByteConverter.ToString(outboxMessage.Data, outboxMessage.Data.Length));
+                log.Debug("AdministrateSingleInboxMessage Nachricht zur Outbox hinzugefügt:" + ByteConverter.ToString(outboxMessage.Data, outboxMessage.Data.Length));
             }
         }
     }

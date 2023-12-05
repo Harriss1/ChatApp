@@ -160,7 +160,7 @@ namespace ChatApp.Server.Listener {
                 //if (receivedData.IndexOf("<EOF>") > -1) {
                 //    endOfFileReached = true;
                 //}
-                log.Debug("Received Bytes=" + receivedBytesCount);
+                log.Trace("Received Bytes=" + receivedBytesCount);
 
                 int availableBytes = handler.Available;
                 if (availableBytes <= 0) {
@@ -174,7 +174,7 @@ namespace ChatApp.Server.Listener {
                                  
             }
             log.Trace("Kontrolpunkt 2-2");
-            log.Debug("Text received : " + receivedData);
+            log.Trace("Text received : " + receivedData);
 
             return receivedData;
         }

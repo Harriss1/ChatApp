@@ -41,14 +41,57 @@ namespace ChatApp.ChatClient.Network.Serverlink {
                     received = socket.Send(outmsg);
                 }
                 log.Trace("enqueue");
-                if (received != null) {
-                    inboxMessages.Enqueue(received);
+                if (received != null && !received.Equals("")) {
+                    SplitAndEnqueReceivedMessages(received);
                 }
                 Thread.Sleep(200);
                 CheckFlags();
             }
             log.Info("Verbindungs-Schleife beendet.");
         }
+
+        private void SplitAndEnqueReceivedMessages(string received) {
+            List<string> incommingMessages = new List<string>();
+            // In vielen Fällen erhalten wir mehrere Nachrichten in einem byteMessage-Packet:
+            if (received.Substring(Config.protocolMsgStart.Length).Contains(Config.protocolMsgStart)) {
+                log.Warn("mehrere Nachrichten in einem Segment: " + received);
+
+                foreach (string soloMessage in SplitIntoSoloMessages(received)) {
+                    incommingMessages.Add(soloMessage);
+                    log.Info("Erhaltene Einzelnachricht: " + soloMessage);
+                }
+            }
+            else {
+                incommingMessages.Add(received);
+            }
+
+            foreach (string message in incommingMessages) {
+                inboxMessages.Enqueue(message);
+            }
+        }
+
+        private string[] SplitIntoSoloMessages(string incommingString) {
+            string separator = Config.protocolMsgEnd + Config.protocolMsgStart;
+
+            string[] result = incommingString.Split(
+                new string[] { separator },
+                StringSplitOptions.RemoveEmptyEntries);
+
+            // seperator muss wieder hinzugefügt werden.
+            for (int i = 0; i < result.Length; i++) {
+                string finalMessage = result[i];
+                if (!finalMessage.Contains(Config.protocolMsgStart)) {
+                    finalMessage = Config.protocolMsgStart + finalMessage;
+                }
+                if (!finalMessage.Contains(Config.protocolMsgEnd)) {
+                    finalMessage = finalMessage + Config.protocolMsgEnd;
+                }
+                result[i] = finalMessage;
+            }
+
+            return result;
+        }
+
         private void CheckFlags() {
             log.Trace("check Flags");
             if (TransmissionFlaggedToCancel) {
