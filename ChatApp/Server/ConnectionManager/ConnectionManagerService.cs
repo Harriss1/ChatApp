@@ -10,14 +10,17 @@ namespace ChatApp.Server.Listener{
     internal class ConnectionManagerService {
 
         private static ConnectionRegister connectionRegister = ConnectionRegister.GetInstance();
-        MessageService messageService = new MessageService();
+        MessageService messageService = MessageService.GetInstance();
         private LogPublisher log = new LogPublisher("ConnectionManagerService");
         private ServerRunner serverRunner;
         private ServerRunner.OnDefineConnectionClerkEventForEachNewConnection _onEvent_DefineConnectionClerk;
         private ServerRunner.OnAcceptedNewConnectionEvent _onAcceptedNewConnectionEvent;
         private ServerRunner.OnEvent_PublishConnectionThread _onEvent_PublishConnectionThread;
 
-
+        private class DelegateApi {
+            // Erleichtert das Debugging, indem deutlicher zu lesen ist, dasss es weitere Interface-Methoden gibt
+            // <issue>2</issue> Delegates sind Schnittstellenfunktionen, welche als Public getestet werden müssen.
+        }
         private ConnectionManagerService() { 
             
         }
@@ -38,6 +41,7 @@ namespace ChatApp.Server.Listener{
         }
 
         public void ShutdownAllConnections() {
+            // TODO <issue>1</issue>
             log.Debug("ShutDown all connections not implemented!");
         }
 
@@ -59,25 +63,17 @@ namespace ChatApp.Server.Listener{
             // Nach jedem Verbindungsaufbau ist ein neuer ConnectionClerk notwendig.
             serverRunner.SubscribeTo_OnDefineConnectionClerkEvent(_onEvent_DefineConnectionClerk);
         }
-
         private bool On_CheckCancelConnection() {
+            // TODO <issue>1</issue>
             return false;
         }
 
         private bool On_CheckAbortTransmission() {
+            // TODO <issue>1</issue>
             return false;
         }
-        //string mirrorMessage;
         private byte[] On_CheckForBytesToSendLoopUntilAllSent() {
             log.Debug("Prüfe ob Server Nachrichten zum versenden hat... ThreadId= " + Thread.CurrentThread.ManagedThreadId);
-            //if (mirrorMessage == null) {
-            //    msg.Debug("[keine Nachrichten]");
-            //    return null;
-            //}
-            //msg.Debug("Nachricht: " + mirrorMessage);
-            //string message = mirrorMessage;
-            //mirrorMessage = null;
-            //return Encoding.ASCII.GetBytes(message);
             byte[] response = messageService.GetNextOutboxByteArray(connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
             if (response == null) {
                 log.Debug("[keine Nachrichten]");
@@ -112,8 +108,7 @@ namespace ChatApp.Server.Listener{
             log.Trace("Details: int receivedBytes=" + receivedBytes);
             log.Trace("Details: byte[] Länge=" + bytes.Length);
             messageService.AddByteArrayToInbox(bytes, receivedBytes,
-                connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));
-                        
+                connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId));                        
         }
 
         private CommunicationEventClerk OnEvent_DefineConnectionClerk() {

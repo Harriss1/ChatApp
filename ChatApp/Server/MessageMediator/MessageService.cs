@@ -9,22 +9,42 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Server.MessageMediator {
     internal class MessageService {
-        List<ByteMessage> inboxByteMessageStack = new List<ByteMessage>();
-        List<ByteMessage> outboxByteMessageStack = new List<ByteMessage>();
+        private static MessageService instance;
+        object _lock = new object();
+
+        private List<ByteMessage> inboxByteMessageStack = new List<ByteMessage>();
+        private List<ByteMessage> outboxByteMessageStack = new List<ByteMessage>();
         LogPublisher log = new LogPublisher("MessageService");
+        public List<Connection> connections = new List<Connection>();
+        private MessageService() {
+        }
+        internal static MessageService GetInstance() {
+            object _lock = new object();
+            lock (_lock) {
+                if (instance == null) {
+                    instance = new MessageService();
+                }
+            }
+            return instance;
+        }
+
         public void AddByteArrayToInbox(byte[] data, int length, Connection connection) {
-            log.Debug("AddByteArrayToInbox");
-            inboxByteMessageStack.Add(new ByteMessage(data, length, connection));
-            ProcessInboxByteMessageStack(connection);
+            lock (_lock) {
+                log.Debug("AddByteArrayToInbox");
+                inboxByteMessageStack.Add(new ByteMessage(data, length, connection));
+                ProcessInboxByteMessageStack(connection);
+            }
         }
 
         public byte[] GetNextOutboxByteArray(Connection connection) {
-            log.Debug("### GetNextOutboxByteArray ThreadId= " + Thread.CurrentThread.ManagedThreadId);
-            ByteMessage response = PopNextOutboxByteMessage(connection);
-            if (response == null) {
-                return null;
+            lock (_lock) {
+                log.Debug("### GetNextOutboxByteArray ThreadId= " + Thread.CurrentThread.ManagedThreadId);
+                ByteMessage response = PopNextOutboxByteMessage(connection);
+                if (response == null) {
+                    return null;
+                }
+                return response.Data;
             }
-            return response.Data;
         }
 
         private ByteMessage PopNextOutboxByteMessage(Connection connection) {
@@ -43,17 +63,24 @@ namespace ChatApp.Server.MessageMediator {
         }
 
         private void ProcessInboxByteMessageStack(Connection connection) {
-            List<ByteMessage> processedSegments = new List<ByteMessage>();
+            //<issue>3</issue> Die Sammlung wurde geändert...
+            // welche der beiden Sammlungen?
+            // Fehler ist bei Zeile 68, also inboxByteMessageStack
+            List<ByteMessage> processedMessages = new List<ByteMessage>();
             foreach (ByteMessage message in inboxByteMessageStack) {
-                if(message.connection == connection) {
+                if (message.connection == connection) {
                     // TODO Auf mehrere Segmente verteilte Nachrichten verarbeiten.
-                    processedSegments.Add(message);
+                    processedMessages.Add(message);
                     ProcessSingleInboxByteSegment(message, connection);
                 }
             }
+            RemoveProcessedInboxMessages(processedMessages);
+        }
+
+        private void RemoveProcessedInboxMessages(List<ByteMessage> processedSegments) {
             foreach (ByteMessage finished in processedSegments) {
                 log.Trace("inbox_length = " + inboxByteMessageStack.Count);
-                log.Trace("Entferne INBOX Nachricht nach Processing:" 
+                log.Trace("Entferne INBOX Nachricht nach Processing:"
                     + ByteConverter.ToString(finished.Data, finished.Length));
                 inboxByteMessageStack.Remove(finished);
                 log.Trace("inbox_length = " + inboxByteMessageStack.Count);
@@ -78,6 +105,11 @@ namespace ChatApp.Server.MessageMediator {
                 log.Debug("ProcessSingleInboxByteSegment(): WARN leere Nachricht erhalten" +
                     ", breche Segment-Bearbeitung ab.");
                 return;
+            }
+
+            if (incommingString.Substring(Config.protocolMsgStart.Length).Contains(Config.protocolMsgStart)){
+                log.Warn("ProcessSingleInboxByteSegment() mehrere Nachrichten in einem Segment: " + incommingString);
+                throw new NotImplementedException("mehrere Nachrichten in einem Segment");
             }
             log.Debug("INBOX ProcessSingleByteSegment : erstelle entsprechende Reaktion" +
                 " (im Debug: add irgendwas to Outbox)");

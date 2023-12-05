@@ -51,7 +51,7 @@ namespace ChatApp.ChatClient {
             if (!ValidateSession()) {
                 return;
             }
-            if (mainRoutineCounter++ >= 10) {
+            if (mainRoutineCounter++ >= 0) {
                 // nur hier schaut der Server nach, ob wir eine Nachricht erhalten haben -.-
                 SendStatusExchangeRequest();
                 mainRoutineCounter = 0;

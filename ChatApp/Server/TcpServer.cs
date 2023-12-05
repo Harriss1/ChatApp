@@ -151,7 +151,8 @@ namespace ChatApp.Server.Listener {
                     clerk.PublishEvent_ReceiveByteArray(bytes, receivedBytesCount);
                 }
                 catch (Exception e) {
-                    throw new InvalidOperationException(e.ToString());
+                    // FEHLER WIRD HIER ABGEFANGEN?! entsteht MessageMediator Z68?!
+                    throw new InvalidOperationException("Clerk Referenzierung defekt" + e.ToString());
                 }
                 log.Trace("Kontrolpunkt 1");
                 receivedData += Encoding.ASCII.GetString(bytes, 0, receivedBytesCount);

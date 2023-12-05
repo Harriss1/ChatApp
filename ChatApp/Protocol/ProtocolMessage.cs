@@ -131,7 +131,7 @@ namespace ChatApp.Protocol {
         }
         public ProtocolMessage LoadAndValidate(string message) {
             if(alreadySet) {
-                log.Warn("FEHLER Create(): Würde Daten überschreiben, bitte neue Instanz erzeugen.");
+                log.Warn("FEHLER LoadAndValidate(): Würde Daten überschreiben, bitte neue Instanz erzeugen.");
                 return this;
             }
             XmlDocument loadedDocument = new XmlDocument();
@@ -139,7 +139,8 @@ namespace ChatApp.Protocol {
                 loadedDocument.LoadXml(message);
             }
             catch (XmlException e) {
-                log.Warn("FEHLER ProtocolMessage.Create(): XmlDocument-Bibliothek kann String nicht zu Dokument umwandeln: " + e.Message);
+                log.Warn("FEHLER bei Nachrichtenprüfung: " + message);
+                log.Warn("FEHLER ProtocolMessage.LoadAndValidate(): XmlDocument-Bibliothek kann String nicht zu Dokument umwandeln: " + e.Message);
                 return null;
             }
             if (!ProtocolValidator.IsBaseProtocolConform(loadedDocument)) {
