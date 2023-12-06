@@ -102,13 +102,15 @@ namespace ChatApp.ChatClient {
             }
         }
 
-        internal void SendMessage(string message, string receiver) {
+        internal ProtocolMessage SendMessage(string message, string receiver) {
             ValidateSession();
 
             ProtocolMessage protocolMessage = ClientMessageCreator.
                 CreateChatMessageRequest(chatSession.Username, receiver, message);
 
             serverlink.EnqueueMessageToOutBox(protocolMessage.GetXml().OuterXml);
+            // <issue>8</issue> Übermittlungsstatus zurück geben für spezifische Nachricht.
+            return protocolMessage;
         }
 
         internal ProtocolMessage DequeueReceivedChatMessage() {

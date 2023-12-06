@@ -52,10 +52,10 @@ namespace ChatApp {
                 string username = Text_Username.Text;
                 string ipAddress = "127.0.0.1";
                 chatController.LoginToServer(username, ipAddress);
-                Text_Chatmessages_Placeholder.Text += "\r\n#\r\n Verbinde zu: " + ipAddress + ":" + Config.ServerPort;
+                //Text_Chatmessages_Placeholder.Text += "\r\n#\r\n Verbinde zu: " + ipAddress + ":" + Config.ServerPort;
             } else {
                 chatController.LogoutFromServer();
-                Text_Chatmessages_Placeholder.Text += "\r\n#\r\nAbmeldevorgang gestartet...";
+                //Text_Chatmessages_Placeholder.Text += "\r\n#\r\nAbmeldevorgang gestartet...";
             }
 
             updateTimer = new Timer();
@@ -67,8 +67,8 @@ namespace ChatApp {
         private void UpdateUI(object sender, EventArgs e) {            
             ProtocolMessage received = chatController.DequeueReceivedChatMessage();
             if (received != null) {
-                Text_Chatmessages_Placeholder.Text += received.GetXml().OuterXml;
-                AddSingleMessagePanel(received);
+                //Text_Chatmessages_Placeholder.Text += received.GetXml().OuterXml;
+                AddSingleMessagePanel(received, false);
             }
 
             string serverlinkStatusMessage = chatController.GetServerlinkStatusMessage();
@@ -83,7 +83,10 @@ namespace ChatApp {
             }
         }
         private Panel lastPanel = null;
-        private void AddSingleMessagePanel(ProtocolMessage message) {
+        private void AddSingleMessagePanel(ProtocolMessage message, bool moveToTheRightSide) {
+            if (!message.GetMessageType().Equals(MessageTypeEnum.CHAT_MESSAGE)) {
+                return;
+            }
             Point locator = new Point(0, 0);
             if (lastPanel != null) {
                 locator = lastPanel.Location;
@@ -94,6 +97,8 @@ namespace ChatApp {
             Panel panel = new Panel();
             TextBox nameBox = new TextBox();
             nameBox.Text = message.GetSenderUsername();
+            if (moveToTheRightSide)
+                nameBox.Anchor = AnchorStyles.Right | AnchorStyles.Top;
 
             TextBox messageBox = new TextBox();
             messageBox.Multiline = true;
@@ -107,6 +112,9 @@ namespace ChatApp {
             panel.Location = locator;
             panel.Height = messageBox.Height + nameBox.Height + 4;
             panel.Width = messageBox.Width + 6;
+            if (moveToTheRightSide) 
+                panel.Anchor = AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Left;
+
             ChatPanelScroller.Controls.Add(panel);
             lastPanel = panel;
             ChatPanelScroller.VerticalScroll.Value = ChatPanelScroller.VerticalScroll.Maximum;
@@ -120,7 +128,10 @@ namespace ChatApp {
                     MessageBoxButtons.OK);
                 return;
             }
-            chatController.SendMessage(Text_Message_Input.Text, Text_Chat_Partner.Text);
+            ProtocolMessage sentMessage = chatController.SendMessage(Text_Message_Input.Text, Text_Chat_Partner.Text);
+            if (sentMessage != null) {
+                AddSingleMessagePanel(sentMessage, true);
+            }
             Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
             Text_Message_Input.Text = "";
         }

@@ -36,7 +36,6 @@
             this.Button_Request_Chat_Partner = new System.Windows.Forms.Button();
             this.Text_Chat_Partner = new System.Windows.Forms.TextBox();
             this.Text_Message_Input = new System.Windows.Forms.TextBox();
-            this.Text_Chatmessages_Placeholder = new System.Windows.Forms.TextBox();
             this.tabTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.chatSegmentTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.ChatPanelScroller = new System.Windows.Forms.Panel();
@@ -56,23 +55,17 @@
             this.mainTableLayout.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(232)))), ((int)(((byte)(252)))));
             this.mainTableLayout.ColumnCount = 1;
             this.mainTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.mainTableLayout.Controls.Add(this.Button_Send_Message, 0, 5);
             this.mainTableLayout.Controls.Add(this.tableLayoutPanel1, 0, 1);
             this.mainTableLayout.Controls.Add(this.tableLayoutPanel2, 0, 0);
             this.mainTableLayout.Controls.Add(this.tableLayoutPanel3, 0, 2);
-            this.mainTableLayout.Controls.Add(this.Text_Message_Input, 0, 4);
-            this.mainTableLayout.Controls.Add(this.Text_Chatmessages_Placeholder, 0, 3);
-            this.mainTableLayout.Controls.Add(this.tabTableLayout, 0, 6);
+            this.mainTableLayout.Controls.Add(this.tabTableLayout, 0, 3);
             this.mainTableLayout.Location = new System.Drawing.Point(0, 0);
             this.mainTableLayout.Margin = new System.Windows.Forms.Padding(0);
             this.mainTableLayout.Name = "mainTableLayout";
-            this.mainTableLayout.RowCount = 7;
+            this.mainTableLayout.RowCount = 4;
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.mainTableLayout.Size = new System.Drawing.Size(800, 548);
             this.mainTableLayout.TabIndex = 0;
@@ -82,9 +75,9 @@
             this.Button_Send_Message.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_Send_Message.Location = new System.Drawing.Point(3, 327);
+            this.Button_Send_Message.Location = new System.Drawing.Point(3, 379);
             this.Button_Send_Message.Name = "Button_Send_Message";
-            this.Button_Send_Message.Size = new System.Drawing.Size(794, 18);
+            this.Button_Send_Message.Size = new System.Drawing.Size(782, 14);
             this.Button_Send_Message.TabIndex = 4;
             this.Button_Send_Message.Text = "Senden";
             this.Button_Send_Message.UseVisualStyleBackColor = true;
@@ -235,29 +228,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Text_Message_Input.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.Text_Message_Input.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Text_Message_Input.Location = new System.Drawing.Point(3, 227);
+            this.Text_Message_Input.Location = new System.Drawing.Point(3, 349);
             this.Text_Message_Input.Multiline = true;
             this.Text_Message_Input.Name = "Text_Message_Input";
             this.Text_Message_Input.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.Text_Message_Input.Size = new System.Drawing.Size(794, 94);
+            this.Text_Message_Input.Size = new System.Drawing.Size(782, 24);
             this.Text_Message_Input.TabIndex = 4;
             this.Text_Message_Input.Text = "(neue Nachricht verfassen)";
             this.Text_Message_Input.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Text_Message_Input_MouseDown);
-            // 
-            // Text_Chatmessages_Placeholder
-            // 
-            this.Text_Chatmessages_Placeholder.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.Text_Chatmessages_Placeholder.Font = new System.Drawing.Font("Calibri", 12F);
-            this.Text_Chatmessages_Placeholder.Location = new System.Drawing.Point(3, 113);
-            this.Text_Chatmessages_Placeholder.Multiline = true;
-            this.Text_Chatmessages_Placeholder.Name = "Text_Chatmessages_Placeholder";
-            this.Text_Chatmessages_Placeholder.ReadOnly = true;
-            this.Text_Chatmessages_Placeholder.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.Text_Chatmessages_Placeholder.Size = new System.Drawing.Size(794, 108);
-            this.Text_Chatmessages_Placeholder.TabIndex = 5;
-            this.Text_Chatmessages_Placeholder.Text = "(messages)";
             // 
             // tabTableLayout
             // 
@@ -268,12 +246,12 @@
             this.tabTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tabTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tabTableLayout.Controls.Add(this.chatSegmentTableLayout, 0, 1);
-            this.tabTableLayout.Location = new System.Drawing.Point(3, 351);
+            this.tabTableLayout.Location = new System.Drawing.Point(3, 113);
             this.tabTableLayout.Name = "tabTableLayout";
             this.tabTableLayout.RowCount = 2;
             this.tabTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tabTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tabTableLayout.Size = new System.Drawing.Size(794, 194);
+            this.tabTableLayout.Size = new System.Drawing.Size(794, 432);
             this.tabTableLayout.TabIndex = 6;
             // 
             // chatSegmentTableLayout
@@ -283,13 +261,16 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chatSegmentTableLayout.ColumnCount = 1;
             this.chatSegmentTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.chatSegmentTableLayout.Controls.Add(this.Button_Send_Message, 0, 2);
             this.chatSegmentTableLayout.Controls.Add(this.ChatPanelScroller, 0, 0);
+            this.chatSegmentTableLayout.Controls.Add(this.Text_Message_Input, 0, 1);
             this.chatSegmentTableLayout.Location = new System.Drawing.Point(3, 33);
             this.chatSegmentTableLayout.Name = "chatSegmentTableLayout";
-            this.chatSegmentTableLayout.RowCount = 2;
+            this.chatSegmentTableLayout.RowCount = 3;
             this.chatSegmentTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.chatSegmentTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.chatSegmentTableLayout.Size = new System.Drawing.Size(788, 158);
+            this.chatSegmentTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.chatSegmentTableLayout.Size = new System.Drawing.Size(788, 396);
             this.chatSegmentTableLayout.TabIndex = 0;
             // 
             // ChatPanelScroller
@@ -298,7 +279,7 @@
             this.ChatPanelScroller.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ChatPanelScroller.Location = new System.Drawing.Point(3, 3);
             this.ChatPanelScroller.Name = "ChatPanelScroller";
-            this.ChatPanelScroller.Size = new System.Drawing.Size(782, 122);
+            this.ChatPanelScroller.Size = new System.Drawing.Size(782, 340);
             this.ChatPanelScroller.TabIndex = 0;
             // 
             // ChatWindow
@@ -310,7 +291,6 @@
             this.Name = "ChatWindow";
             this.Text = "ChatApp";
             this.mainTableLayout.ResumeLayout(false);
-            this.mainTableLayout.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
@@ -319,6 +299,7 @@
             this.tableLayoutPanel3.PerformLayout();
             this.tabTableLayout.ResumeLayout(false);
             this.chatSegmentTableLayout.ResumeLayout(false);
+            this.chatSegmentTableLayout.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -338,7 +319,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Button Button_Request_Chat_Partner;
         private System.Windows.Forms.TextBox Text_Chat_Partner;
-        private System.Windows.Forms.TextBox Text_Chatmessages_Placeholder;
         private System.Windows.Forms.TableLayoutPanel tabTableLayout;
         private System.Windows.Forms.TableLayoutPanel chatSegmentTableLayout;
         private System.Windows.Forms.Panel ChatPanelScroller;
