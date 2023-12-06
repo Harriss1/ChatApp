@@ -48,9 +48,13 @@ namespace ChatApp {
             for (int i = 0; i < gapLength; i++) {
                 gap += " ";
             }
+            string threadNumber = Thread.CurrentThread.ManagedThreadId.ToString();
+            if(threadNumber.Length == 1) {
+                threadNumber = " " + threadNumber;
+            }
             string entryText =
                 "[" + time + "]" +
-                "(" + Thread.CurrentThread.ManagedThreadId + ")" +
+                "(" + threadNumber + ")" +
                 "[" + sourceIdentifier + "]" +
                 gap +
                 message;

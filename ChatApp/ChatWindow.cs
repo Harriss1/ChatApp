@@ -1,4 +1,5 @@
 ﻿using ChatApp.ChatClient;
+using ChatApp.Protocol;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -64,9 +65,10 @@ namespace ChatApp {
         }
 
         private void UpdateUI(object sender, EventArgs e) {            
-            string received = chatController.DequeueReceivedChatMessage();
+            ProtocolMessage received = chatController.DequeueReceivedChatMessage();
             if (received != null) {
-                Text_Chatmessages_Placeholder.Text += received;
+                Text_Chatmessages_Placeholder.Text += received.GetXml().OuterXml;
+                AddSingleMessagePanel(received);
             }
 
             string serverlinkStatusMessage = chatController.GetServerlinkStatusMessage();
@@ -79,6 +81,35 @@ namespace ChatApp {
             else {
                 Button_Login.Text = "Anmelden";
             }
+        }
+        private Panel lastPanel = null;
+        private void AddSingleMessagePanel(ProtocolMessage message) {
+            Point locator = new Point(0, 0);
+            if (lastPanel != null) {
+                locator = lastPanel.Location;
+                locator.X = 0;
+                locator.Offset(0, lastPanel.Height + 2);
+            }
+
+            Panel panel = new Panel();
+            TextBox nameBox = new TextBox();
+            nameBox.Text = message.GetSenderUsername();
+
+            TextBox messageBox = new TextBox();
+            messageBox.Multiline = true;
+            messageBox.Text = message.GetTextMessageFromContent();
+            messageBox.Width = ChatPanelScroller.Width - 60;
+            Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
+            messageBox.Height = size.Height + 6;
+            messageBox.Top = nameBox.Height + 2;
+            panel.Controls.Add(nameBox);
+            panel.Controls.Add(messageBox);
+            panel.Location = locator;
+            panel.Height = messageBox.Height + nameBox.Height + 4;
+            panel.Width = messageBox.Width + 6;
+            ChatPanelScroller.Controls.Add(panel);
+            lastPanel = panel;
+            ChatPanelScroller.VerticalScroll.Value = ChatPanelScroller.VerticalScroll.Maximum;
         }
 
         private void Button_Send_Message_Click(object sender, EventArgs e) {

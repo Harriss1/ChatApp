@@ -111,7 +111,7 @@ namespace ChatApp.ChatClient {
             serverlink.EnqueueMessageToOutBox(protocolMessage.GetXml().OuterXml);
         }
 
-        internal string DequeueReceivedChatMessage() {
+        internal ProtocolMessage DequeueReceivedChatMessage() {
             ValidateSession();
             HandleNetworkMessages();
 
@@ -119,7 +119,8 @@ namespace ChatApp.ChatClient {
                 return null;
             }
             ProtocolMessage protocolMessage = chatMessages.Dequeue();
-            return protocolMessage.GetXml().OuterXml;
+            //return protocolMessage.GetXml().OuterXml;
+            return protocolMessage;
         }
         internal void LogoutFromServer() {
             log.Error("Logout angefragt...");
