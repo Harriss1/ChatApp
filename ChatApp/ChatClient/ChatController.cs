@@ -25,10 +25,11 @@ namespace ChatApp.ChatClient {
                 return;
             }
             if (lastServerStatus.GetStatusCodeFromContent().Equals(StatusCodeEnum.ONLINE)) {
-                log.Debug("sollte mich jetzt einloggen...");
+                log.Info("sollte mich jetzt einloggen...");
                 // login
+                // <issue>7</issue>
             } else {
-                log.Debug("WARN kann nicht einloggen, da Server offline.");
+                log.Warn("WARN kann nicht einloggen, da Server offline.");
             }
         }
 
@@ -76,9 +77,9 @@ namespace ChatApp.ChatClient {
                         if (message.GetMessageType().Equals(MessageTypeEnum.LOGIN)) {
                             if (message.GetResultCodeFromContent().Equals(ResultCodeEnum.SUCCESS)) {
                                 chatSession.IsLoggedIn = true;
-                                log.Debug("LOGIN SUCCESSFUL");
+                                log.Info("Server Response erhalten: LOGIN SUCCESSFUL");
                             } else {
-                                log.Warn("LOGIN FAILURE");
+                                log.Warn("Server Response erhalten: LOGIN FAILURE");
                                 chatMessages.Enqueue(message);
                             }
                         }
@@ -120,7 +121,7 @@ namespace ChatApp.ChatClient {
 
         private bool ValidateSession() {
             if (chatSession == null) {
-                log.Debug("WARN Bitte zuerst auf Server verbinden");
+                log.Warn("WARN Bitte zuerst auf Server verbinden");
                 return false;
             }
             return true;

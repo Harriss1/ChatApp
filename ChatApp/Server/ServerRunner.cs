@@ -41,11 +41,11 @@ namespace ChatApp.Server {
         // Kann eventuell raus?
         public void SubscribeTo_OnNewConnectionEvent(OnAcceptedNewConnectionEvent _newConnectionEvent) {
             // Zweck: mehrere Observer sollen informiert werden können, falls es eine neue Verbindung gibt.
-            log.Debug("DELEGATE subscribe SubscribeTo_OnNewConnectionEvent");
+            log.Trace("DELEGATE subscribe SubscribeTo_OnNewConnectionEvent");
             this._publishAcceptedNewConnectionEvent += _newConnectionEvent;
         }
         public void SubscribeTo_PublishConnectionThread(OnEvent_PublishConnectionThread _newThreadEvent) {
-            log.Debug("DELEGATE subscribe SubscribeTo_PublishConnectionThread");
+            log.Trace("DELEGATE subscribe SubscribeTo_PublishConnectionThread");
             _publishConnectionThread += _newThreadEvent;
         }
 
@@ -59,7 +59,7 @@ namespace ChatApp.Server {
                 throw new InvalidOperationException("Eine offene Verbindung darf nur von einer Instanz kontrolliert werden.");
             }
             this._defineConnectionClerk = _registerClerkEvent;
-            log.Debug("DELEGATE subscribe SubscribeTo_OnDefineConnectionClerkEvent");
+            log.Trace("DELEGATE subscribe SubscribeTo_OnDefineConnectionClerkEvent");
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace ChatApp.Server {
         /// </summary>
         public void AcceptConnections() {
             if (_publishAcceptedNewConnectionEvent == null) {
-                log.Debug("Warnung: NewConnectionEvent ohne Subscriber");
+                log.Error("Fehler: NewConnectionEvent ohne Subscriber");
             }
             log.Debug("ThreadID ServerManager.AcceptConnections = " + Thread.CurrentThread.ManagedThreadId);
             log.Debug("ThreadCounter: " + threadCounter++);
@@ -76,15 +76,14 @@ namespace ChatApp.Server {
             // Starte die eigene Methode bei Erhalt des Callback-Events nach erfolgten Accept (ähnlich einer Rekursion)           
             TcpServer.ConnectionAcceptedCallback _newConnectionAcceptedCallback = new TcpServer.ConnectionAcceptedCallback(AcceptConnections);
             Thread.Sleep(1000);
-            log.Debug("Zeile 74");
             _publishAcceptedNewConnectionEvent(); // notwendig um immer einen neuen Callback zu erstellen, welcher immer einen neuen Clerk haben.
-            log.Debug("NewConnectionEvent() signaled");
+            log.Trace("NewConnectionEvent() signaled");
             CommunicationEventClerk clerk = GetClerk();
 
-            log.Debug("DELEGATE subscribe AcceptConnections(): Übergebe Clerk with registered Threads");
+            log.Trace("DELEGATE subscribe AcceptConnections(): Übergebe Clerk with registered Threads");
             Thread serverHandler = new Thread(() => tcpServer.Accept(_newConnectionAcceptedCallback, clerk));
             serverHandler.Start();
-            log.Debug("einzelner Accept-Thread gestartet");
+            log.Info("einzelner Accept-Thread gestartet");
             connectionThreads.Add(serverHandler);
             if (_publishConnectionThread != null)
                 _publishConnectionThread(serverHandler);
@@ -112,7 +111,7 @@ namespace ChatApp.Server {
         public bool GracefullyShutdown() {
             foreach (Thread connection in connectionThreads) {
                 if(connection.IsAlive) {
-                    log.Debug("Warnung: Gracefully Shutdown nicht möglich, Thread einer Verbindung ist noch offen.");
+                    log.Error("Fehler: Gracefully Shutdown nicht möglich, Thread einer Verbindung ist noch offen.");
                     return false;
                 }
             }

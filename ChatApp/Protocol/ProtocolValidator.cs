@@ -191,10 +191,10 @@ namespace ChatApp.Protocol.Engine {
             return true;
         }
         private static void PublishBaseValidationError(string v) {
-            msg.Debug("[ProtocolValidator:IsBaseProtocolConform:Violation] " + v);
+            msg.Info("[ProtocolValidator:IsBaseProtocolConform:Violation] " + v);
         }
         private static void PublishContentValidationError(string v) {
-            msg.Debug("[ProtocolValidator:HasValidContent:Violation] " + v);
+            msg.Info("[ProtocolValidator:HasValidContent:Violation] " + v);
         }
     }
 }

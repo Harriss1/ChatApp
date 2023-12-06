@@ -17,7 +17,7 @@ namespace ChatApp {
         public static readonly string ServerPort = "10015";
         public static readonly string ServerAddress = "127.0.0.1";
         public static readonly string ProtocolVersion = "2023_11_21";
-        public static readonly string LogLevel = "debug";
+        public static readonly string LogLevel = "info";
         // eine protokoll-konforme Nachricht ist immer mindestens 15 lang
         // wegen der Länge des "Anfang"- und "Ende"-Elements
         public static readonly int MessageMinLength = 15;

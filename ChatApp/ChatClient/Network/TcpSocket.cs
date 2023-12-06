@@ -108,7 +108,7 @@ namespace ChatApp.ChatClient.Network.Serverlink {
                     if (result.AsyncWaitHandle.WaitOne(maxResponseWaitTimeout))
                         log.Trace("Method successful.");
                     else
-                        log.Debug("Method timed out.");
+                        log.Warn("Method timed out.");
                         log.Warn("Breche Empfang ab, da Server nichts gesendet hat");
                 } else {
                     log.Debug("erhalte Response (ohne Timeout)");
@@ -136,7 +136,7 @@ namespace ChatApp.ChatClient.Network.Serverlink {
             catch (Exception e) {
                 log.Error("Unexpected exception : " + e.ToString());
             }
-            log.Info("### Ende Send/Receive ### erhalten:\r\n" + received);
+            log.Debug("### Ende Send/Receive ### erhalten:\r\n" + received);
             return received;
         }
     }

@@ -59,7 +59,7 @@ namespace ChatApp.Server.Listener {
                 // Es wird je Durchlauf nur ein Client abgearbeitet
                 this.listener.Listen(maxRequestLimit);
 
-                log.Debug("Server Socket geöffnet");
+                log.Info("Server Socket geöffnet");
             }
             catch (Exception e) {
                 log.Debug(e.ToString());
@@ -72,7 +72,7 @@ namespace ChatApp.Server.Listener {
             this.listener.Close(); // Entbindet alle Ressourcen für den aktuellen Socket
             this.listener.Dispose(); // Entbindet alle Ressourcen für die aktuelle listener-Instanz
             TcpServer.alreadyStarted = false;
-            log.Debug("Socket Shutdown completed");
+            log.Info("Socket Shutdown completed");
         }
         public void Accept(ConnectionAcceptedCallback _newConnectionEstablishedCallback, CommunicationEventClerk clerk) {
             try {
@@ -83,7 +83,7 @@ namespace ChatApp.Server.Listener {
                 log.Debug("Resuming Thread " + Thread.CurrentThread.ManagedThreadId);
                 // Der Zugriff auf das Steuerelement Text_Console_Output erfolgte von einem anderen Thread als dem Thread, für den es erstellt wurde.
                 _newConnectionEstablishedCallback();
-                log.Debug("connection established in TCPserver ThreadId= " + Thread.CurrentThread.ManagedThreadId);
+                log.Trace("connection established in TCPserver ThreadId= " + Thread.CurrentThread.ManagedThreadId);
                 bool closeConnection = false;
                 closeConnection = clerk.PublishEvent_CheckForCancelConnection();
                 while (!closeConnection) {
@@ -151,7 +151,6 @@ namespace ChatApp.Server.Listener {
                     clerk.PublishEvent_ReceiveByteArray(bytes, receivedBytesCount);
                 }
                 catch (Exception e) {
-                    // FEHLER WIRD HIER ABGEFANGEN?! entsteht MessageMediator Z68?!
                     throw new InvalidOperationException("Clerk Referenzierung defekt" + e.ToString());
                 }
                 log.Trace("Kontrolpunkt 1");

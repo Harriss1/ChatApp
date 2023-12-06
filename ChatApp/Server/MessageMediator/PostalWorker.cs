@@ -25,7 +25,7 @@ namespace ChatApp.Server.MessageMediator {
 
             string messageType = inboxMessage.GetMessageType();
             if (messageType.Equals(MessageTypeEnum.UNDEFINED)) {
-                log.Debug("Warnung: Request mit Nachrichten Typ 'UNDEFINED'");
+                log.Warn("Request mit Nachrichten Typ 'UNDEFINED'");
                 ProtocolMessage statusResponse = ServerMessageCreator.CreateServerStatusResponse();
                 outbox.Add(CreateByteMessage(statusResponse, sender));
                 ProtocolMessage failureResponse = ServerMessageCreator.CreateChatMessageTransmissionStatusResponse(ResultCodeEnum.FAILURE);
@@ -48,8 +48,12 @@ namespace ChatApp.Server.MessageMediator {
                     string result = ResultCodeEnum.FAILURE;
                     if (LoginUser(username, sender)) {
                         result = ResultCodeEnum.SUCCESS;
+                        log.Info("Erfolg Login von username=" + username);
                     }
-                    ProtocolMessage response = ServerMessageCreator.CreateLoginResponse(result);
+                    else {
+                        log.Warn("Fehlschlag Login von username=" + username);
+                    }
+                        ProtocolMessage response = ServerMessageCreator.CreateLoginResponse(result);
                     outbox.Add(CreateByteMessage(response, sender));
                 }
                 return outbox;
@@ -68,7 +72,7 @@ namespace ChatApp.Server.MessageMediator {
                 string transmissionCode = ResultCodeEnum.FAILURE;
                 // Suche nach dem Empfänger
                 if (receiver == null) {
-                    log.Warn("Empfänger hat sich noch nicht registriert");
+                    log.Warn("Empfänger hat sich noch nicht registriert, kann Nachricht nicht weiterleiten");
                 } else {
                     log.Debug("Empfänger gefunden");
                     log.Info("Sende Nachricht von [" + inboxMessage.GetSenderUsername() + "]"
@@ -113,7 +117,7 @@ namespace ChatApp.Server.MessageMediator {
                     return true;
                 }
             }
-            log.Debug("WARN konnte Benutzer ["+username+"] nicht einloggen");
+            log.Debug("konnte Benutzer ["+username+"] nicht einloggen");
             return false;
         }
 

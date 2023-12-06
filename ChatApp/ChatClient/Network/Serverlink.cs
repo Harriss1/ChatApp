@@ -58,7 +58,7 @@ namespace ChatApp.ChatClient.Network.Serverlink {
 
                 foreach (string soloMessage in SplitIntoSoloMessages(received)) {
                     incommingMessages.Add(soloMessage);
-                    log.Info("Erhaltene Einzelnachricht: " + soloMessage);
+                    log.Debug("Erhaltene Einzelnachricht: " + soloMessage);
                 }
             }
             else {

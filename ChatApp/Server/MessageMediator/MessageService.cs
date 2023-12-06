@@ -102,7 +102,7 @@ namespace ChatApp.Server.MessageMediator {
                 
                 foreach (string soloMessage in SplitIntoSoloMessages(incommingString)) {
                     incommingMessages.Add(soloMessage);
-                    log.Info("Erhaltene Einzelnachricht: " + soloMessage);
+                    log.Debug("Erhaltene Einzelnachricht: " + soloMessage);
                 }
             }
             else {

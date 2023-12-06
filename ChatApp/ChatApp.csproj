@@ -48,7 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatClient\ChatSession.cs" />
-    <Compile Include="ChatClient\ClientRoutineTimeouts.cs" />
     <Compile Include="ChatClient\Network\Serverlink.cs" />
     <Compile Include="ChatClient\Network\TcpSocket.cs" />
     <Compile Include="ChatClient\ChatController.cs" />

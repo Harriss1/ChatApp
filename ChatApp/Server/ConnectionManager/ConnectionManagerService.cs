@@ -42,7 +42,7 @@ namespace ChatApp.Server.Listener{
 
         public void ShutdownAllConnections() {
             // TODO <issue>1</issue>
-            log.Debug("ShutDown all connections not implemented!");
+            log.Error("ShutDown all connections not implemented!");
         }
 
         public void AbortAllConnections() {
@@ -52,7 +52,7 @@ namespace ChatApp.Server.Listener{
         }
 
         private void OnEvent_PublishStartedThread(Thread thread) {
-            log.Debug("neuer Thread für eine eben geöffnete Verbindung gestartet. ID=" + thread.ManagedThreadId);
+            log.Info("neuer Thread für eine eben geöffnete Verbindung gestartet. ID=" + thread.ManagedThreadId);
             Connection connection = new Connection(thread);
             connectionRegister.Add(connection);
         }
