@@ -10,6 +10,7 @@ namespace ChatApp {
         public delegate void OnEvent_PublishServerMessage(string message);
         private static OnEvent_PublishServerMessage _publishServerMessage;
         string sourceIdentifier = "";
+        const char overwriteDelimiter = '.';
         private Level level;
         enum Level {
             TRACE = 0,
@@ -29,22 +30,18 @@ namespace ChatApp {
             //LogPublisher._publishServerMessage += _publishServerMessage;
         }
         private void Publish(string message) {
-            Console.WriteLine("[Log " +
+            string entryText = "[Log " +
                 System.DateTime.Now.TimeOfDay + "][" +
                 "Thread="
-                +Thread.CurrentThread.ManagedThreadId+"]" + 
-                "["+ sourceIdentifier + "]" +
-                message);
+                + Thread.CurrentThread.ManagedThreadId + "]" +
+                "[" + sourceIdentifier + "]" +
+                message;
+            Console.WriteLine(entryText);
             if (_publishServerMessage != null) {
-                _publishServerMessage(message);
-            }
-            else {
-                if (message.Contains("Details:")) {
-                    Console.WriteLine("NULL BEREICH");
-                }
+                _publishServerMessage(entryText);
             }
         }
-
+        
         internal void Error(string message) {
             if (level <= Level.ERROR) {
                 Publish("[ERROR] " + message);
@@ -74,7 +71,13 @@ namespace ChatApp {
         }
 
         private Level ReadLevelFromConfig() {
-            switch (Config.LogLevel) {
+            string logLevelText = Config.LogLevel;
+            string overwriteLogLevelText = SearchOverwriteLogLevelTrigger();
+            if ( overwriteLogLevelText != null) {
+                logLevelText = overwriteLogLevelText;
+                Publish("Overwrite LogLevel Eintrag gefunden: Level [" + logLevelText + "] für Quellklasse: " + sourceIdentifier);
+            }
+            switch (logLevelText) {
                 case "trace":
                     Info("LogLevel=TRACE");
                     return Level.TRACE;
@@ -94,6 +97,16 @@ namespace ChatApp {
                     Info("LogLevel=default(INFO)"); 
                     return Level.INFO;
             }
+        }
+        private string SearchOverwriteLogLevelTrigger() {
+            foreach (string overwriteText in Config.OverwriteLogLevel) {
+                string customSourceIdentifier = overwriteText.Split(overwriteDelimiter)[0];
+                string customLogLevel = overwriteText.Split(overwriteDelimiter)[1];
+                if (customSourceIdentifier.Equals(sourceIdentifier)) {
+                    return customLogLevel;
+                }
+            }
+            return null;
         }
     }
 }

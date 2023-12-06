@@ -108,8 +108,8 @@ namespace ChatApp.ChatClient.Network.Serverlink {
                     if (result.AsyncWaitHandle.WaitOne(maxResponseWaitTimeout))
                         log.Trace("Method successful.");
                     else
-                        log.Warn("Method timed out.");
-                        log.Warn("Breche Empfang ab, da Server nichts gesendet hat");
+                        log.Debug("Method timed out.");
+                        log.Debug("Breche Empfang ab, da Server nichts gesendet hat");
                 } else {
                     log.Debug("erhalte Response (ohne Timeout)");
                     bytesRec = sender.Receive(bytes);

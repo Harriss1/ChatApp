@@ -37,7 +37,7 @@ namespace ChatApp.ChatClient.Network.Serverlink {
                 string received = null;
                 if (outboxMessages.Count > 0) {
                     string outmsg = outboxMessages.Dequeue();
-                    log.Info("outmsg=" + outmsg);
+                    log.Debug("outmsg=" + outmsg);
                     received = socket.Send(outmsg);
                 }
                 log.Trace("enqueue");
