@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -11,6 +12,10 @@ namespace ChatApp.Server.Listener {
         private const int maxRequestLimit = 100;
         private Socket listener;
         private static bool alreadyStarted = false;
+        private Stopwatch cancelMainLoopStopwatch;
+        private TimeSpan maxCancelMainLoopLookup = TimeSpan.FromSeconds(5);
+        public bool useTimeoutForResponse = true;
+        public TimeSpan maxResponseWaitTimeout = TimeSpan.FromSeconds(4);
 
         public delegate void ConnectionAcceptedCallback();
         private LogPublisher log = new LogPublisher("TcpServer");
@@ -87,7 +92,7 @@ namespace ChatApp.Server.Listener {
                 bool closeConnection = false;
                 closeConnection = clerk.PublishEvent_CheckForCancelConnection();
                 while (!closeConnection) {
-                    
+
                     log.Trace("Kontrolpunkt 3 [Start des Empfangs-Sende-Loop] ThreadId= " + Thread.CurrentThread.ManagedThreadId);
                     string receivedData = ReceiveText(handler, clerk);
                     log.Trace("Kontrolpunkt 3.1: Wait 1000");
@@ -96,7 +101,7 @@ namespace ChatApp.Server.Listener {
                     log.Trace("Kontrolpunkt 4: erster Callback CheckForBytesToSend");
                     byte[] bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
 
-                    while (bytesToSend != null && bytesToSend.Length > 0) {
+                    while (bytesToSend != null && bytesToSend.Length > 0 ) {
                         log.Debug("Kontrolpunkt 5  [Start Sende-Loop] ThreadId= " + Thread.CurrentThread.ManagedThreadId);
 
                         log.Trace("Sending bytes...");
@@ -104,18 +109,39 @@ namespace ChatApp.Server.Listener {
                         log.Trace("Kontrolpunkt 5.1: Loop Callback von CheckForBytesToSend");
                         bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
                     }
-                    if (CheckTextForQuitMessage(receivedData)
-                        || CheckForDisconnectEvent()
-                        || clerk.PublishEvent_CheckForCancelConnection()) {
+                    if (ShouldStopMainLoop(clerk, receivedData)) {
                         closeConnection = true;
                     }
                 }
+                log.Info("Verbindung zu einem Client wird nun geschlossen.");
                 handler.Shutdown(SocketShutdown.Both);
                 handler.Close();
+                log.Info("Verbindungs-Objekte heruntergefahren.");
             }
             catch (Exception e) {
                 log.Debug(e.ToString());
             }
+        }
+
+        private bool ShouldStopMainLoop(CommunicationEventClerk clerk, string receivedData) {
+            if (clerk.PublishEvent_CheckForCancelConnection()) {
+                if (cancelMainLoopStopwatch == null) {
+                    log.Debug("Verbindungsabbau: Starte Timeout");
+                    cancelMainLoopStopwatch = new Stopwatch();
+                    cancelMainLoopStopwatch.Start();
+                }
+                else {
+                    log.Debug("Verbindungsabbau: Timeout schreitet voran");
+                    if (cancelMainLoopStopwatch.Elapsed > maxCancelMainLoopLookup) {
+                        cancelMainLoopStopwatch.Stop();
+                        cancelMainLoopStopwatch = null;
+                        log.Debug("Verbindungsabbau: Beenden des Verbindungsloops erfolgt nun");
+                        return true;
+                    }
+                }
+            }
+            return CheckTextForQuitMessage(receivedData)
+                                    || CheckForDisconnectEvent();
         }
 
         private bool CheckForDisconnectEvent() {
@@ -145,7 +171,27 @@ namespace ChatApp.Server.Listener {
                 log.Trace("Kontrolpunkt 0-1");
                 
                 bytes = new byte[1024];
-                int receivedBytesCount = handler.Receive(bytes);
+                int receivedBytesCount = 0;
+                //int receivedBytesCount = handler.Receive(bytes);
+                if (useTimeoutForResponse) {
+                    log.Trace("Benutze Timeout für Response");
+                    IAsyncResult result;
+                    Action action = () =>
+                    {
+                        receivedBytesCount = handler.Receive(bytes);
+                    };
+                    result = action.BeginInvoke(null, null);
+                    if (result.AsyncWaitHandle.WaitOne(maxResponseWaitTimeout))
+                        log.Trace("Method successful.");
+                    else
+                        log.Debug("Method timed out.");
+                    log.Debug("Breche Empfang ab, da Client nichts gesendet hat");
+                }
+                else {
+                    log.Debug("erhalte Response (ohne Timeout)");
+                    receivedBytesCount = handler.Receive(bytes);
+                }
+
                 log.Trace("Kontrolpunkt 0-2 EVENT PUBLISH BYTES RECEIVED");
                 try {
                     clerk.PublishEvent_ReceiveByteArray(bytes, receivedBytesCount);

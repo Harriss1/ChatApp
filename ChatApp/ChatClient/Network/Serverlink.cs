@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace ChatApp.ChatClient.Network.Serverlink {
@@ -11,6 +12,8 @@ namespace ChatApp.ChatClient.Network.Serverlink {
         private Queue<string> outboxMessages = new Queue<string>();
         private Queue<string> inboxMessages = new Queue<string>();
         internal bool TransmissionFlaggedToCancel { get; set; }
+        private Stopwatch cancelTransmissionStopwatch;
+        private TimeSpan maxTransmissionCancelLookup = TimeSpan.FromSeconds(4);
         internal bool ConnectionFlaggedToShutdown { get; set; }
         internal bool SocketFlaggedToAbort { get; set; }
         private static TcpSocket socket;
@@ -47,6 +50,11 @@ namespace ChatApp.ChatClient.Network.Serverlink {
                 Thread.Sleep(200);
                 CheckFlags();
             }
+
+            TransmissionFlaggedToCancel = false;
+            ConnectionFlaggedToShutdown = false;
+            SocketFlaggedToAbort = false;
+            stopSendReceiveLoop = false;
             log.Info("Verbindungs-Schleife beendet.");
         }
 
@@ -94,14 +102,34 @@ namespace ChatApp.ChatClient.Network.Serverlink {
 
         private void CheckFlags() {
             log.Trace("check Flags");
-            if (TransmissionFlaggedToCancel) {
-                log.Info("CheckFlags() Stop Flag erkannt");
-                StopSendReceiveLoop();
-                Thread.Sleep(1000);
+            if (TransmissionFlaggedToCancel && outboxMessages.Count == 0) {
+                log.Debug("CheckFlags() Stop Flag erkannt");
+                if(cancelTransmissionStopwatch == null) {
+                    cancelTransmissionStopwatch = new Stopwatch();
+                    cancelTransmissionStopwatch.Start();
+                } else {
+                    TimeSpan timeSpan = cancelTransmissionStopwatch.Elapsed;
+                    if (timeSpan > maxTransmissionCancelLookup) {
+                        StopSendReceiveLoop();
+                        cancelTransmissionStopwatch.Stop();
+                        cancelTransmissionStopwatch = null;
+                    }
+                }
             }
-            if (ConnectionFlaggedToShutdown) {
-                log.Info("CheckFlags() Shutdown Flag erkannt");
-                StopConnection();
+            if (ConnectionFlaggedToShutdown && outboxMessages.Count == 0) {
+                log.Debug("CheckFlags() Shutdown Flag erkannt");
+                if (cancelTransmissionStopwatch == null) {
+                    cancelTransmissionStopwatch = new Stopwatch();
+                    cancelTransmissionStopwatch.Start();
+                }
+                else {
+                    TimeSpan timeSpan = cancelTransmissionStopwatch.Elapsed;
+                    if (timeSpan > maxTransmissionCancelLookup) {
+                        StopConnection();
+                        cancelTransmissionStopwatch.Stop();
+                        cancelTransmissionStopwatch = null;
+                    }
+                }
             }
         }
         private void StopSendReceiveLoop() {
@@ -119,6 +147,10 @@ namespace ChatApp.ChatClient.Network.Serverlink {
             return inboxMessages.Dequeue();
         }
         internal void EnqueueMessageToOutbox(string message) {
+            if (TransmissionFlaggedToCancel || ConnectionFlaggedToShutdown) {
+                log.Warn("Weitere Nachrichten dürfen nicht an eine zum Beenden markierte Verbindung angehangen werden.");
+                return;
+            }
             outboxMessages.Enqueue(message);
         }
     }

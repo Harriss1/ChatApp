@@ -14,6 +14,7 @@ namespace ChatApp.ChatClient.Network {
         LogPublisher log = new LogPublisher("SynchronisedServerlink", false);
         private static Serverlink.Serverlink serverlink;
         private static Thread clientThread;
+        public bool GracefullShutdown { get; set; }
         private static Thread handlerThread;
         CancellationTokenSource cancelToken;
 
@@ -24,6 +25,7 @@ namespace ChatApp.ChatClient.Network {
             }
             serverlink = new Serverlink.Serverlink();
             handlerThread = Thread.CurrentThread;
+            GracefullShutdown = false;
         }
 
         internal void StartConnection(string ipAddress, string serverPort) {
@@ -32,6 +34,7 @@ namespace ChatApp.ChatClient.Network {
                 // Thread-übergreifenden und über das Block-Level hinaus persistenten Token-Objekts
                 cancelToken.Dispose();
             }
+            GracefullShutdown = false;
             cancelToken = new CancellationTokenSource();
             clientThread = new Thread(() => RunTcpClientLoop(ipAddress, serverPort, cancelToken));
             clientThread.Start();            
@@ -50,6 +53,7 @@ namespace ChatApp.ChatClient.Network {
             // nachdem seine Hauptschleife ausläuft und hier hin gelangt.
             log.Info("Beende Thread - Rufe Cancel() über CancelationTokenSource auf.");
             cancelToken.Cancel();
+            GracefullShutdown = true;
         }
         internal void EnqueueMessageToOutBox(string message) {
             ValidateThreadSafety();

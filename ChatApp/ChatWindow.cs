@@ -51,10 +51,10 @@ namespace ChatApp {
                 string username = Text_Username.Text;
                 string ipAddress = "127.0.0.1";
                 chatController.LoginToServer(username, ipAddress);
-                Text_Chatmessages_Placeholder.Text = "connecting to: " + ipAddress + ":" + Config.ServerPort;
+                Text_Chatmessages_Placeholder.Text += "\r\n#\r\n Verbinde zu: " + ipAddress + ":" + Config.ServerPort;
             } else {
                 chatController.LogoutFromServer();
-                Text_Chatmessages_Placeholder.Text = "Abmeldevorgang gestartet...";
+                Text_Chatmessages_Placeholder.Text += "\r\n#\r\nAbmeldevorgang gestartet...";
             }
 
             updateTimer = new Timer();
@@ -63,9 +63,7 @@ namespace ChatApp {
             updateTimer.Start();            
         }
 
-        private void UpdateUI(object sender, EventArgs e) {
-            chatController.HandleNetworkMessages();
-            
+        private void UpdateUI(object sender, EventArgs e) {            
             string received = chatController.DequeueReceivedChatMessage();
             if (received != null) {
                 Text_Chatmessages_Placeholder.Text += received;

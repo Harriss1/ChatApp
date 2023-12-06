@@ -16,7 +16,7 @@ namespace ChatApp.Server.ConnectionManager {
             Thread = thread;
         }
         public bool IsLoggedIn() {
-            if (Client != null && Thread != null) {
+            if (Client != null && Thread != null && Client.Name != null && !Client.Name.Equals("")) {
                 return true;
             } else {
                 return false;

@@ -36,11 +36,13 @@ namespace ChatApp.Server.MessageMediator {
             // Verbindungen ohne Login
             // --> erhalten nur Statusnachrichten und die Möglichkeit sich einzuloggen
             if (!sender.IsLoggedIn()) {
+                // Statusaustausch
                 if (messageType.Equals(MessageTypeEnum.STATUS_EXCHANGE)) {
                     log.Debug("status austausch");
                     ProtocolMessage response = ServerMessageCreator.CreateServerStatusResponse();
                     outbox.Add(CreateByteMessage(response, sender));
                 }
+                // Login
                 if (messageType.Equals(MessageTypeEnum.LOGIN)) {
                     string username = "[nicht extrahiert]";
                     username = inboxMessage.GetSenderUsername();
@@ -54,6 +56,13 @@ namespace ChatApp.Server.MessageMediator {
                         log.Warn("Fehlschlag Login von username=" + username);
                     }
                         ProtocolMessage response = ServerMessageCreator.CreateLoginResponse(result);
+                    outbox.Add(CreateByteMessage(response, sender));
+                }
+                // Logout
+                if (messageType.Equals(MessageTypeEnum.LOGOUT)) {
+                    log.Warn("Client ist ist nicht eingeloggt und versucht sich auszuloggen");
+                    string result = ResultCodeEnum.FAILURE;
+                    ProtocolMessage response = ServerMessageCreator.CreateLogoutResponse(result);
                     outbox.Add(CreateByteMessage(response, sender));
                 }
                 return outbox;
@@ -99,7 +108,18 @@ namespace ChatApp.Server.MessageMediator {
                 ProtocolMessage response = ServerMessageCreator.CreateServerStatusResponse();
                 outbox.Add(CreateByteMessage(response, sender));
             }
-            
+            // Logout
+            if (messageType.Equals(MessageTypeEnum.LOGOUT)) {
+                string username = inboxMessage.GetSenderUsername();
+                log.Info("Beginne Logout-Vorgang für User:" + inboxMessage.GetSenderUsername());
+                string result = ResultCodeEnum.FAILURE;
+                if (LogoutUser(username, sender)) {
+                    result = ResultCodeEnum.SUCCESS;
+                }
+                ProtocolMessage response = ServerMessageCreator.CreateLogoutResponse(result);
+                outbox.Add(CreateByteMessage(response, sender));
+            }
+
             return outbox;
         }
 
@@ -118,6 +138,29 @@ namespace ChatApp.Server.MessageMediator {
                 }
             }
             log.Debug("konnte Benutzer ["+username+"] nicht einloggen");
+            return false;
+        }
+
+        private static bool LogoutUser(string username, Connection sender) {
+            foreach (Connection connection in connectionRegister.connections) {
+                if (connection == sender) {
+                    if (connection.Client == null) {
+                        log.Warn("Logoutrequest verweigert: Client-Objekt existiert für Verbindung nicht.");
+                        return false;
+                    }
+                    if(!connection.Client.Name.Equals(username)) {
+                        log.Warn("Logoutrequest verweigert: Übermittelter Username (" + username +
+                            ") und gespeicherter (" + connection.Client.Name +
+                            ") stimmen nicht überein.");
+                        return false;
+                    }
+                    log.Info("Benutzer für Logoutvorgang [" + username + "] gefunden.");
+                    connection.FlaggedToCancel = true;
+                    connection.Client = null;
+                    return true;
+                }
+            }
+            log.Warn("konnte Benutzer [" + username + "] nicht ausloggen.");
             return false;
         }
 

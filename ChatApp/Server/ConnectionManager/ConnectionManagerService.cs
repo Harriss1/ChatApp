@@ -65,12 +65,21 @@ namespace ChatApp.Server.Listener{
         }
         private bool On_CheckCancelConnection() {
             // TODO <issue>1</issue>
-            return false;
+            Connection currentConnection = connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId);
+            if (currentConnection == null) {
+                log.Warn("Kann Verbindung nicht beenden, da sie nicht im connectionRegister exisitert");
+                return false;
+            }
+            return currentConnection.FlaggedToCancel;
         }
 
         private bool On_CheckAbortTransmission() {
-            // TODO <issue>1</issue>
-            return false;
+            Connection currentConnection = connectionRegister.FindConnectionByThread(Thread.CurrentThread.ManagedThreadId);
+            if (currentConnection == null) {
+                log.Warn("Kann Verbindung nicht beenden, da sie nicht im connectionRegister exisitert");
+                return false;
+            }
+            return currentConnection.FlaggedToCancel;
         }
         private byte[] On_CheckForBytesToSendLoopUntilAllSent() {
             log.Debug("Prüfe ob Server Nachrichten zum versenden hat... ThreadId= " + Thread.CurrentThread.ManagedThreadId);

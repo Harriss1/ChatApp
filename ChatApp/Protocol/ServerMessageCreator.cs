@@ -25,6 +25,14 @@ namespace ChatApp.Protocol {
 
             return message;
         }
+        internal static ProtocolMessage CreateLogoutResponse(string resultCode) {
+            ProtocolMessage message = CreateBaseServerResponse();
+            message.SetMessageType(MessageTypeEnum.LOGOUT);
+
+            message.AppendResultCodeIntoContent(resultCode);
+
+            return message;
+        }
 
         public static ProtocolMessage CreateChatMessageTransmissionStatusResponse(string resultCode) {
             ProtocolMessage message = CreateBaseServerResponse();

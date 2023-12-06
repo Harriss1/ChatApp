@@ -45,10 +45,13 @@ namespace ChatApp.ChatClient {
         private void SendLogoutRequest() {
             ProtocolMessage logout = ClientMessageCreator.CreateLogoutRequest(chatSession.Username);
             serverlink.EnqueueMessageToOutBox(logout.GetXml().OuterXml);
-            chatSession.IsLoggedIn = false;
         }
 
         internal void HandleNetworkMessages() {
+            if (serverlink.GracefullShutdown) {
+                log.Debug("Verbindung ist geschlossen.");
+                return;
+            }
             if (!ValidateSession()) {
                 return;
             }
@@ -83,6 +86,16 @@ namespace ChatApp.ChatClient {
                                 chatMessages.Enqueue(message);
                             }
                         }
+                        if (message.GetMessageType().Equals(MessageTypeEnum.LOGOUT)) {
+                            if (message.GetResultCodeFromContent().Equals(ResultCodeEnum.SUCCESS)) {
+                                chatSession.IsLoggedIn = false;
+                                log.Info("Server Response erhalten: LOGOUT erfolgreich");
+                            }
+                            else {
+                                log.Warn("Server Response erhalten: LOGOUT fehlgeschlagen");
+                                chatMessages.Enqueue(message);
+                            }
+                        }
                     }
                 }
                 receivedMessage = serverlink.DequeueMessageFromInbox();
@@ -100,6 +113,8 @@ namespace ChatApp.ChatClient {
 
         internal string DequeueReceivedChatMessage() {
             ValidateSession();
+            HandleNetworkMessages();
+
             if(chatMessages.Count == 0) {
                 return null;
             }
@@ -107,8 +122,12 @@ namespace ChatApp.ChatClient {
             return protocolMessage.GetXml().OuterXml;
         }
         internal void LogoutFromServer() {
+            log.Error("Logout angefragt...");
+            if (!chatSession.IsLoggedIn) {
+                log.Error("Logout nicht möglich, da nicht eingeloggt.");
+                return;
+            }
             SendLogoutRequest();
-            ValidateSession();
             serverlink.ShutdownConnection();
         }
 

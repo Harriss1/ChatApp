@@ -13,7 +13,7 @@ namespace ChatApp {
         const char overwriteDelimiter = '.';
         int maxGapLength = 25;
         bool publishToSubscribers = true;
-        bool overwritePublishToSubscribers = Config.alwaysPublishLogToSubscribers;
+        bool alwaysPublishLogToSubscribers = Config.alwaysPublishLogToSubscribers;
         private Level level;
         enum Level {
             TRACE = 0,
@@ -29,7 +29,9 @@ namespace ChatApp {
         }
         public LogPublisher(string sourceIdentifier, bool publishToSubscribers) {
             this.sourceIdentifier = sourceIdentifier;
-            if (!overwritePublishToSubscribers) {
+            if (alwaysPublishLogToSubscribers) {
+                this.publishToSubscribers = true;
+            } else {
                 this.publishToSubscribers = publishToSubscribers;
             }
             level = ReadLevelFromConfig();
