@@ -11,6 +11,9 @@ namespace ChatApp {
         private static OnEvent_PublishServerMessage _publishServerMessage;
         string sourceIdentifier = "";
         const char overwriteDelimiter = '.';
+        int maxGapLength = 25;
+        bool publishToSubscribers = true;
+        bool overwritePublishToSubscribers = Config.alwaysPublishLogToSubscribers;
         private Level level;
         enum Level {
             TRACE = 0,
@@ -24,20 +27,33 @@ namespace ChatApp {
             this.sourceIdentifier = sourceIdentifier;
             level = ReadLevelFromConfig();
         }
+        public LogPublisher(string sourceIdentifier, bool publishToSubscribers) {
+            this.sourceIdentifier = sourceIdentifier;
+            if (!overwritePublishToSubscribers) {
+                this.publishToSubscribers = publishToSubscribers;
+            }
+            level = ReadLevelFromConfig();
+        }
 
         public static void SubscribeTo_PublishServerMessage(OnEvent_PublishServerMessage _publishServerMessage) {
             LogPublisher._publishServerMessage = _publishServerMessage;
             //LogPublisher._publishServerMessage += _publishServerMessage;
         }
         private void Publish(string message) {
-            string entryText = "[Log " +
-                System.DateTime.Now.TimeOfDay + "][" +
-                "Thread="
-                + Thread.CurrentThread.ManagedThreadId + "]" +
+            string time = (System.DateTime.Now.TimeOfDay).ToString().Substring(0, 8);
+            int gapLength = maxGapLength - sourceIdentifier.Length;
+            string gap = "";
+            for (int i = 0; i < gapLength; i++) {
+                gap += " ";
+            }
+            string entryText =
+                "[" + time + "]" +
+                "(" + Thread.CurrentThread.ManagedThreadId + ")" +
                 "[" + sourceIdentifier + "]" +
+                gap +
                 message;
             Console.WriteLine(entryText);
-            if (_publishServerMessage != null) {
+            if (_publishServerMessage != null && publishToSubscribers) {
                 _publishServerMessage(entryText);
             }
         }
@@ -49,12 +65,12 @@ namespace ChatApp {
         }
         internal void Warn(string message) {
             if (level <= Level.WARN) {
-                Publish("[WARN] " + message);
+                Publish(" [WARN] " + message);
             }
         }
         internal void Info(string message) {
             if (level <= Level.INFO) {
-                Publish("[INFO] " + message);
+                Publish(" [INFO] " + message);
             }
         }
 
@@ -75,7 +91,7 @@ namespace ChatApp {
             string overwriteLogLevelText = SearchOverwriteLogLevelTrigger();
             if ( overwriteLogLevelText != null) {
                 logLevelText = overwriteLogLevelText;
-                Publish("Overwrite LogLevel Eintrag gefunden: Level [" + logLevelText + "] für Quellklasse: " + sourceIdentifier);
+                Publish(" [INFO] Overwrite LogLevel Eintrag gefunden: Level [" + logLevelText + "] für Quellklasse: " + sourceIdentifier);
             }
             switch (logLevelText) {
                 case "trace":

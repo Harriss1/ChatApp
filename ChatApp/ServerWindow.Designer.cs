@@ -39,12 +39,12 @@
             this.tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayout.Controls.Add(this.Panel_Controls, 0, 1);
             this.tableLayout.Controls.Add(this.Text_Console_Output, 0, 0);
-            this.tableLayout.Location = new System.Drawing.Point(4, 5);
+            this.tableLayout.Location = new System.Drawing.Point(-1, -1);
             this.tableLayout.Name = "tableLayout";
             this.tableLayout.RowCount = 2;
             this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayout.Size = new System.Drawing.Size(406, 444);
+            this.tableLayout.Size = new System.Drawing.Size(819, 453);
             this.tableLayout.TabIndex = 0;
             // 
             // Panel_Controls
@@ -58,7 +58,7 @@
             this.Panel_Controls.Controls.Add(this.Button_Shutdown_Server, 2, 0);
             this.Panel_Controls.Controls.Add(this.Button_Start_Server, 1, 0);
             this.Panel_Controls.Controls.Add(this.Button_Abort_Server, 3, 0);
-            this.Panel_Controls.Location = new System.Drawing.Point(0, 414);
+            this.Panel_Controls.Location = new System.Drawing.Point(413, 423);
             this.Panel_Controls.Margin = new System.Windows.Forms.Padding(0);
             this.Panel_Controls.Name = "Panel_Controls";
             this.Panel_Controls.RowCount = 1;
@@ -111,7 +111,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Text_Console_Output.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            this.Text_Console_Output.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Text_Console_Output.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Text_Console_Output.ForeColor = System.Drawing.SystemColors.GrayText;
             this.Text_Console_Output.Location = new System.Drawing.Point(0, 0);
             this.Text_Console_Output.Margin = new System.Windows.Forms.Padding(0);
@@ -119,14 +119,14 @@
             this.Text_Console_Output.Name = "Text_Console_Output";
             this.Text_Console_Output.ReadOnly = true;
             this.Text_Console_Output.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.Text_Console_Output.Size = new System.Drawing.Size(406, 414);
+            this.Text_Console_Output.Size = new System.Drawing.Size(819, 423);
             this.Text_Console_Output.TabIndex = 1;
             // 
             // ServerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(415, 450);
+            this.ClientSize = new System.Drawing.Size(817, 450);
             this.Controls.Add(this.tableLayout);
             this.Name = "ServerWindow";
             this.Text = "Server";

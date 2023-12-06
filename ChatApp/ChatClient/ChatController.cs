@@ -9,7 +9,7 @@ using ChatApp.Protocol;
 
 namespace ChatApp.ChatClient {
     internal class ChatController {
-        LogPublisher log = new LogPublisher("ChatController");
+        LogPublisher log = new LogPublisher("ChatController", false);
         private static SynchronisedServerlink serverlink = new SynchronisedServerlink();
         private static ChatSession chatSession;
         private static Queue<ProtocolMessage> chatMessages = new Queue<ProtocolMessage>();

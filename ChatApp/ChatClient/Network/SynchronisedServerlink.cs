@@ -11,7 +11,7 @@ namespace ChatApp.ChatClient.Network {
     /// Verwaltet den Zugriff auf die im Thread laufende Client-Verbindung
     /// </summary>
     internal class SynchronisedServerlink {
-        LogPublisher log = new LogPublisher("SynchronisedServerlink");
+        LogPublisher log = new LogPublisher("SynchronisedServerlink", false);
         private static Serverlink.Serverlink serverlink;
         private static Thread clientThread;
         private static Thread handlerThread;

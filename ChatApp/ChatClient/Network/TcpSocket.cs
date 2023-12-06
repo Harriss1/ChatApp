@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.ChatClient.Network.Serverlink {
     internal class TcpSocket {
-        private LogPublisher log = new LogPublisher("TcpSocket");
+        private LogPublisher log = new LogPublisher("TcpSocket", false);
         private Socket sender;
         public bool useTimeoutForResponse = true;
         public TimeSpan maxResponseWaitTimeout = TimeSpan.FromSeconds(4);
