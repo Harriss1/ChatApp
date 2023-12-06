@@ -29,9 +29,8 @@ namespace ChatApp {
                 Text_Console_Output.Invoke((MethodInvoker)delegate {
 
                     // Running on the UI thread
-
-                    if (message.Contains("Details:")) {
-                        Console.WriteLine("UI Thread =" + Thread.CurrentThread.ManagedThreadId);
+                    if(Text_Console_Output.Text.Length > 15000) {
+                        Text_Console_Output.Text = Text_Console_Output.Text.Substring(1000);
                     }
                     Text_Console_Output.Text += message + "\r\n";
                     Text_Console_Output.SelectionStart = Text_Console_Output.Text.Length;

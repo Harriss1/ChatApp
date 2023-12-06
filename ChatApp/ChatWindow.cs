@@ -84,6 +84,13 @@ namespace ChatApp {
         }
 
         private void Button_Send_Message_Click(object sender, EventArgs e) {
+            if(Text_Message_Input.Text.Length > Config.maxChatMessageTextLength) {
+                MessageBox.Show(
+                    "Eine Nachricht darf maximal "+ Config.maxChatMessageTextLength + " Zeichen lang sein.", 
+                    "Warnung", 
+                    MessageBoxButtons.OK);
+                return;
+            }
             chatController.SendMessage(Text_Message_Input.Text, Text_Chat_Partner.Text);
             Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
             Text_Message_Input.Text = "";

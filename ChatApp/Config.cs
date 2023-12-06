@@ -25,5 +25,6 @@ namespace ChatApp {
         public static readonly string protocolMsgStart = "<message protocolVersion=";
         public static readonly string protocolMsgEnd = "</message>";
 
+        public static readonly int maxChatMessageTextLength = 600;
     }
 }
