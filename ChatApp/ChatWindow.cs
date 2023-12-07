@@ -95,12 +95,15 @@ namespace ChatApp {
             }
 
             Panel panel = new Panel();
+            panel.BackColor = Color.Cornsilk;
             TextBox nameBox = new TextBox();
             nameBox.Text = message.GetSenderUsername();
-            if (moveToTheRightSide)
-                nameBox.Anchor = AnchorStyles.Right | AnchorStyles.Top;
+            nameBox.ReadOnly = true;
+            Size nameBoxSize = TextRenderer.MeasureText(nameBox.Text, nameBox.Font);
+            nameBox.Width = nameBoxSize.Width + 2;
 
             TextBox messageBox = new TextBox();
+            messageBox.ReadOnly = true;
             messageBox.Multiline = true;
             messageBox.Text = message.GetTextMessageFromContent();
             messageBox.Width = ChatPanelScroller.Width - 60;
@@ -109,6 +112,8 @@ namespace ChatApp {
             messageBox.Top = nameBox.Height + 2;
             panel.Controls.Add(nameBox);
             panel.Controls.Add(messageBox);
+            if (moveToTheRightSide)
+                nameBox.Anchor = AnchorStyles.Right | AnchorStyles.Top;
             panel.Location = locator;
             panel.Height = messageBox.Height + nameBox.Height + 4;
             panel.Width = messageBox.Width + 6;
@@ -128,9 +133,9 @@ namespace ChatApp {
                     MessageBoxButtons.OK);
                 return;
             }
-            ProtocolMessage sentMessage = chatController.SendMessage(Text_Message_Input.Text, Text_Chat_Partner.Text);
-            if (sentMessage != null) {
-                AddSingleMessagePanel(sentMessage, true);
+            ProtocolMessage response = chatController.SendMessage(Text_Message_Input.Text, Text_Chat_Partner.Text);
+            if (response != null) {
+                AddSingleMessagePanel(response, true);
             }
             Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
             Text_Message_Input.Text = "";
