@@ -87,7 +87,6 @@ namespace ChatApp {
             }
         }
         private void AddSingleMessageTablePanel(ProtocolMessage message, bool moveToTheRightSide) {
-            lastProtocolMessage = message;
             if (!message.GetMessageType().Equals(MessageTypeEnum.CHAT_MESSAGE)) {
                 return;
             }
@@ -105,6 +104,7 @@ namespace ChatApp {
                     Size virtualBoxSize = TextRenderer.MeasureText(messageText, font);
                     lastPanel.Height += virtualBoxSize.Height;
                     lastChatTextMessageBox.Height += virtualBoxSize.Height;
+                    lastProtocolMessage = message;
                     return;
                 }
             }
@@ -160,6 +160,7 @@ namespace ChatApp {
 
             lastPanel = panel;
             lastChatTextMessageBox = messageBox;
+            lastProtocolMessage = message;
         }
 
         private void Button_Send_Message_Click(object sender, EventArgs e) {
