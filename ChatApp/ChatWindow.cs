@@ -12,9 +12,13 @@ using System.Windows.Forms;
 
 namespace ChatApp {
     public partial class ChatWindow : Form {
+        private Panel lastPanel = null;
+        LogPublisher logPublisher = new LogPublisher("ChatWindow", false);
         private ServerWindow serverWindow;
         private ChatController chatController = new ChatController();
         private Timer updateTimer;
+        private ProtocolMessage lastProtocolMessage = null;
+        private TextBox lastChatTextMessageBox = null;
         public ChatWindow() {
             InitializeComponent();
         }
@@ -82,56 +86,27 @@ namespace ChatApp {
                 Button_Login.Text = "Anmelden";
             }
         }
-        private Panel lastPanel = null;
-        private void AddSingleMessagePanel(ProtocolMessage message, bool moveToTheRightSide) {
-            if (!message.GetMessageType().Equals(MessageTypeEnum.CHAT_MESSAGE)) {
-                return;
-            }
-            Point locator = new Point(0, 0);
-            if (lastPanel != null) {
-                locator = lastPanel.Location;
-                locator.X = 0;
-                locator.Offset(0, lastPanel.Height + 2);
-            }
-
-            Panel panel = new Panel();
-            panel.BackColor = Color.Cornsilk;
-            TextBox nameBox = new TextBox();
-            nameBox.Text = message.GetSenderUsername();
-            nameBox.ReadOnly = true;
-            Size nameBoxSize = TextRenderer.MeasureText(nameBox.Text, nameBox.Font);
-            nameBox.Width = nameBoxSize.Width + 2;
-
-            TextBox messageBox = new TextBox();
-            messageBox.ReadOnly = true;
-            messageBox.Multiline = true;
-            messageBox.Text = message.GetTextMessageFromContent();
-            messageBox.Width = ChatPanelScroller.Width - 60;
-            Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
-            messageBox.Height = size.Height + 6;
-            messageBox.Top = nameBox.Height + 2;
-            panel.Controls.Add(nameBox);
-            panel.Controls.Add(messageBox);
-            panel.Location = locator;
-            panel.Height = messageBox.Height + nameBox.Height + 4;
-            panel.Width = messageBox.Width + 6;
-            if (moveToTheRightSide) {
-                nameBox.Dock = DockStyle.Right;
-                //namebox.anchor = anchorstyles.top | anchorstyles.right;
-                messageBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-                //messageBox.Dock = DockStyle.Right;
-                //panel.Dock = DockStyle.Right;
-                panel.Anchor = AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Left;
-            }
-
-            ChatPanelScroller.Controls.Add(panel);
-            lastPanel = panel;
-            ChatPanelScroller.VerticalScroll.Value = ChatPanelScroller.VerticalScroll.Maximum;
-        }
-
         private void AddSingleMessageTablePanel(ProtocolMessage message, bool moveToTheRightSide) {
+            lastProtocolMessage = message;
             if (!message.GetMessageType().Equals(MessageTypeEnum.CHAT_MESSAGE)) {
                 return;
+            }
+            string messageText = message.GetTextMessageFromContent();
+            int fontHeigth = 12;
+            Font font = new Font("Calibri", fontHeigth, FontStyle.Regular);
+            // Anhängen der Nachricht an die letzte Nachricht statt neues Boxsegment einzufügen
+            if (lastChatTextMessageBox != null &&
+                message.GetSenderUsername().Equals(lastProtocolMessage.GetSenderUsername())) {
+                string replaceText = lastChatTextMessageBox.Text
+                                        + "\r\n"               
+                                        + messageText;
+                if(replaceText.Length < Config.maxChatMessageTextLength + 20) {
+                    lastChatTextMessageBox.Text = replaceText;
+                    Size virtualBoxSize = TextRenderer.MeasureText(messageText, font);
+                    lastPanel.Height += virtualBoxSize.Height;
+                    lastChatTextMessageBox.Height += virtualBoxSize.Height;
+                    return;
+                }
             }
             Point locator = new Point(0, 0);
             if (lastPanel != null) {
@@ -139,8 +114,6 @@ namespace ChatApp {
                 locator.X = 0;
                 locator.Offset(0, lastPanel.Height + 2);
             }
-
-            Font font = new Font("Calibri", 12, FontStyle.Regular);
             TableLayoutPanel panel = new TableLayoutPanel();
             panel.ColumnCount = 1;
             panel.RowCount = 2;
@@ -163,15 +136,19 @@ namespace ChatApp {
             messageBox.BackColor = Color.LightGoldenrodYellow;
             messageBox.BorderStyle = BorderStyle.None;
             messageBox.Multiline = true;
-            messageBox.Text = message.GetTextMessageFromContent();
+            messageBox.Text = messageText;
             messageBox.Width = ChatPanelScroller.Width - 80;
             Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
-            messageBox.Height = size.Height + 12;
+            logPublisher.Info("size.Height=" + size.Height);
+            messageBox.Height = size.Height + 6;
             messageBox.Top = nameBox.Height + 1;
+            panel.Location = locator;
+            panel.Height = messageBox.Height + nameBox.Height + 2;
             panel.Controls.Add(nameBox, 0, 0);
             panel.Controls.Add(messageBox, 0, 1);
-            panel.Location = locator;
-            panel.Height = messageBox.Height + nameBox.Height + 4;
+            logPublisher.Info("panel.Height=" + panel.Height);
+            logPublisher.Info("messageBox.Height=" + messageBox.Height);
+            logPublisher.Info("nameBox.Height=" + nameBox.Height);
             panel.Width = ChatPanelScroller.Width - 20;
             if (moveToTheRightSide) {
                 nameBox.Dock = DockStyle.Right;
@@ -179,8 +156,10 @@ namespace ChatApp {
             }
 
             ChatPanelScroller.Controls.Add(panel);
-            lastPanel = panel;
             ChatPanelScroller.VerticalScroll.Value = ChatPanelScroller.VerticalScroll.Maximum;
+
+            lastPanel = panel;
+            lastChatTextMessageBox = messageBox;
         }
 
         private void Button_Send_Message_Click(object sender, EventArgs e) {

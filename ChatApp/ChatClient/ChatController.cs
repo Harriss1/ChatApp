@@ -107,11 +107,13 @@ namespace ChatApp.ChatClient {
 
             ProtocolMessage protocolMessage = ClientMessageCreator.
                 CreateChatMessageRequest(chatSession.Username, receiver, message);
-
             serverlink.EnqueueMessageToOutBox(protocolMessage.GetXml().OuterXml);
+            LastChatMessageSuccessfullySent = false;
             // <issue>8</issue> Übermittlungsstatus zurück geben für spezifische Nachricht.
             return protocolMessage;
         }
+
+        internal bool LastChatMessageSuccessfullySent { get; private set; }
 
         internal ProtocolMessage DequeueReceivedChatMessage() {
             ValidateSession();
