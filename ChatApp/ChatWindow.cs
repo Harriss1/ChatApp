@@ -139,6 +139,8 @@ namespace ChatApp {
                 locator.X = 0;
                 locator.Offset(0, lastPanel.Height + 2);
             }
+
+            Font font = new Font("Calibri", 12, FontStyle.Regular);
             TableLayoutPanel panel = new TableLayoutPanel();
             panel.ColumnCount = 1;
             panel.RowCount = 2;
@@ -147,26 +149,30 @@ namespace ChatApp {
 
             //panel.BackColor = Color.;
             TextBox nameBox = new TextBox();
-            nameBox.Text = message.GetSenderUsername();
+            nameBox.Text = "   " + message.GetSenderUsername();
             nameBox.ReadOnly = true;
+            nameBox.Font = font;
             nameBox.BorderStyle = BorderStyle.None;
+            nameBox.BackColor = Color.Azure;
             Size nameBoxSize = TextRenderer.MeasureText(nameBox.Text, nameBox.Font);
             nameBox.Width = nameBoxSize.Width + 2;
 
             TextBox messageBox = new TextBox();
             messageBox.ReadOnly = true;
+            messageBox.Font = font;
+            messageBox.BackColor = Color.LightGoldenrodYellow;
             messageBox.BorderStyle = BorderStyle.None;
             messageBox.Multiline = true;
             messageBox.Text = message.GetTextMessageFromContent();
             messageBox.Width = ChatPanelScroller.Width - 80;
             Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
-            messageBox.Height = size.Height + 8;
-            messageBox.Top = nameBox.Height + 2;
+            messageBox.Height = size.Height + 12;
+            messageBox.Top = nameBox.Height + 1;
             panel.Controls.Add(nameBox, 0, 0);
             panel.Controls.Add(messageBox, 0, 1);
             panel.Location = locator;
             panel.Height = messageBox.Height + nameBox.Height + 4;
-            panel.Width = ChatPanelScroller.Width - 60;
+            panel.Width = ChatPanelScroller.Width - 20;
             if (moveToTheRightSide) {
                 nameBox.Dock = DockStyle.Right;
                 messageBox.Dock = DockStyle.Right;
