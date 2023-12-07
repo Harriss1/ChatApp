@@ -68,7 +68,7 @@ namespace ChatApp {
             ProtocolMessage received = chatController.DequeueReceivedChatMessage();
             if (received != null) {
                 //Text_Chatmessages_Placeholder.Text += received.GetXml().OuterXml;
-                AddSingleMessagePanel(received, false);
+                AddSingleMessageTablePanel(received, false);
             }
 
             string serverlinkStatusMessage = chatController.GetServerlinkStatusMessage();
@@ -145,39 +145,31 @@ namespace ChatApp {
             panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
             panel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 
-            //Panel panel = new Panel();
-            panel.BackColor = Color.LightSteelBlue;
+            //panel.BackColor = Color.;
             TextBox nameBox = new TextBox();
             nameBox.Text = message.GetSenderUsername();
             nameBox.ReadOnly = true;
+            nameBox.BorderStyle = BorderStyle.None;
             Size nameBoxSize = TextRenderer.MeasureText(nameBox.Text, nameBox.Font);
             nameBox.Width = nameBoxSize.Width + 2;
 
             TextBox messageBox = new TextBox();
             messageBox.ReadOnly = true;
+            messageBox.BorderStyle = BorderStyle.None;
             messageBox.Multiline = true;
             messageBox.Text = message.GetTextMessageFromContent();
-            messageBox.Width = ChatPanelScroller.Width - 60;
+            messageBox.Width = ChatPanelScroller.Width - 80;
             Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
             messageBox.Height = size.Height + 8;
             messageBox.Top = nameBox.Height + 2;
-            //panel.Controls.Add(nameBox);
-            //panel.Controls.Add(messageBox);
-
-            //panel.Controls.Add(new Label() { Text = "USERNAME" }, 0, 0);
-            //panel.Controls.Add(new Label() { Text = "CHATTEXT" }, 0, 1);
             panel.Controls.Add(nameBox, 0, 0);
             panel.Controls.Add(messageBox, 0, 1);
             panel.Location = locator;
             panel.Height = messageBox.Height + nameBox.Height + 4;
-            panel.Width = messageBox.Width + 6;
+            panel.Width = ChatPanelScroller.Width - 60;
             if (moveToTheRightSide) {
                 nameBox.Dock = DockStyle.Right;
-                //namebox.anchor = anchorstyles.top | anchorstyles.right;
                 messageBox.Dock = DockStyle.Right;
-                //messageBox.Dock = DockStyle.Right;
-                //panel.Dock = DockStyle.Right;
-                //panel.Anchor = AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Left;
             }
 
             ChatPanelScroller.Controls.Add(panel);
