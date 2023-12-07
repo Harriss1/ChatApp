@@ -112,13 +112,17 @@ namespace ChatApp {
             messageBox.Top = nameBox.Height + 2;
             panel.Controls.Add(nameBox);
             panel.Controls.Add(messageBox);
-            if (moveToTheRightSide)
-                nameBox.Anchor = AnchorStyles.Right | AnchorStyles.Top;
             panel.Location = locator;
             panel.Height = messageBox.Height + nameBox.Height + 4;
             panel.Width = messageBox.Width + 6;
-            if (moveToTheRightSide) 
+            if (moveToTheRightSide) {
+                //nameBox.Dock = DockStyle.Right;
+                nameBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+                messageBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+                //messageBox.Dock = DockStyle.Right;
+                //panel.Dock = DockStyle.Right;
                 panel.Anchor = AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Left;
+            }
 
             ChatPanelScroller.Controls.Add(panel);
             lastPanel = panel;
