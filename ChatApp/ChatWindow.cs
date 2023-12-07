@@ -129,6 +129,62 @@ namespace ChatApp {
             ChatPanelScroller.VerticalScroll.Value = ChatPanelScroller.VerticalScroll.Maximum;
         }
 
+        private void AddSingleMessageTablePanel(ProtocolMessage message, bool moveToTheRightSide) {
+            if (!message.GetMessageType().Equals(MessageTypeEnum.CHAT_MESSAGE)) {
+                return;
+            }
+            Point locator = new Point(0, 0);
+            if (lastPanel != null) {
+                locator = lastPanel.Location;
+                locator.X = 0;
+                locator.Offset(0, lastPanel.Height + 2);
+            }
+            TableLayoutPanel panel = new TableLayoutPanel();
+            panel.ColumnCount = 1;
+            panel.RowCount = 2;
+            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
+            panel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+
+            //Panel panel = new Panel();
+            panel.BackColor = Color.LightSteelBlue;
+            TextBox nameBox = new TextBox();
+            nameBox.Text = message.GetSenderUsername();
+            nameBox.ReadOnly = true;
+            Size nameBoxSize = TextRenderer.MeasureText(nameBox.Text, nameBox.Font);
+            nameBox.Width = nameBoxSize.Width + 2;
+
+            TextBox messageBox = new TextBox();
+            messageBox.ReadOnly = true;
+            messageBox.Multiline = true;
+            messageBox.Text = message.GetTextMessageFromContent();
+            messageBox.Width = ChatPanelScroller.Width - 60;
+            Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
+            messageBox.Height = size.Height + 8;
+            messageBox.Top = nameBox.Height + 2;
+            //panel.Controls.Add(nameBox);
+            //panel.Controls.Add(messageBox);
+
+            //panel.Controls.Add(new Label() { Text = "USERNAME" }, 0, 0);
+            //panel.Controls.Add(new Label() { Text = "CHATTEXT" }, 0, 1);
+            panel.Controls.Add(nameBox, 0, 0);
+            panel.Controls.Add(messageBox, 0, 1);
+            panel.Location = locator;
+            panel.Height = messageBox.Height + nameBox.Height + 4;
+            panel.Width = messageBox.Width + 6;
+            if (moveToTheRightSide) {
+                nameBox.Dock = DockStyle.Right;
+                //namebox.anchor = anchorstyles.top | anchorstyles.right;
+                messageBox.Dock = DockStyle.Right;
+                //messageBox.Dock = DockStyle.Right;
+                //panel.Dock = DockStyle.Right;
+                //panel.Anchor = AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Left;
+            }
+
+            ChatPanelScroller.Controls.Add(panel);
+            lastPanel = panel;
+            ChatPanelScroller.VerticalScroll.Value = ChatPanelScroller.VerticalScroll.Maximum;
+        }
+
         private void Button_Send_Message_Click(object sender, EventArgs e) {
             if(Text_Message_Input.Text.Length > Config.maxChatMessageTextLength) {
                 MessageBox.Show(
@@ -139,7 +195,7 @@ namespace ChatApp {
             }
             ProtocolMessage response = chatController.SendMessage(Text_Message_Input.Text, Text_Chat_Partner.Text);
             if (response != null) {
-                AddSingleMessagePanel(response, true);
+                AddSingleMessageTablePanel(response, true);
             }
             Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
             Text_Message_Input.Text = "";
