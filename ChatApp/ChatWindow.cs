@@ -116,8 +116,8 @@ namespace ChatApp {
             panel.Height = messageBox.Height + nameBox.Height + 4;
             panel.Width = messageBox.Width + 6;
             if (moveToTheRightSide) {
-                //nameBox.Dock = DockStyle.Right;
-                nameBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+                nameBox.Dock = DockStyle.Right;
+                //namebox.anchor = anchorstyles.top | anchorstyles.right;
                 messageBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
                 //messageBox.Dock = DockStyle.Right;
                 //panel.Dock = DockStyle.Right;
