@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace ChatApp {
     public partial class ChatWindow : Form {
-        private Panel lastPanel = null;
+        private TableLayoutPanel lastPanel = null;
         LogPublisher logPublisher = new LogPublisher("ChatWindow", false);
         private ServerWindow serverWindow;
         private ChatController chatController = new ChatController();
@@ -99,7 +99,9 @@ namespace ChatApp {
                                         + "\r\n"
                                         + messageText;
                 if (replaceText.Length < Config.maxChatMessageTextLength + 20) {
-                    ExtendRecentTextMessage(messageText, font, replaceText);
+                    //ExtendRecentTextMessage(messageText, font, replaceText);
+                    lastChatTextMessageBox = AddMessageBoxToRecentPanel(font, messageText, moveToTheRightSide);
+                    lastProtocolMessage = message;
                     lastProtocolMessage = message;
                     return;
                 }
@@ -154,13 +156,23 @@ namespace ChatApp {
             lastProtocolMessage = message;
         }
 
-        private void ExtendRecentTextMessage(string messageText, Font font, string replaceText) {
-            lastChatTextMessageBox.Text = replaceText;
-            Size virtualBoxSize = TextRenderer.MeasureText(messageText, font);
-            lastPanel.Height += virtualBoxSize.Height;
-            lastChatTextMessageBox.Height += virtualBoxSize.Height;          
-        }
+        private TextBox AddMessageBoxToRecentPanel(Font font, string messageText, bool moveToTheRightSide) {
+            lastPanel.RowCount++;
+            lastPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
+            TextBox messageBox = CreateMessageBox(messageText, font);
+            Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
+            logPublisher.Info("size.Height=" + size.Height);
+            messageBox.Height = size.Height + 2;
+            if (moveToTheRightSide) {
+                messageBox.Dock = DockStyle.Right;
+            }
+            lastPanel.Height += messageBox.Height + 8;
+            lastPanel.Controls.Add(messageBox, 0, lastPanel.RowCount);
+
+            ChatPanelScroller.VerticalScroll.Value = ChatPanelScroller.VerticalScroll.Maximum;
+            return messageBox;
+        }
         private bool NewMessageBelongsToRecentSender(ProtocolMessage message) {
             return lastChatTextMessageBox != null &&
                             message.GetSenderUsername().Equals(lastProtocolMessage.GetSenderUsername());
@@ -180,7 +192,7 @@ namespace ChatApp {
 
         private static TextBox CreateNameBox(ProtocolMessage message, Font font) {
             TextBox nameBox = new TextBox();
-            nameBox.Text = "  " + message.GetSenderUsername();
+            nameBox.Text = " " + message.GetSenderUsername();
             nameBox.ReadOnly = true;
             nameBox.Font = font;
             nameBox.BorderStyle = BorderStyle.None;
