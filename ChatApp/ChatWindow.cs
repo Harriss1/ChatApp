@@ -120,9 +120,8 @@ namespace ChatApp {
             panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
             panel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 
-            //panel.BackColor = Color.;
             TextBox nameBox = new TextBox();
-            nameBox.Text = "   " + message.GetSenderUsername();
+            nameBox.Text = "  " + message.GetSenderUsername();
             nameBox.ReadOnly = true;
             nameBox.Font = font;
             nameBox.BorderStyle = BorderStyle.None;
