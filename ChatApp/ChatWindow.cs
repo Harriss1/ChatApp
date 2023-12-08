@@ -91,8 +91,12 @@ namespace ChatApp {
                 return;
             }
             string messageText = message.GetTextMessageFromContent();
+            DateTime currentTime = System.DateTime.UtcNow;
+            string timeInfoText = currentTime.Hour.ToString() + ":" + currentTime.Minute.ToString();
+            string timeStamp = currentTime.ToString();
             int fontHeigth = 12;
             Font font = new Font("Calibri", fontHeigth, FontStyle.Regular);
+
             // Anhängen der Nachricht an die letzte Nachricht statt neues Boxsegment einzufügen
             if (NewMessageBelongsToRecentSender(message)) {
                 string replaceText = lastChatTextMessageBox.Text
@@ -100,7 +104,7 @@ namespace ChatApp {
                                         + messageText;
                 if (replaceText.Length < Config.maxChatMessageTextLength + 20) {
                     //ExtendRecentTextMessage(messageText, font, replaceText);
-                    lastChatTextMessageBox = AddMessageBoxToRecentPanel(font, messageText, moveToTheRightSide);
+                    lastChatTextMessageBox = AddMessageBoxToRecentPanel(font, messageText, moveToTheRightSide, timeInfoText, timeStamp);
                     lastProtocolMessage = message;
                     lastProtocolMessage = message;
                     return;
@@ -119,6 +123,7 @@ namespace ChatApp {
             panel.ColumnCount = 1;
             panel.RowCount = 2;
             panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
+            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
             panel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
             TextBox nameBox = CreateNameBox(message, font);
@@ -131,17 +136,22 @@ namespace ChatApp {
             messageBox.Height = size.Height + 6;
             messageBox.Top = nameBox.Height + 1;
 
+            TextBox timeStampBox = CreateTimeStampBox(timeInfoText, timeStamp, font, moveToTheRightSide);
+
             if (moveToTheRightSide) {
                 nameBox.Dock = DockStyle.Right;
                 messageBox.Dock = DockStyle.Right;
             }
 
             // Dimensionen des Panels nach Berechnung der Teilelement-Dimensionen
-            panel.Height = messageBox.Height + nameBox.Height + 2;
+            panel.Height = messageBox.Height 
+                        + timeStampBox.Height
+                        + nameBox.Height + 2;
 
             // Teil-Elemente hinzufügen
             panel.Controls.Add(nameBox, 0, 0);
-            panel.Controls.Add(messageBox, 0, 1);
+            panel.Controls.Add(timeStampBox, 0, 1);
+            panel.Controls.Add(messageBox, 0, 2);
             panel.Width = ChatPanelScroller.Width - 20;
             logPublisher.Info("panel.Height=" + panel.Height);
             logPublisher.Info("messageBox.Height=" + messageBox.Height);
@@ -156,9 +166,30 @@ namespace ChatApp {
             lastProtocolMessage = message;
         }
 
-        private TextBox AddMessageBoxToRecentPanel(Font font, string messageText, bool moveToTheRightSide) {
-            lastPanel.RowCount++;
+        private TextBox CreateTimeStampBox(string timeInfoText, string timeStamp, Font font, bool moveToTheRightSide) {
+            Font smallFont = new Font(font.FontFamily, 9, font.Style);
+            TextBox timeBox = new TextBox();
+            timeBox.Text = timeInfoText;
+            timeBox.ReadOnly = true;
+            timeBox.Font = smallFont;
+            timeBox.BorderStyle = BorderStyle.None;
+            timeBox.BackColor = Color.LightYellow;
+            Size virtualSize = TextRenderer.MeasureText(timeBox.Text, timeBox.Font);
+            timeBox.Width = virtualSize.Width + 2;
+            if (moveToTheRightSide) {
+                timeBox.Dock = DockStyle.Right;
+            }
+            return timeBox;
+        }
+
+        private TextBox AddMessageBoxToRecentPanel(Font font, string messageText, bool moveToTheRightSide, string timeInfoText, string timeStamp) {
+            lastPanel.RowCount += 2;
+            lastPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
             lastPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            TextBox timeStampBox = CreateTimeStampBox(timeInfoText, timeStamp, font, moveToTheRightSide);
+            lastPanel.Height += timeStampBox.Height;
+            lastPanel.Controls.Add(timeStampBox, 0, lastPanel.RowCount - 1);
 
             TextBox messageBox = CreateMessageBox(messageText, font);
             Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
