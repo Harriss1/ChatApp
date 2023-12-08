@@ -19,8 +19,10 @@ namespace ChatApp {
         private Timer updateTimer;
         private ProtocolMessage lastProtocolMessage = null;
         private TextBox lastChatTextMessageBox = null;
+        ToolTip timeStampHoverText;
         public ChatWindow() {
             InitializeComponent();
+            timeStampHoverText = GetToolTip();
         }
 
         private void Button_Server_View_Click(object sender, EventArgs e) {
@@ -91,9 +93,10 @@ namespace ChatApp {
                 return;
             }
             string messageText = message.GetTextMessageFromContent();
-            DateTime currentTime = System.DateTime.UtcNow;
-            string timeInfoText = currentTime.Hour.ToString() + ":" + currentTime.Minute.ToString();
-            string timeStamp = currentTime.ToString();
+
+            string timeInfoText = DateTime.Now.ToString("H:mm");
+            //currentTime.Hour.ToString() + ":" + currentTime.Minute.ToString();
+            string timeStamp = System.DateTime.UtcNow.ToString();
             int fontHeigth = 12;
             Font font = new Font("Calibri", fontHeigth, FontStyle.Regular);
 
@@ -179,6 +182,9 @@ namespace ChatApp {
             if (moveToTheRightSide) {
                 timeBox.Dock = DockStyle.Right;
             }
+
+            // Set up the ToolTip text for the Info-Box
+            timeStampHoverText.SetToolTip(timeBox, timeStamp);
             return timeBox;
         }
 
@@ -251,6 +257,19 @@ namespace ChatApp {
             if (Text_Message_Input.Text.Equals("(neue Nachricht verfassen)")){
                 Text_Message_Input.Text = "";
             }
+        }
+
+
+        private ToolTip GetToolTip() {
+            // Create the ToolTip and associate with the Form container.
+            ToolTip tooltip = new ToolTip();
+            // Set up the delays for the ToolTip.
+            tooltip.AutoPopDelay = 5000;
+            tooltip.InitialDelay = 300;
+            tooltip.ReshowDelay = 500;
+            // Force the ToolTip text to be displayed whether or not the form is active.
+            tooltip.ShowAlways = true;
+            return tooltip;
         }
     }
 }
