@@ -94,41 +94,79 @@ namespace ChatApp {
             int fontHeigth = 12;
             Font font = new Font("Calibri", fontHeigth, FontStyle.Regular);
             // Anhängen der Nachricht an die letzte Nachricht statt neues Boxsegment einzufügen
-            if (lastChatTextMessageBox != null &&
-                message.GetSenderUsername().Equals(lastProtocolMessage.GetSenderUsername())) {
+            if (NewMessageBelongsToRecentSender(message)) {
                 string replaceText = lastChatTextMessageBox.Text
-                                        + "\r\n"               
+                                        + "\r\n"
                                         + messageText;
-                if(replaceText.Length < Config.maxChatMessageTextLength + 20) {
-                    lastChatTextMessageBox.Text = replaceText;
-                    Size virtualBoxSize = TextRenderer.MeasureText(messageText, font);
-                    lastPanel.Height += virtualBoxSize.Height;
-                    lastChatTextMessageBox.Height += virtualBoxSize.Height;
+                if (replaceText.Length < Config.maxChatMessageTextLength + 20) {
+                    ExtendRecentTextMessage(messageText, font, replaceText);
                     lastProtocolMessage = message;
                     return;
                 }
             }
+
+            TableLayoutPanel panel = new TableLayoutPanel();
             Point locator = new Point(0, 0);
             if (lastPanel != null) {
                 locator = lastPanel.Location;
                 locator.X = 0;
                 locator.Offset(0, lastPanel.Height + 2);
             }
-            TableLayoutPanel panel = new TableLayoutPanel();
+            panel.Location = locator;
+
             panel.ColumnCount = 1;
             panel.RowCount = 2;
             panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
-            panel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            panel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
-            TextBox nameBox = new TextBox();
-            nameBox.Text = "  " + message.GetSenderUsername();
-            nameBox.ReadOnly = true;
-            nameBox.Font = font;
-            nameBox.BorderStyle = BorderStyle.None;
-            nameBox.BackColor = Color.Azure;
+            TextBox nameBox = CreateNameBox(message, font);
             Size nameBoxSize = TextRenderer.MeasureText(nameBox.Text, nameBox.Font);
             nameBox.Width = nameBoxSize.Width + 2;
 
+            TextBox messageBox = CreateMessageBox(messageText, font);
+            Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
+            logPublisher.Info("size.Height=" + size.Height);
+            messageBox.Height = size.Height + 6;
+            messageBox.Top = nameBox.Height + 1;
+
+            if (moveToTheRightSide) {
+                nameBox.Dock = DockStyle.Right;
+                messageBox.Dock = DockStyle.Right;
+            }
+
+            // Dimensionen des Panels nach Berechnung der Teilelement-Dimensionen
+            panel.Height = messageBox.Height + nameBox.Height + 2;
+
+            // Teil-Elemente hinzufügen
+            panel.Controls.Add(nameBox, 0, 0);
+            panel.Controls.Add(messageBox, 0, 1);
+            panel.Width = ChatPanelScroller.Width - 20;
+            logPublisher.Info("panel.Height=" + panel.Height);
+            logPublisher.Info("messageBox.Height=" + messageBox.Height);
+            logPublisher.Info("nameBox.Height=" + nameBox.Height);
+
+            // Nach unten scrollen
+            ChatPanelScroller.Controls.Add(panel);
+            ChatPanelScroller.VerticalScroll.Value = ChatPanelScroller.VerticalScroll.Maximum;
+
+            lastPanel = panel;
+            lastChatTextMessageBox = messageBox;
+            lastProtocolMessage = message;
+        }
+
+        private void ExtendRecentTextMessage(string messageText, Font font, string replaceText) {
+            lastChatTextMessageBox.Text = replaceText;
+            Size virtualBoxSize = TextRenderer.MeasureText(messageText, font);
+            lastPanel.Height += virtualBoxSize.Height;
+            lastChatTextMessageBox.Height += virtualBoxSize.Height;          
+        }
+
+        private bool NewMessageBelongsToRecentSender(ProtocolMessage message) {
+            return lastChatTextMessageBox != null &&
+                            message.GetSenderUsername().Equals(lastProtocolMessage.GetSenderUsername());
+        }
+
+        private TextBox CreateMessageBox(string messageText, Font font) {
             TextBox messageBox = new TextBox();
             messageBox.ReadOnly = true;
             messageBox.Font = font;
@@ -137,29 +175,17 @@ namespace ChatApp {
             messageBox.Multiline = true;
             messageBox.Text = messageText;
             messageBox.Width = ChatPanelScroller.Width - 80;
-            Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
-            logPublisher.Info("size.Height=" + size.Height);
-            messageBox.Height = size.Height + 6;
-            messageBox.Top = nameBox.Height + 1;
-            panel.Location = locator;
-            panel.Height = messageBox.Height + nameBox.Height + 2;
-            panel.Controls.Add(nameBox, 0, 0);
-            panel.Controls.Add(messageBox, 0, 1);
-            logPublisher.Info("panel.Height=" + panel.Height);
-            logPublisher.Info("messageBox.Height=" + messageBox.Height);
-            logPublisher.Info("nameBox.Height=" + nameBox.Height);
-            panel.Width = ChatPanelScroller.Width - 20;
-            if (moveToTheRightSide) {
-                nameBox.Dock = DockStyle.Right;
-                messageBox.Dock = DockStyle.Right;
-            }
+            return messageBox;
+        }
 
-            ChatPanelScroller.Controls.Add(panel);
-            ChatPanelScroller.VerticalScroll.Value = ChatPanelScroller.VerticalScroll.Maximum;
-
-            lastPanel = panel;
-            lastChatTextMessageBox = messageBox;
-            lastProtocolMessage = message;
+        private static TextBox CreateNameBox(ProtocolMessage message, Font font) {
+            TextBox nameBox = new TextBox();
+            nameBox.Text = "  " + message.GetSenderUsername();
+            nameBox.ReadOnly = true;
+            nameBox.Font = font;
+            nameBox.BorderStyle = BorderStyle.None;
+            nameBox.BackColor = Color.Azure;
+            return nameBox;
         }
 
         private void Button_Send_Message_Click(object sender, EventArgs e) {
