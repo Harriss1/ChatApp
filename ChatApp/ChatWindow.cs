@@ -69,48 +69,11 @@ namespace ChatApp {
         }
 
         private void Button_Tabbed_Chat_Request_Click(object sender, EventArgs e) {
-            //TabPage chatTab = new TabPage();
-            //chatTab.Text = Text_Tabbed_Chatpartner.Text;
-            //chatTab.Controls.Add(CreateChatContainer(Text_Tabbed_Chatpartner.Text));
-            //Tab_Control_Chats.TabPages.Insert(Tab_Control_Chats.TabPages.Count-1, chatTab);
-            //Tab_Control_Chats.SelectedTab = chatTab;
+            ChatTabPage chatTabPage = new ChatTabPage(Text_Tabbed_Chatpartner.Text);
 
-            ChatTabView chatTabView = new ChatTabView(Text_Tabbed_Chatpartner.Text);
+            Tab_Control_Chats.TabPages.Insert(Tab_Control_Chats.TabPages.Count - 1, chatTabPage.TabPage);
+            Tab_Control_Chats.SelectedTab = chatTabPage.TabPage;
 
-            Tab_Control_Chats.TabPages.Insert(Tab_Control_Chats.TabPages.Count - 1, chatTabView.TabPage);
-            Tab_Control_Chats.SelectedTab = chatTabView.TabPage;
-
-        }
-
-        private TableLayoutPanel CreateChatContainer(string text) {
-            TableLayoutPanel chatContainer = new TableLayoutPanel();
-            chatContainer.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Top;
-            chatContainer.ColumnCount = 1;
-            chatContainer.RowCount = 3;
-            chatContainer.BackColor = Color.FromArgb(218, 232, 252);
-            chatContainer.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
-            chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
-            //chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 73));
-            chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
-            chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 28));
-
-            Panel chatView = new Panel();
-            chatView.BackColor = Color.Firebrick;
-            chatView.AutoScroll = true;
-            chatView.Dock = DockStyle.Fill;
-            TextBox textInput = new TextBox();
-            textInput.ScrollBars = ScrollBars.Vertical;
-            textInput.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
-            textInput.WordWrap = true;
-            textInput.Multiline = true;
-            Button sendButton = new Button();
-            sendButton.Text = "Nachricht abschicken";
-            sendButton.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
-            chatContainer.Controls.Add(chatView, 0, 0);
-            chatContainer.Controls.Add(textInput, 0, 1);
-            chatContainer.Controls.Add(sendButton, 0, 2);
-
-            return chatContainer;
         }
 
         private void Button_Send_Message_Click(object sender, EventArgs e) {

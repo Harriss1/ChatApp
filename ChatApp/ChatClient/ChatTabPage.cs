@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ChatApp.ChatClient {
-    internal class ChatTabView {
-        Color backColor = Color.FromArgb(218, 232, 252);
+    internal class ChatTabPage {
+        internal TabPage TabPage { get; private set; }
         internal Panel Messages { get; set; }
         internal TextBox TextInput { get; set; }
         internal Button SendButton { get; set; }
         internal TableLayoutPanel Body { get; private set; }
-        internal TabPage TabPage { get; private set; }
-        private ChatTabView() { }
-        public ChatTabView(string chatpartner) {
+        Color backColor = Color.FromArgb(218, 232, 252);
+        private ChatTabPage() { }
+        public ChatTabPage(string chatpartner) {
             TabPage = new TabPage();
             TabPage.Text = chatpartner;
             Body = CreateChatContainer();
