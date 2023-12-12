@@ -153,8 +153,8 @@ namespace ChatApp {
             + timeStampBox.Height
             + nameBox.Height;
             panel.Width = ChatPanelScroller.Width - 20;
-            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, nameBox.Height));
-            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, timeStampBox.Height));
+            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
+            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 8));
             panel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             
             // Teil-Elemente hinzufügen
@@ -212,7 +212,7 @@ namespace ChatApp {
             lastPanel.RowCount += 2;
             lastPanel.Height += timeStampBox.Height;
             lastPanel.Height += messageBox.Height;
-            lastPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, timeStampBox.Height));
+            lastPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 8));
             lastPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             lastPanel.Controls.Add(timeStampBox, 0, lastPanel.RowCount - 1);
             lastPanel.Controls.Add(messageBox, 0, lastPanel.RowCount);
