@@ -73,7 +73,7 @@
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
-            this.mainTableLayout.Size = new System.Drawing.Size(800, 548);
+            this.mainTableLayout.Size = new System.Drawing.Size(800, 844);
             this.mainTableLayout.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -233,9 +233,9 @@
             this.tabTableLayout.Location = new System.Drawing.Point(3, 113);
             this.tabTableLayout.Name = "tabTableLayout";
             this.tabTableLayout.RowCount = 2;
-            this.tabTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tabTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 400F));
             this.tabTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tabTableLayout.Size = new System.Drawing.Size(794, 432);
+            this.tabTableLayout.Size = new System.Drawing.Size(794, 728);
             this.tabTableLayout.TabIndex = 6;
             // 
             // chatSegmentTableLayout
@@ -248,13 +248,13 @@
             this.chatSegmentTableLayout.Controls.Add(this.Button_Send_Message, 0, 2);
             this.chatSegmentTableLayout.Controls.Add(this.ChatPanelScroller, 0, 0);
             this.chatSegmentTableLayout.Controls.Add(this.Text_Message_Input, 0, 1);
-            this.chatSegmentTableLayout.Location = new System.Drawing.Point(3, 103);
+            this.chatSegmentTableLayout.Location = new System.Drawing.Point(3, 403);
             this.chatSegmentTableLayout.Name = "chatSegmentTableLayout";
             this.chatSegmentTableLayout.RowCount = 3;
             this.chatSegmentTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.chatSegmentTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 73F));
             this.chatSegmentTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
-            this.chatSegmentTableLayout.Size = new System.Drawing.Size(788, 326);
+            this.chatSegmentTableLayout.Size = new System.Drawing.Size(788, 322);
             this.chatSegmentTableLayout.TabIndex = 0;
             // 
             // Button_Send_Message
@@ -304,7 +304,7 @@
             this.Tab_Control_Chats.Location = new System.Drawing.Point(3, 3);
             this.Tab_Control_Chats.Name = "Tab_Control_Chats";
             this.Tab_Control_Chats.SelectedIndex = 0;
-            this.Tab_Control_Chats.Size = new System.Drawing.Size(788, 94);
+            this.Tab_Control_Chats.Size = new System.Drawing.Size(788, 394);
             this.Tab_Control_Chats.TabIndex = 1;
             // 
             // TabPage_NewChat
@@ -314,7 +314,7 @@
             this.TabPage_NewChat.Location = new System.Drawing.Point(4, 22);
             this.TabPage_NewChat.Name = "TabPage_NewChat";
             this.TabPage_NewChat.Padding = new System.Windows.Forms.Padding(3);
-            this.TabPage_NewChat.Size = new System.Drawing.Size(780, 68);
+            this.TabPage_NewChat.Size = new System.Drawing.Size(780, 368);
             this.TabPage_NewChat.TabIndex = 0;
             this.TabPage_NewChat.Text = "Neuer Chat";
             this.TabPage_NewChat.UseVisualStyleBackColor = true;
@@ -339,7 +339,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Button_Tabbed_Chat_Request.Location = new System.Drawing.Point(400, -1);
             this.Button_Tabbed_Chat_Request.Name = "Button_Tabbed_Chat_Request";
-            this.Button_Tabbed_Chat_Request.Size = new System.Drawing.Size(199, 24);
+            this.Button_Tabbed_Chat_Request.Size = new System.Drawing.Size(199, 324);
             this.Button_Tabbed_Chat_Request.TabIndex = 4;
             this.Button_Tabbed_Chat_Request.Text = "Chat Anfragen";
             this.Button_Tabbed_Chat_Request.UseVisualStyleBackColor = true;
@@ -349,7 +349,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 550);
+            this.ClientSize = new System.Drawing.Size(800, 846);
             this.Controls.Add(this.mainTableLayout);
             this.Name = "ChatWindow";
             this.Text = "ChatApp";

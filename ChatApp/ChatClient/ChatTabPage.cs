@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatApp.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace ChatApp.ChatClient {
     internal class ChatTabPage {
         internal string ChatPartner { get; private set; }
         internal TabPage TabPage { get; private set; }
-        internal Panel Messages { get; set; }
+        internal Panel MessagesScrollerPanel { get; set; }
         internal TextBox TextInput { get; set; }
         internal Button SendButton { get; set; }
         internal Button CloseButton { get; set; }
@@ -20,8 +21,19 @@ namespace ChatApp.ChatClient {
         private TabControl outerTabControl;
         internal TableLayoutPanel Body { get; private set; }
         Color backColor = Color.FromArgb(218, 232, 252);
+
+
+        private TableLayoutPanel lastPanel = null;
+        private ProtocolMessage lastProtocolMessage = null;
+        private TextBox lastChatTextMessageBox = null;
+        ToolTip timeStampHoverText;
+
+        private ChatController chatController;
+
         private ChatTabPage() { }
-        public ChatTabPage(string chatpartner, TabControl outside_tab_control) {
+        public ChatTabPage(string chatpartner, TabControl outside_tab_control, ChatController chatController) {
+            this.chatController = chatController;
+            timeStampHoverText = GetToolTip();
             ChatPartner = chatpartner;
             outerTabControl = outside_tab_control;
             TabPage = new TabPage();
@@ -29,9 +41,37 @@ namespace ChatApp.ChatClient {
             Body = CreateChatContainer();
             TabPage.Controls.Add(Body);
             CloseButton.Click += new EventHandler(CloseTab);
+            SendButton.Click += new EventHandler(SendMessage);
             TabList.Add(this);
             DeactivateControls();
         }
+
+        private void SendMessage(object sender, EventArgs e) {
+            if (TextInput.Text.Length > Config.maxChatMessageTextLength) {
+                MessageBox.Show(
+                    "Eine Nachricht darf maximal " + Config.maxChatMessageTextLength + " Zeichen lang sein.",
+                    "Warnung",
+                    MessageBoxButtons.OK);
+                return;
+            }
+            if (!chatController.LastChatMessageTransmitted) {
+                MessageBox.Show(
+                    "Bitte warten bis die vorhergehende Nachricht übertragen wurde.",
+                    "Information",
+                    MessageBoxButtons.OK);
+                return;
+            }
+            ProtocolMessage response = chatController.SendMessage(TextInput.Text, ChatPartner);
+            if (response != null) {
+                AddSingleMessageTablePanel(response, true);
+            }
+            Console.WriteLine("Eingegebene Nachricht = " + TextInput.Text);
+            TextInput.Text = "";
+
+            TextInput.Enabled = false;
+            SendButton.Enabled = false;        
+        }
+
         internal void ActivateControls() {
             ControlsAreEnabled = true;
             SendButton.Enabled = true;
@@ -68,8 +108,7 @@ namespace ChatApp.ChatClient {
             chatContainer.BackColor = backColor;
             chatContainer.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
             chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
-            chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
-            //chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 73));
+            chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 200));
             chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
             chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 28));
 
@@ -80,10 +119,10 @@ namespace ChatApp.ChatClient {
             CloseButton.Height = 18;
             CloseButton.Anchor = AnchorStyles.Right;
 
-            Messages = new Panel();
-            Messages.BackColor = Color.Firebrick;
-            Messages.AutoScroll = true;
-            Messages.Dock = DockStyle.Fill;
+            MessagesScrollerPanel = new Panel();
+            MessagesScrollerPanel.BackColor = Color.Firebrick;
+            MessagesScrollerPanel.AutoScroll = true;
+            MessagesScrollerPanel.Dock = DockStyle.Fill;
 
             TextInput = new TextBox();
             TextInput.ScrollBars = ScrollBars.Vertical;
@@ -96,11 +135,163 @@ namespace ChatApp.ChatClient {
             SendButton.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
 
             chatContainer.Controls.Add(CloseButton, 0, 0);
-            chatContainer.Controls.Add(Messages, 0, 1);
+            chatContainer.Controls.Add(MessagesScrollerPanel, 0, 1);
             chatContainer.Controls.Add(TextInput, 0, 2);
             chatContainer.Controls.Add(SendButton, 0, 3);
 
             return chatContainer;
+        }
+
+        internal void AddSingleMessageTablePanel(ProtocolMessage message, bool moveToTheRightSide) {
+            if (!message.GetMessageType().Equals(MessageTypeEnum.CHAT_MESSAGE)) {
+                return;
+            }
+            string messageText = message.GetTextMessageFromContent();
+            string timeInfoText = DateTime.Now.ToString("H:mm");
+            string timeStamp = System.DateTime.Now.ToString();
+            int fontHeigth = 12;
+            Font font = new Font("Calibri", fontHeigth, FontStyle.Regular);
+
+            // Anhängen der Nachricht an die letzte Nachricht statt neues Boxsegment einzufügen
+            if (NewMessageBelongsToRecentSender(message)) {
+                string replaceText = lastChatTextMessageBox.Text
+                                        + "\r\n"
+                                        + messageText;
+                if (replaceText.Length < Config.maxChatMessageTextLength + 20) {
+                    lastChatTextMessageBox = AddMessageSegmentToRecentPanel(font, messageText, moveToTheRightSide, timeInfoText, timeStamp);
+                    lastProtocolMessage = message;
+                    lastProtocolMessage = message;
+                    return;
+                }
+            }
+
+            TableLayoutPanel panel = new TableLayoutPanel();
+            Point locator = new Point(0, 0);
+            if (lastPanel != null) {
+                locator = lastPanel.Location;
+                locator.X = 0;
+                locator.Offset(0, lastPanel.Height + 2);
+            }
+            panel.Location = locator;
+
+            panel.ColumnCount = 1;
+            panel.RowCount = 2;
+            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
+            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
+            panel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            TextBox nameBox = CreateNameBox(message, font);
+            Size nameBoxSize = TextRenderer.MeasureText(nameBox.Text, nameBox.Font);
+            nameBox.Width = nameBoxSize.Width + 2;
+
+            TextBox messageBox = CreateMessageBox(messageText, font);
+            Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
+            messageBox.Height = size.Height + 2;
+            //messageBox.Top = nameBox.Height + 1;
+
+            TextBox timeStampBox = CreateTimeStampBox(timeInfoText, timeStamp, font, moveToTheRightSide);
+
+            if (moveToTheRightSide) {
+                nameBox.Dock = DockStyle.Right;
+                messageBox.Dock = DockStyle.Right;
+            }
+
+            // Dimensionen des Panels nach Berechnung der Teilelement-Dimensionen
+            panel.Height = messageBox.Height
+                        + timeStampBox.Height
+                        + nameBox.Height + 2;
+
+            // Teil-Elemente hinzufügen
+            panel.Controls.Add(nameBox, 0, 0);
+            panel.Controls.Add(timeStampBox, 0, 1);
+            panel.Controls.Add(messageBox, 0, 2);
+            panel.Width = MessagesScrollerPanel.Width - 20;
+
+            // Nach unten scrollen
+            MessagesScrollerPanel.Controls.Add(panel);
+            MessagesScrollerPanel.VerticalScroll.Value = MessagesScrollerPanel.VerticalScroll.Maximum;
+
+            lastPanel = panel;
+            lastChatTextMessageBox = messageBox;
+            lastProtocolMessage = message;
+        }
+
+        private TextBox CreateTimeStampBox(string timeInfoText, string timeStamp, Font font, bool moveToTheRightSide) {
+            Font smallFont = new Font(font.FontFamily, 9, font.Style);
+            TextBox timeBox = new TextBox();
+            timeBox.Text = timeInfoText;
+            timeBox.ReadOnly = true;
+            timeBox.Font = smallFont;
+            timeBox.BorderStyle = BorderStyle.None;
+            timeBox.BackColor = Color.LightYellow;
+            Size virtualSize = TextRenderer.MeasureText(timeBox.Text, timeBox.Font);
+            timeBox.Width = virtualSize.Width + 2;
+            if (moveToTheRightSide) {
+                timeBox.Dock = DockStyle.Right;
+            }
+            // Set up the ToolTip text for the Info-Box
+            timeStampHoverText.SetToolTip(timeBox, timeStamp);
+            return timeBox;
+        }
+
+        private TextBox AddMessageSegmentToRecentPanel(Font font, string messageText, bool moveToTheRightSide, string timeInfoText, string timeStamp) {
+            lastPanel.RowCount += 2;
+            lastPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
+            lastPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            TextBox timeStampBox = CreateTimeStampBox(timeInfoText, timeStamp, font, moveToTheRightSide);
+            lastPanel.Height += timeStampBox.Height;
+            lastPanel.Controls.Add(timeStampBox, 0, lastPanel.RowCount - 1);
+
+            TextBox messageBox = CreateMessageBox(messageText, font);
+            Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
+            messageBox.Height = size.Height + 2;
+            if (moveToTheRightSide) {
+                messageBox.Dock = DockStyle.Right;
+            }
+            lastPanel.Height += messageBox.Height;
+            lastPanel.Controls.Add(messageBox, 0, lastPanel.RowCount);
+
+            MessagesScrollerPanel.VerticalScroll.Value = MessagesScrollerPanel.VerticalScroll.Maximum;
+            return messageBox;
+        }
+        private bool NewMessageBelongsToRecentSender(ProtocolMessage message) {
+            return lastChatTextMessageBox != null &&
+                            message.GetSenderUsername().Equals(lastProtocolMessage.GetSenderUsername());
+        }
+
+        private TextBox CreateMessageBox(string messageText, Font font) {
+            TextBox messageBox = new TextBox();
+            messageBox.ReadOnly = true;
+            messageBox.Font = font;
+            messageBox.BackColor = Color.LightGoldenrodYellow;
+            messageBox.BorderStyle = BorderStyle.None;
+            messageBox.Multiline = true;
+            messageBox.Text = messageText;
+            messageBox.Width = MessagesScrollerPanel.Width - 80;
+            return messageBox;
+        }
+
+        private static TextBox CreateNameBox(ProtocolMessage message, Font font) {
+            TextBox nameBox = new TextBox();
+            nameBox.Text = " " + message.GetSenderUsername();
+            nameBox.ReadOnly = true;
+            nameBox.Font = font;
+            nameBox.BorderStyle = BorderStyle.None;
+            nameBox.BackColor = Color.Azure;
+            return nameBox;
+        }
+
+        private ToolTip GetToolTip() {
+            // Create the ToolTip and associate with the Form container.
+            ToolTip tooltip = new ToolTip();
+            // Set up the delays for the ToolTip.
+            tooltip.AutoPopDelay = 5000;
+            tooltip.InitialDelay = 300;
+            tooltip.ReshowDelay = 500;
+            // Force the ToolTip text to be displayed whether or not the form is active.
+            tooltip.ShowAlways = true;
+            return tooltip;
         }
     }
 }

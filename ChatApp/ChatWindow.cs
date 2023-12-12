@@ -82,7 +82,7 @@ namespace ChatApp {
         }
 
         private void AddChatTab(string chatpartnerName) {
-            ChatTabPage chatTabPage = new ChatTabPage(chatpartnerName, Tab_Control_Chats);
+            ChatTabPage chatTabPage = new ChatTabPage(chatpartnerName, Tab_Control_Chats, chatController);
             Tab_Control_Chats.TabPages.Insert(Tab_Control_Chats.TabPages.Count - 1, chatTabPage.TabPage);
             Tab_Control_Chats.SelectedTab = chatTabPage.TabPage;
         }
@@ -126,7 +126,21 @@ namespace ChatApp {
                 if (received.GetMessageType().Equals(MessageTypeEnum.CHAT_REQUEST)) {
                     HandleIncommingChatRequest(received);
                 }
-                AddSingleMessageTablePanel(received, false);
+                //AddSingleMessageTablePanel(received, false);
+                if (chatController.permittedChatPartners.Contains(received.GetSenderUsername())) {
+                    ChatTabPage chatTabPage = null;
+                    foreach(ChatTabPage search in ChatTabPage.TabList) {
+                        if (search.ChatPartner.Equals(received.GetSenderUsername())) {
+                            chatTabPage = search;
+                            break;
+                        }
+                    }
+                    if(chatTabPage == null) {
+                        chatTabPage = new ChatTabPage(received.GetSenderUsername(), Tab_Control_Chats, chatController);
+                        chatTabPage.ActivateControls();
+                    }
+                    chatTabPage.AddSingleMessageTablePanel(received, false);
+                }
             }
 
             string serverlinkStatusMessage = chatController.GetServerlinkStatusMessage();
