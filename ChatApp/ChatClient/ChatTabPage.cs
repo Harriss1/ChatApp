@@ -13,15 +13,26 @@ namespace ChatApp.ChatClient {
         internal TextBox TextInput { get; set; }
         internal Button SendButton { get; set; }
         internal Button CloseButton { get; set; }
+        internal static List<ChatTabPage> TabList = new List<ChatTabPage>();
+        private TabControl outerTabControl;
         internal TableLayoutPanel Body { get; private set; }
         Color backColor = Color.FromArgb(218, 232, 252);
         private ChatTabPage() { }
-        public ChatTabPage(string chatpartner) {
+        public ChatTabPage(string chatpartner, TabControl outside_tab_control) {
+            outerTabControl = outside_tab_control;
             TabPage = new TabPage();
             TabPage.Text = chatpartner;
             Body = CreateChatContainer();
             TabPage.Controls.Add(Body);
+            CloseButton.Click += new EventHandler(CloseTab);
+            TabList.Add(this);
         }
+
+        private void CloseTab(object sender, EventArgs e) {
+            outerTabControl.TabPages.Remove(TabPage);
+            TabList.Remove(this);
+        }
+
         private TableLayoutPanel CreateChatContainer() {
             TableLayoutPanel chatContainer = new TableLayoutPanel();
             chatContainer.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Top;

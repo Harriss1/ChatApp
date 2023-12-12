@@ -69,11 +69,11 @@ namespace ChatApp {
         }
 
         private void Button_Tabbed_Chat_Request_Click(object sender, EventArgs e) {
-            ChatTabPage chatTabPage = new ChatTabPage(Text_Tabbed_Chatpartner.Text);
+            ChatTabPage chatTabPage = new ChatTabPage(Text_Tabbed_Chatpartner.Text, Tab_Control_Chats);
 
             Tab_Control_Chats.TabPages.Insert(Tab_Control_Chats.TabPages.Count - 1, chatTabPage.TabPage);
             Tab_Control_Chats.SelectedTab = chatTabPage.TabPage;
-
+            
         }
 
         private void Button_Send_Message_Click(object sender, EventArgs e) {
