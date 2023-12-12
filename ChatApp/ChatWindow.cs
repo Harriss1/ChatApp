@@ -23,7 +23,7 @@ namespace ChatApp {
         private bool popupWarningTransmissionFailureAlreadyShown = false;
         public ChatWindow() {
             InitializeComponent();
-            timeStampHoverText = GetToolTip();
+            timeStampHoverText = GetToolTip(); 
         }
 
         private void Button_Server_View_Click(object sender, EventArgs e) {
@@ -104,7 +104,9 @@ namespace ChatApp {
         private void UpdateUI(object sender, EventArgs e) {            
             ProtocolMessage received = chatController.DequeueReceivedChatMessage();
             if (received != null) {
-                //Text_Chatmessages_Placeholder.Text += received.GetXml().OuterXml;
+                if (received.GetMessageType().Equals(MessageTypeEnum.CHAT_REQUEST)) {
+                    HandleIncommingChatRequest(received);
+                }
                 AddSingleMessageTablePanel(received, false);
             }
 
@@ -139,6 +141,11 @@ namespace ChatApp {
                 popupWarningTransmissionFailureAlreadyShown = false;
             }
         }
+
+        private void HandleIncommingChatRequest(ProtocolMessage received) {
+            
+        }
+
         private void AddSingleMessageTablePanel(ProtocolMessage message, bool moveToTheRightSide) {
             if (!message.GetMessageType().Equals(MessageTypeEnum.CHAT_MESSAGE)) {
                 return;
