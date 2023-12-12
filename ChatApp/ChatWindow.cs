@@ -19,8 +19,10 @@ namespace ChatApp {
         private Timer updateTimer;
         private ProtocolMessage lastProtocolMessage = null;
         private TextBox lastChatTextMessageBox = null;
+        ToolTip timeStampHoverText;
         public ChatWindow() {
             InitializeComponent();
+            timeStampHoverText = GetToolTip();
         }
 
         private void Button_Server_View_Click(object sender, EventArgs e) {
@@ -91,9 +93,8 @@ namespace ChatApp {
                 return;
             }
             string messageText = message.GetTextMessageFromContent();
-            DateTime currentTime = System.DateTime.UtcNow;
-            string timeInfoText = currentTime.Hour.ToString() + ":" + currentTime.Minute.ToString();
-            string timeStamp = currentTime.ToString();
+            string timeInfoText = DateTime.Now.ToString("H:mm");
+            string timeStamp = System.DateTime.UtcNow.ToString();
             int fontHeigth = 12;
             Font font = new Font("Calibri", fontHeigth, FontStyle.Regular);
 
@@ -104,7 +105,7 @@ namespace ChatApp {
                                         + messageText;
                 if (replaceText.Length < Config.maxChatMessageTextLength + 20) {
                     //ExtendRecentTextMessage(messageText, font, replaceText);
-                    lastChatTextMessageBox = AddMessageBoxToRecentPanel(font, messageText, moveToTheRightSide, timeInfoText, timeStamp);
+                    lastChatTextMessageBox = AddMessageSegmentToRecentPanel(font, messageText, moveToTheRightSide, timeInfoText, timeStamp);
                     lastProtocolMessage = message;
                     lastProtocolMessage = message;
                     return;
@@ -133,7 +134,7 @@ namespace ChatApp {
             TextBox messageBox = CreateMessageBox(messageText, font);
             Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
             logPublisher.Info("size.Height=" + size.Height);
-            messageBox.Height = size.Height + 6;
+            messageBox.Height = size.Height + 2;
             messageBox.Top = nameBox.Height + 1;
 
             TextBox timeStampBox = CreateTimeStampBox(timeInfoText, timeStamp, font, moveToTheRightSide);
@@ -179,10 +180,12 @@ namespace ChatApp {
             if (moveToTheRightSide) {
                 timeBox.Dock = DockStyle.Right;
             }
+            // Set up the ToolTip text for the Info-Box
+            timeStampHoverText.SetToolTip(timeBox, timeStamp);
             return timeBox;
         }
 
-        private TextBox AddMessageBoxToRecentPanel(Font font, string messageText, bool moveToTheRightSide, string timeInfoText, string timeStamp) {
+        private TextBox AddMessageSegmentToRecentPanel(Font font, string messageText, bool moveToTheRightSide, string timeInfoText, string timeStamp) {
             lastPanel.RowCount += 2;
             lastPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
             lastPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
@@ -198,7 +201,7 @@ namespace ChatApp {
             if (moveToTheRightSide) {
                 messageBox.Dock = DockStyle.Right;
             }
-            lastPanel.Height += messageBox.Height + 8;
+            lastPanel.Height += messageBox.Height + 2;
             lastPanel.Controls.Add(messageBox, 0, lastPanel.RowCount);
 
             ChatPanelScroller.VerticalScroll.Value = ChatPanelScroller.VerticalScroll.Maximum;
@@ -251,6 +254,18 @@ namespace ChatApp {
             if (Text_Message_Input.Text.Equals("(neue Nachricht verfassen)")){
                 Text_Message_Input.Text = "";
             }
+        }
+
+        private ToolTip GetToolTip() {
+            // Create the ToolTip and associate with the Form container.
+            ToolTip tooltip = new ToolTip();
+            // Set up the delays for the ToolTip.
+            tooltip.AutoPopDelay = 5000;
+            tooltip.InitialDelay = 300;
+            tooltip.ReshowDelay = 500;
+            // Force the ToolTip text to be displayed whether or not the form is active.
+            tooltip.ShowAlways = true;
+            return tooltip;
         }
     }
 }
