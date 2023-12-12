@@ -69,11 +69,23 @@ namespace ChatApp {
         }
 
         private void Button_Tabbed_Chat_Request_Click(object sender, EventArgs e) {
-            ChatTabPage chatTabPage = new ChatTabPage(Text_Tabbed_Chatpartner.Text, Tab_Control_Chats);
+            string chatpartnerName = Text_Tabbed_Chatpartner.Text;
+            if (ChatTabPage.TabListContainsChatPartner(chatpartnerName)) {
+                MessageBox.Show(
+                    "Chatpartner '" + Text_Tabbed_Chatpartner.Text + "' wurde bereits hinzugefügt.",
+                    "Warnung",
+                    MessageBoxButtons.OK);
+                return;
+            }
+            chatController.SendChatPermissionRequest(chatpartnerName);
+            AddChatTab(chatpartnerName);
+        }
 
+        private void AddChatTab(string chatpartnerName) {
+            ChatTabPage chatTabPage = new ChatTabPage(chatpartnerName, Tab_Control_Chats);
+            chatTabPage.Enabled = false;
             Tab_Control_Chats.TabPages.Insert(Tab_Control_Chats.TabPages.Count - 1, chatTabPage.TabPage);
             Tab_Control_Chats.SelectedTab = chatTabPage.TabPage;
-            
         }
 
         private void Button_Send_Message_Click(object sender, EventArgs e) {
@@ -147,6 +159,13 @@ namespace ChatApp {
                 Text_Message_Input.Enabled = false;
                 Button_Send_Message.Enabled = false;
                 popupWarningTransmissionFailureAlreadyShown = false;
+            }
+            foreach(ChatTabPage page in ChatTabPage.TabList) {
+                if (chatController.permittedChatPartners.Contains(page.ChatPartner)) {
+                    page.Enabled = true;
+                } else {
+                    page.Enabled = false;
+                }
             }
         }
 

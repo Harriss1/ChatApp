@@ -43,6 +43,15 @@ namespace ChatApp.Protocol {
 
             return message;
         }
+        internal static ProtocolMessage CreateChatMessagePermissionRequest(string sender, string receiver) {
+            ProtocolMessage message = CreateBaseClientRequest();
+            message.SetMessageType(MessageTypeEnum.CHAT_REQUEST);
+
+            message.AppendSenderIntoContent(sender);
+            message.AppendReceiverIntoContent(receiver);
+
+            return message;
+        }
 
         private static ProtocolMessage CreateBaseClientRequest() {
             ProtocolMessage message = (new ProtocolMessage()).CreateBaseMessage();

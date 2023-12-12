@@ -14,6 +14,7 @@ namespace ChatApp.ChatClient {
         private static ChatSession chatSession;
         private static Queue<ProtocolMessage> chatMessages = new Queue<ProtocolMessage>();
         private static ProtocolMessage lastServerStatus;
+        internal List<string> permittedChatPartners = new List<string>();
         private static int mainRoutineCounter = 0;
         internal bool LastChatMessageTransmitted { get; private set; }
         internal bool LastChatMessageSuccessfullySent { get; private set; }
@@ -112,10 +113,31 @@ namespace ChatApp.ChatClient {
                                 chatMessages.Enqueue(message);
                             }
                         }
+                        if (message.GetMessageType().Equals(MessageTypeEnum.CHAT_REQUEST)) {
+                            if (message.GetResultCodeFromContent().Equals(ResultCodeEnum.SUCCESS)) {
+                                string approvedPartner = message.GetReceiverUsername();
+                                if (!permittedChatPartners.Contains(approvedPartner)) {
+                                    permittedChatPartners.Add(approvedPartner);
+                                }
+                            } else {
+                                string deniedPartner = message.GetReceiverUsername();
+                                if (permittedChatPartners.Contains(deniedPartner)) {
+                                    permittedChatPartners.Remove(deniedPartner);
+                                }
+                            }
+                        }
                     }
                 }
                 receivedMessage = serverlink.DequeueMessageFromInbox();
             }
+        }
+
+        internal ProtocolMessage SendChatPermissionRequest(string chatpartnerName) {
+            ValidateSession();
+            ProtocolMessage protocolMessage = ClientMessageCreator.
+                CreateChatMessagePermissionRequest(chatSession.Username, chatpartnerName);
+            serverlink.EnqueueMessageToOutBox(protocolMessage.GetXml().OuterXml);
+            return protocolMessage;
         }
 
         internal ProtocolMessage SendMessage(string message, string receiver) {

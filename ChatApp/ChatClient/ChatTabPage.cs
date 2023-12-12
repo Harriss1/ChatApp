@@ -14,6 +14,8 @@ namespace ChatApp.ChatClient {
         internal TextBox TextInput { get; set; }
         internal Button SendButton { get; set; }
         internal Button CloseButton { get; set; }
+        internal bool Enabled { get { return Enabled; } set { TextInput.Enabled = value; SendButton.Enabled = value; Enabled = value; } }
+
         internal static List<ChatTabPage> TabList = new List<ChatTabPage>();
         private TabControl outerTabControl;
         internal TableLayoutPanel Body { get; private set; }
@@ -39,6 +41,10 @@ namespace ChatApp.ChatClient {
         }
 
         private void CloseTab(object sender, EventArgs e) {
+            Dispose();
+        }
+
+        internal void Dispose() {
             outerTabControl.TabPages.Remove(TabPage);
             TabList.Remove(this);
         }
