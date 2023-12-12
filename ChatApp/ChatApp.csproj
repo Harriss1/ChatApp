@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatClient\ChatSession.cs" />
+    <Compile Include="ChatClient\ChatTabView.cs" />
     <Compile Include="ChatClient\Network\Serverlink.cs" />
     <Compile Include="ChatClient\Network\TcpSocket.cs" />
     <Compile Include="ChatClient\ChatController.cs" />
