@@ -20,6 +20,7 @@ namespace ChatApp {
         private ProtocolMessage lastProtocolMessage = null;
         private TextBox lastChatTextMessageBox = null;
         ToolTip timeStampHoverText;
+        private bool popupWarningTransmissionFailureAlreadyShown = false;
         public ChatWindow() {
             InitializeComponent();
             timeStampHoverText = GetToolTip();
@@ -58,16 +59,46 @@ namespace ChatApp {
                 string username = Text_Username.Text;
                 string ipAddress = "127.0.0.1";
                 chatController.LoginToServer(username, ipAddress);
-                //Text_Chatmessages_Placeholder.Text += "\r\n#\r\n Verbinde zu: " + ipAddress + ":" + Config.ServerPort;
             } else {
                 chatController.LogoutFromServer();
-                //Text_Chatmessages_Placeholder.Text += "\r\n#\r\nAbmeldevorgang gestartet...";
             }
-
             updateTimer = new Timer();
             updateTimer.Tick += new EventHandler(UpdateUI);
             updateTimer.Interval = 2000;
-            updateTimer.Start();            
+            updateTimer.Start();
+        }
+
+        private void Button_Send_Message_Click(object sender, EventArgs e) {
+            if (Text_Message_Input.Text.Length > Config.maxChatMessageTextLength) {
+                MessageBox.Show(
+                    "Eine Nachricht darf maximal " + Config.maxChatMessageTextLength + " Zeichen lang sein.",
+                    "Warnung",
+                    MessageBoxButtons.OK);
+                return;
+            }
+            if (!chatController.LastChatMessageTransmitted) {
+                MessageBox.Show(
+                    "Bitte warten bis die vorhergehende Nachricht übertragen wurde.",
+                    "Information",
+                    MessageBoxButtons.OK);
+                return;
+            }
+            ProtocolMessage response = chatController.SendMessage(Text_Message_Input.Text, Text_Chat_Partner.Text);
+            if (response != null) {
+                AddSingleMessageTablePanel(response, true);
+            }
+            Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
+            Text_Message_Input.Text = "";
+
+            Text_Message_Input.Enabled = false;
+            Button_Send_Message.Enabled = false;
+            popupWarningTransmissionFailureAlreadyShown = false;
+        }
+
+        private void Text_Message_Input_MouseDown(object sender, MouseEventArgs e) {
+            if (Text_Message_Input.Text.Equals("(neue Nachricht verfassen)")) {
+                Text_Message_Input.Text = "";
+            }
         }
 
         private void UpdateUI(object sender, EventArgs e) {            
@@ -86,6 +117,25 @@ namespace ChatApp {
             }
             else {
                 Button_Login.Text = "Anmelden";
+                Text_Message_Input.Enabled = false;
+                Button_Send_Message.Enabled = false;
+            }
+            if(chatController.LastChatMessageTransmitted && chatController.IsLoggedIn()) {
+                Text_Message_Input.Enabled = true;
+                Button_Send_Message.Enabled = true;
+                if (!chatController.LastChatMessageSuccessfullySent && !popupWarningTransmissionFailureAlreadyShown) {
+                    popupWarningTransmissionFailureAlreadyShown = true;
+                    lastChatTextMessageBox.BackColor = Color.IndianRed;
+                    lastChatTextMessageBox.ForeColor = Color.LightGray;
+                    MessageBox.Show(
+                        "Bei der letzten Nachrichtenübertragung trat ein Fehler auf.",
+                        "Warnung",
+                        MessageBoxButtons.OK);
+                }
+            } else {
+                Text_Message_Input.Enabled = false;
+                Button_Send_Message.Enabled = false;
+                popupWarningTransmissionFailureAlreadyShown = false;
             }
         }
         private void AddSingleMessageTablePanel(ProtocolMessage message, bool moveToTheRightSide) {
@@ -104,7 +154,6 @@ namespace ChatApp {
                                         + "\r\n"
                                         + messageText;
                 if (replaceText.Length < Config.maxChatMessageTextLength + 20) {
-                    //ExtendRecentTextMessage(messageText, font, replaceText);
                     lastChatTextMessageBox = AddMessageSegmentToRecentPanel(font, messageText, moveToTheRightSide, timeInfoText, timeStamp);
                     lastProtocolMessage = message;
                     lastProtocolMessage = message;
@@ -230,28 +279,6 @@ namespace ChatApp {
             return nameBox;
         }
 
-        private void Button_Send_Message_Click(object sender, EventArgs e) {
-            if(Text_Message_Input.Text.Length > Config.maxChatMessageTextLength) {
-                MessageBox.Show(
-                    "Eine Nachricht darf maximal "+ Config.maxChatMessageTextLength + " Zeichen lang sein.", 
-                    "Warnung", 
-                    MessageBoxButtons.OK);
-                return;
-            }
-            ProtocolMessage response = chatController.SendMessage(Text_Message_Input.Text, Text_Chat_Partner.Text);
-            if (response != null) {
-                AddSingleMessageTablePanel(response, true);
-            }
-            Console.WriteLine("Eingegebene Nachricht = " + Text_Message_Input.Text);
-            Text_Message_Input.Text = "";
-        }
-
-        private void Text_Message_Input_MouseDown(object sender, MouseEventArgs e) {
-            if (Text_Message_Input.Text.Equals("(neue Nachricht verfassen)")){
-                Text_Message_Input.Text = "";
-            }
-        }
-
         private ToolTip GetToolTip() {
             // Create the ToolTip and associate with the Form container.
             ToolTip tooltip = new ToolTip();
@@ -262,6 +289,42 @@ namespace ChatApp {
             // Force the ToolTip text to be displayed whether or not the form is active.
             tooltip.ShowAlways = true;
             return tooltip;
+        }
+
+        private void On_Focus_Text_Chatpartner(object sender, EventArgs e) {
+            if(Text_Chat_Partner.Text.Equals("(Benutzername des Chatpartner eingeben)")) {
+                Text_Chat_Partner.Text = "";
+            }
+        }
+
+        private void On_Focus_Text_Username(object sender, EventArgs e) {
+            if (Text_Username.Text.Equals("(Benutzername eingeben)")) {
+                Text_Username.Text = "";
+            }
+        }
+
+        private void On_Focus_Text_IpAddress(object sender, EventArgs e) {
+            if (Text_Server_Ip.Text.Equals("(Server-IP eingeben)")) {
+                Text_Server_Ip.Text = "";
+            }
+        }
+
+        private void On_Leave_Focus_Text_IpAddress(object sender, EventArgs e) {
+            if (Text_Server_Ip.Text.Equals("")) {
+                Text_Server_Ip.Text = "(Server-IP eingeben)";
+            }
+        }
+
+        private void On_Leave_Focus_Text_Username(object sender, EventArgs e) {
+            if (Text_Username.Text.Equals("")) {
+                Text_Username.Text = "(Benutzername eingeben)";
+            }
+        }
+
+        private void On_Leave_Focus_Text_Chatpartner(object sender, EventArgs e) {
+            if (Text_Chat_Partner.Text.Equals("")) {
+                Text_Chat_Partner.Text = "(Benutzername des Chatpartner eingeben)";
+            }
         }
     }
 }

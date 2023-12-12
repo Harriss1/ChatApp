@@ -15,6 +15,12 @@ namespace ChatApp.ChatClient {
         private static Queue<ProtocolMessage> chatMessages = new Queue<ProtocolMessage>();
         private static ProtocolMessage lastServerStatus;
         private static int mainRoutineCounter = 0;
+        internal bool LastChatMessageTransmitted { get; private set; }
+        internal bool LastChatMessageSuccessfullySent { get; private set; }
+        internal ChatController() {
+            LastChatMessageSuccessfullySent = true;
+            LastChatMessageTransmitted = true;
+        }
         internal void LoginToServer(string username, string ipAddress) {
             serverlink.StartConnection(ipAddress, Config.ServerPort);
             chatSession = new ChatSession(username);
@@ -74,7 +80,14 @@ namespace ChatApp.ChatClient {
                             chatMessages.Enqueue(message);
                         }
                         if (message.GetMessageType().Equals(MessageTypeEnum.CHAT_MESSAGE_TRANSMISSION_STATUS)) {
-                            log.Debug("CLIENT HAT TRANSMISSION STATUS ERHALTEN:" + message.GetXml().OuterXml);
+                            LastChatMessageTransmitted = true;
+                            log.Info("CLIENT HAT TRANSMISSION STATUS ERHALTEN:" + message.GetXml().OuterXml);
+                            if (message.GetResultCodeFromContent().Equals(ResultCodeEnum.SUCCESS)) {
+                                LastChatMessageSuccessfullySent = true;
+                            }
+                            else {
+                                LastChatMessageSuccessfullySent = false;
+                            }
                             chatMessages.Enqueue(message);
                         }
                         if (message.GetMessageType().Equals(MessageTypeEnum.LOGIN)) {
@@ -109,11 +122,11 @@ namespace ChatApp.ChatClient {
                 CreateChatMessageRequest(chatSession.Username, receiver, message);
             serverlink.EnqueueMessageToOutBox(protocolMessage.GetXml().OuterXml);
             LastChatMessageSuccessfullySent = false;
+            LastChatMessageTransmitted = false;
             // <issue>8</issue> Übermittlungsstatus zurück geben für spezifische Nachricht.
             return protocolMessage;
         }
 
-        internal bool LastChatMessageSuccessfullySent { get; private set; }
 
         internal ProtocolMessage DequeueReceivedChatMessage() {
             ValidateSession();

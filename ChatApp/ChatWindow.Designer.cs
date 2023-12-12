@@ -141,6 +141,8 @@
             this.Text_Server_Ip.Size = new System.Drawing.Size(351, 23);
             this.Text_Server_Ip.TabIndex = 2;
             this.Text_Server_Ip.Text = "(Server-IP eingeben)";
+            this.Text_Server_Ip.Enter += new System.EventHandler(this.On_Focus_Text_IpAddress);
+            this.Text_Server_Ip.Leave += new System.EventHandler(this.On_Leave_Focus_Text_IpAddress);
             // 
             // Button_Login
             // 
@@ -164,6 +166,8 @@
             this.Text_Username.Size = new System.Drawing.Size(351, 23);
             this.Text_Username.TabIndex = 1;
             this.Text_Username.Text = "(Benutzername eingeben)";
+            this.Text_Username.Enter += new System.EventHandler(this.On_Focus_Text_Username);
+            this.Text_Username.Leave += new System.EventHandler(this.On_Leave_Focus_Text_Username);
             // 
             // tableLayoutPanel3
             // 
@@ -207,6 +211,8 @@
             this.Text_Chat_Partner.Size = new System.Drawing.Size(394, 23);
             this.Text_Chat_Partner.TabIndex = 2;
             this.Text_Chat_Partner.Text = "(Benutzername des Chatpartner eingeben)";
+            this.Text_Chat_Partner.Enter += new System.EventHandler(this.On_Focus_Text_Chatpartner);
+            this.Text_Chat_Partner.Leave += new System.EventHandler(this.On_Leave_Focus_Text_Chatpartner);
             // 
             // tabTableLayout
             // 
@@ -249,6 +255,7 @@
             this.Button_Send_Message.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_Send_Message.Enabled = false;
             this.Button_Send_Message.Location = new System.Drawing.Point(3, 371);
             this.Button_Send_Message.Name = "Button_Send_Message";
             this.Button_Send_Message.Size = new System.Drawing.Size(782, 22);
@@ -272,11 +279,12 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Text_Message_Input.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.Text_Message_Input.Enabled = false;
             this.Text_Message_Input.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Text_Message_Input.Location = new System.Drawing.Point(3, 298);
             this.Text_Message_Input.Multiline = true;
             this.Text_Message_Input.Name = "Text_Message_Input";
-            this.Text_Message_Input.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.Text_Message_Input.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.Text_Message_Input.Size = new System.Drawing.Size(782, 67);
             this.Text_Message_Input.TabIndex = 4;
             this.Text_Message_Input.Text = "(neue Nachricht verfassen)";
