@@ -33,7 +33,7 @@ namespace ChatApp.ChatClient {
         }
         internal static bool TabListContainsChatPartner(string chatpartner) {
             foreach (ChatTabPage tab in TabList) {
-                if (tab.ChatPartner == chatpartner) {
+                if (tab.ChatPartner.Equals(chatpartner)) {
                     return true;
                 }
             }

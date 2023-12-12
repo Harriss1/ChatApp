@@ -77,15 +77,15 @@ namespace ChatApp {
                     MessageBoxButtons.OK);
                 return;
             }
-            chatController.SendChatPermissionRequest(chatpartnerName);
+            //chatController.SendChatPermissionRequest(chatpartnerName);
             AddChatTab(chatpartnerName);
         }
 
         private void AddChatTab(string chatpartnerName) {
             ChatTabPage chatTabPage = new ChatTabPage(chatpartnerName, Tab_Control_Chats);
             chatTabPage.Enabled = false;
-            Tab_Control_Chats.TabPages.Insert(Tab_Control_Chats.TabPages.Count - 1, chatTabPage.TabPage);
-            Tab_Control_Chats.SelectedTab = chatTabPage.TabPage;
+            //Tab_Control_Chats.TabPages.Insert(Tab_Control_Chats.TabPages.Count - 1, chatTabPage.TabPage);
+            //Tab_Control_Chats.SelectedTab = chatTabPage.TabPage;
         }
 
         private void Button_Send_Message_Click(object sender, EventArgs e) {

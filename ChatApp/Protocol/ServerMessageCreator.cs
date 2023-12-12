@@ -60,5 +60,15 @@ namespace ChatApp.Protocol {
 
             return message;
         }
+        internal static ProtocolMessage CreateChatPermissionResponse(string sender, string receiver, string resultCode) {
+            ProtocolMessage message = CreateBaseServerResponse();
+            message.SetMessageType(MessageTypeEnum.CHAT_REQUEST);
+
+            message.AppendSenderIntoContent(sender);
+            message.AppendReceiverIntoContent(receiver);
+            message.AppendResultCodeIntoContent(resultCode);
+
+            return message;
+        }
     }
 }
