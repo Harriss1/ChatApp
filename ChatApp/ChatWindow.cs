@@ -113,10 +113,11 @@ namespace ChatApp {
 
             if (chatController.IsLoggedIn()){
                 Button_Login.Text = "Abmelden";
-                Text_Connection_Status.Text = "Server online und erfolgreich angemeldet.";
+                Text_Connection_Status.Text += " => erfolgreich angemeldet";
             }
             else {
                 Button_Login.Text = "Anmelden";
+                Text_Connection_Status.Text += " => nicht angemeldet";
                 Text_Message_Input.Enabled = false;
                 Button_Send_Message.Enabled = false;
             }

@@ -25,8 +25,11 @@ namespace ChatApp.ChatClient {
             serverlink.StartConnection(ipAddress, Config.ServerPort);
             chatSession = new ChatSession(username);
             chatSession.IsLoggedIn = false;
-            SendLoginRequest();
-            HandleNetworkMessages();
+            Thread.Sleep(2000);
+            if (serverlink.IsConnectionToServerEstablished()) {
+                SendLoginRequest();
+                HandleNetworkMessages();
+            }
             if(lastServerStatus == null) {
                 return;
             }
@@ -54,7 +57,7 @@ namespace ChatApp.ChatClient {
         }
 
         internal void HandleNetworkMessages() {
-            if (serverlink.GracefullShutdown) {
+            if (serverlink.GracefullShutdown || !serverlink.IsConnectionToServerEstablished()) {
                 log.Debug("Verbindung ist geschlossen.");
                 return;
             }
@@ -151,9 +154,9 @@ namespace ChatApp.ChatClient {
 
         internal string GetServerlinkStatusMessage() {
             if (lastServerStatus != null) {
-                return lastServerStatus.GetStatusCodeFromContent();
+                return "Serverstatus: " + lastServerStatus.GetStatusCodeFromContent();
             }
-            return "(keine Verbindung)";
+            return "Serverstatus: offline";
         }
 
         private bool ValidateSession() {

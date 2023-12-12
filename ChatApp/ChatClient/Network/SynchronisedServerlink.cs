@@ -27,7 +27,9 @@ namespace ChatApp.ChatClient.Network {
             handlerThread = Thread.CurrentThread;
             GracefullShutdown = false;
         }
-
+        internal bool IsConnectionToServerEstablished() {
+            return serverlink != null && serverlink.IsConnectionToServerEstablished();
+        }
         internal void StartConnection(string ipAddress, string serverPort) {
             if (cancelToken != null) {
                 // Falls wir den Thread erneut starten, befreien wir die Ressourcen des alten
@@ -48,12 +50,15 @@ namespace ChatApp.ChatClient.Network {
         /// <param name="port"></param>
         private void RunTcpClientLoop(string ipAddress, string port, CancellationTokenSource cancelToken) {
             serverlink.Connect(ipAddress, port);
-            serverlink.RunConnectionLoop();
-            // beendet den Kinder-Thread
-            // nachdem seine Hauptschleife ausläuft und hier hin gelangt.
-            log.Info("Beende Thread - Rufe Cancel() über CancelationTokenSource auf.");
-            cancelToken.Cancel();
-            GracefullShutdown = true;
+            if (serverlink.IsConnectionToServerEstablished()) {
+                serverlink.RunConnectionLoop();
+            } else {
+                // beendet den Kinder-Thread
+                // nachdem seine Hauptschleife ausläuft und hier hin gelangt.
+                GracefullShutdown = true;
+                log.Info("Beende Thread - Rufe Cancel() über CancelationTokenSource auf.");
+                cancelToken.Cancel();
+            }                        
         }
         internal void EnqueueMessageToOutBox(string message) {
             ValidateThreadSafety();

@@ -12,10 +12,14 @@ namespace ChatApp.ChatClient.Network.Serverlink {
         private Socket sender;
         public bool useTimeoutForResponse = true;
         public TimeSpan maxResponseWaitTimeout = TimeSpan.FromSeconds(4);
+        internal bool IsConnectedToHost { private set; get; }
+        internal string FailureMessage { private set; get; }
         public TcpSocket() {
+            IsConnectedToHost = false;
+            FailureMessage = "";
         }
 
-        public void Connect(string ipAddressText, string port) {     
+        public void Connect(string ipAddressText, string port) {
             int portNum = Int32.Parse(port);
             log.Debug("Connect() Starting...");
             IPAddress endpointAdress = IPAddress.Parse(ipAddressText);
@@ -32,24 +36,29 @@ namespace ChatApp.ChatClient.Network.Serverlink {
                 try {
                     // Connect to Remote EndPoint
                     sender.Connect(remoteEndpoint);
-
+                    IsConnectedToHost = true;
+                    FailureMessage = "";
                     log.Info("Socket() Verbindung aufgebaut zu: " + sender.RemoteEndPoint.ToString());
                 }
                 // Falls ein Null-String übergeben wurde
                 catch (ArgumentNullException ane) {
                     log.Warn("ArgumentNullException : " + ane.ToString());
+                    FailureMessage = "Null-String übergeben - " + ane.ToString();
                 }
                 // Verbindungsfehler
                 catch (SocketException se) {
                     log.Warn("SocketException : " + se.ToString());
+                    FailureMessage = "Verbindungsfehler: Socket im Netzwerk nicht erreichbar - " + se.ToString();
                 }
                 // Nicht vorhergesehene Fehler
                 catch (Exception e) {
                     log.Error("Unexpected exception : " + e.ToString());
+                    FailureMessage = "Verbindungsfehler: Nicht vorhergesehener Fehler - " + e.ToString();
                 }
             }
             catch (Exception e) {
                 log.Error(e.ToString());
+                FailureMessage = "Unvorhergesehener Fehler: "+ e.ToString();
             }
         }
         public void Stop() {

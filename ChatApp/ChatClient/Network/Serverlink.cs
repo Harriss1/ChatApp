@@ -32,6 +32,9 @@ namespace ChatApp.ChatClient.Network.Serverlink {
         internal void Connect(string ipAddress, string port) {
             socket.Connect(ipAddress, port);
         }
+        internal bool IsConnectionToServerEstablished() {
+            return socket != null && socket.IsConnectedToHost;
+        }
         internal void RunConnectionLoop() {
             log.Info("Starte Verbindungs-Schleife");
             // TODO FLAG TO CANCEL und STOP muss von hier ausgelesen werden.
