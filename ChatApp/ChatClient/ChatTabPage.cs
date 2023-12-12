@@ -14,7 +14,7 @@ namespace ChatApp.ChatClient {
         internal TextBox TextInput { get; set; }
         internal Button SendButton { get; set; }
         internal Button CloseButton { get; set; }
-        internal bool Enabled { get { return Enabled; } set { TextInput.Enabled = value; SendButton.Enabled = value; Enabled = value; } }
+        internal bool ControlsAreEnabled {get; private set; }
 
         internal static List<ChatTabPage> TabList = new List<ChatTabPage>();
         private TabControl outerTabControl;
@@ -30,6 +30,17 @@ namespace ChatApp.ChatClient {
             TabPage.Controls.Add(Body);
             CloseButton.Click += new EventHandler(CloseTab);
             TabList.Add(this);
+            DeactivateControls();
+        }
+        internal void ActivateControls() {
+            ControlsAreEnabled = true;
+            SendButton.Enabled = true;
+            TextInput.Enabled = true;
+        }
+        internal void DeactivateControls() {
+            ControlsAreEnabled = false;
+            SendButton.Enabled = false;
+            TextInput.Enabled = false;
         }
         internal static bool TabListContainsChatPartner(string chatpartner) {
             foreach (ChatTabPage tab in TabList) {

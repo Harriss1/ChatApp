@@ -7,7 +7,20 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Protocol {
     internal class ServerMessageCreator {
-
+        private static ProtocolMessage CreateBaseServerResponse() {
+            ProtocolMessage message = (new ProtocolMessage()).CreateBaseMessage();
+            message.SetProtocolVersion(Config.ProtocolVersion);
+            string sourceString = MessageSourceEnum.SERVER_RESPONSE;
+            message.SetSourceType(sourceString);
+            return message;
+        }
+        private static ProtocolMessage CreateBaseServerRequest() {
+            ProtocolMessage message = (new ProtocolMessage()).CreateBaseMessage();
+            message.SetProtocolVersion(Config.ProtocolVersion);
+            string sourceString = MessageSourceEnum.SERVER_REQUEST;
+            message.SetSourceType(sourceString);
+            return message;
+        }
         public static ProtocolMessage CreateServerStatusResponse() {
             ProtocolMessage message = CreateBaseServerResponse();
             message.SetMessageType(MessageTypeEnum.STATUS_EXCHANGE);
@@ -43,13 +56,7 @@ namespace ChatApp.Protocol {
             return message;
         }
 
-        private static ProtocolMessage CreateBaseServerResponse() {
-            ProtocolMessage message = (new ProtocolMessage()).CreateBaseMessage();
-            message.SetProtocolVersion(Config.ProtocolVersion);
-            string sourceString = MessageSourceEnum.SERVER_RESPONSE;
-            message.SetSourceType(sourceString);
-            return message;
-        }
+        
         internal static ProtocolMessage CreateChatMessageResponse(string sender, string receiver, string textMessage) {
             ProtocolMessage message = CreateBaseServerResponse();
             message.SetMessageType(MessageTypeEnum.CHAT_MESSAGE);
@@ -62,6 +69,16 @@ namespace ChatApp.Protocol {
         }
         internal static ProtocolMessage CreateChatPermissionResponse(string sender, string receiver, string resultCode) {
             ProtocolMessage message = CreateBaseServerResponse();
+            message.SetMessageType(MessageTypeEnum.CHAT_REQUEST);
+
+            message.AppendSenderIntoContent(sender);
+            message.AppendReceiverIntoContent(receiver);
+            message.AppendResultCodeIntoContent(resultCode);
+
+            return message;
+        }
+        internal static ProtocolMessage CreateChatPermissionRequest(string sender, string receiver, string resultCode) {
+            ProtocolMessage message = CreateBaseServerRequest();
             message.SetMessageType(MessageTypeEnum.CHAT_REQUEST);
 
             message.AppendSenderIntoContent(sender);

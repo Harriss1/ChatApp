@@ -117,15 +117,20 @@ namespace ChatApp.Server.MessageMediator {
                     log.Info("Erlaube Nachrichtenaustausch zwischen [" + inboxMessage.GetSenderUsername() + "]"
                         + " und [" + inboxMessage.GetReceiverUsername() + "] \r\n" +
                         "XML=" + inboxMessage.GetXml().OuterXml);
-                    permissionResult = ResultCodeEnum.SUCCESS;                  
+                    permissionResult = ResultCodeEnum.SUCCESS;
                 }
                 // Ergebnis der Prüfung des Servers ob der Client existiert (nicht ob der Empfänger bestätigt hat)
                 // dem Client mitteilen:
                 log.Trace("erstelle Übermittlungsergebnis der Chatanfrage von Client an Server:");
-                ProtocolMessage chatRequestResponse = ServerMessageCreator.
+                ProtocolMessage chatPermissionResponseToSender = ServerMessageCreator.
                         CreateChatPermissionResponse(inboxMessage.GetSenderUsername(), inboxMessage.GetReceiverUsername(),
                         permissionResult);
-                outbox.Add(CreateByteMessage(chatRequestResponse, sender));
+                ProtocolMessage chatPermissionRequestToReceiver = ServerMessageCreator.
+                       CreateChatPermissionRequest(inboxMessage.GetSenderUsername(), inboxMessage.GetReceiverUsername(),
+                       permissionResult);
+                outbox.Add(CreateByteMessage(chatPermissionResponseToSender, sender));
+                // Auch der Empfänger erhält eine Bestätigung, damit er einen neuen Tab öffnen kann
+                outbox.Add(CreateByteMessage(chatPermissionRequestToReceiver, receiver));
             }
             // Status Austausch
             if (messageType.Equals(MessageTypeEnum.STATUS_EXCHANGE)) {
