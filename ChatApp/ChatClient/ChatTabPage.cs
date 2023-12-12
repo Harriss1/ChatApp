@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace ChatApp.ChatClient {
     internal class ChatTabPage {
+        internal string ChatPartner { get; private set; }
         internal TabPage TabPage { get; private set; }
         internal Panel Messages { get; set; }
         internal TextBox TextInput { get; set; }
@@ -19,6 +20,7 @@ namespace ChatApp.ChatClient {
         Color backColor = Color.FromArgb(218, 232, 252);
         private ChatTabPage() { }
         public ChatTabPage(string chatpartner, TabControl outside_tab_control) {
+            ChatPartner = chatpartner;
             outerTabControl = outside_tab_control;
             TabPage = new TabPage();
             TabPage.Text = chatpartner;
@@ -26,6 +28,14 @@ namespace ChatApp.ChatClient {
             TabPage.Controls.Add(Body);
             CloseButton.Click += new EventHandler(CloseTab);
             TabList.Add(this);
+        }
+        internal static bool TabListContainsChatPartner(string chatpartner) {
+            foreach (ChatTabPage tab in TabList) {
+                if (tab.ChatPartner == chatpartner) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void CloseTab(object sender, EventArgs e) {
