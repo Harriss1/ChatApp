@@ -20,6 +20,7 @@ namespace ChatApp {
         private ProtocolMessage lastProtocolMessage = null;
         private TextBox lastChatTextMessageBox = null;
         ToolTip timeStampHoverText;
+        private int offsetPaddingMessageBox = 2;
         public ChatWindow() {
             InitializeComponent();
             timeStampHoverText = GetToolTip();
@@ -107,28 +108,14 @@ namespace ChatApp {
                                         + messageText;
                 if (replaceText.Length < Config.maxChatMessageTextLength + 20) {
                     //ExtendRecentTextMessage(messageText, font, replaceText);
-                    lastChatTextMessageBox = AddMessageBoxToRecentPanel(font, messageText, moveToTheRightSide, timeInfoText, timeStamp);
+                    lastChatTextMessageBox = AddMessageSegmentToRecentPanel(font, messageText, moveToTheRightSide, timeInfoText, timeStamp);
                     lastProtocolMessage = message;
                     lastProtocolMessage = message;
                     return;
                 }
             }
 
-            TableLayoutPanel panel = new TableLayoutPanel();
-            Point locator = new Point(0, 0);
-            if (lastPanel != null) {
-                locator = lastPanel.Location;
-                locator.X = 0;
-                locator.Offset(0, lastPanel.Height + 2);
-            }
-            panel.Location = locator;
-
-            panel.ColumnCount = 1;
-            panel.RowCount = 2;
-            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
-            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
-            panel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-
+            // Einzelne Segmente des Panels erstellen
             TextBox nameBox = CreateNameBox(message, font);
             Size nameBoxSize = TextRenderer.MeasureText(nameBox.Text, nameBox.Font);
             nameBox.Width = nameBoxSize.Width + 2;
@@ -136,8 +123,8 @@ namespace ChatApp {
             TextBox messageBox = CreateMessageBox(messageText, font);
             Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
             logPublisher.Info("size.Height=" + size.Height);
-            messageBox.Height = size.Height + 6;
-            messageBox.Top = nameBox.Height + 1;
+            messageBox.Height = size.Height + offsetPaddingMessageBox;
+            messageBox.Top = nameBox.Height;
 
             TextBox timeStampBox = CreateTimeStampBox(timeInfoText, timeStamp, font, moveToTheRightSide);
 
@@ -146,19 +133,40 @@ namespace ChatApp {
                 messageBox.Dock = DockStyle.Right;
             }
 
+            logPublisher.Info("messageBox.Height=" + messageBox.Height);
+            logPublisher.Info("nameBox.Height=" + nameBox.Height);
+            logPublisher.Info("timebox.Height=" + timeStampBox.Height);
+            // Panel erstellen
+            TableLayoutPanel panel = new TableLayoutPanel();
+            Point locator = new Point(0, 0);
+            if (lastPanel != null) {
+                locator = lastPanel.Location;
+                locator.X = 0;
+                locator.Offset(0, lastPanel.Height + 2);
+            }
+            panel.BackColor = Color.Bisque;
+            panel.Location = locator;
+            panel.ColumnCount = 1;
+            panel.RowCount = 3;
             // Dimensionen des Panels nach Berechnung der Teilelement-Dimensionen
-            panel.Height = messageBox.Height 
-                        + timeStampBox.Height
-                        + nameBox.Height + 2;
-
+            panel.Height = messageBox.Height
+            + timeStampBox.Height
+            + nameBox.Height;
+            panel.Width = ChatPanelScroller.Width - 20;
+            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, nameBox.Height));
+            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, timeStampBox.Height));
+            panel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            
             // Teil-Elemente hinzufügen
             panel.Controls.Add(nameBox, 0, 0);
             panel.Controls.Add(timeStampBox, 0, 1);
             panel.Controls.Add(messageBox, 0, 2);
-            panel.Width = ChatPanelScroller.Width - 20;
             logPublisher.Info("panel.Height=" + panel.Height);
             logPublisher.Info("messageBox.Height=" + messageBox.Height);
             logPublisher.Info("nameBox.Height=" + nameBox.Height);
+            logPublisher.Info("timebox.Height=" + timeStampBox.Height);
+
+            messageBox.Height = size.Height + offsetPaddingMessageBox;
 
             // Nach unten scrollen
             ChatPanelScroller.Controls.Add(panel);
@@ -188,24 +196,30 @@ namespace ChatApp {
             return timeBox;
         }
 
-        private TextBox AddMessageBoxToRecentPanel(Font font, string messageText, bool moveToTheRightSide, string timeInfoText, string timeStamp) {
-            lastPanel.RowCount += 2;
-            lastPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
-            lastPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        private TextBox AddMessageSegmentToRecentPanel(Font font, string messageText, bool moveToTheRightSide, string timeInfoText, string timeStamp) {
+            
 
             TextBox timeStampBox = CreateTimeStampBox(timeInfoText, timeStamp, font, moveToTheRightSide);
-            lastPanel.Height += timeStampBox.Height;
-            lastPanel.Controls.Add(timeStampBox, 0, lastPanel.RowCount - 1);
+            
 
             TextBox messageBox = CreateMessageBox(messageText, font);
             Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
             logPublisher.Info("size.Height=" + size.Height);
-            messageBox.Height = size.Height + 2;
+            messageBox.Height = size.Height + offsetPaddingMessageBox;
             if (moveToTheRightSide) {
                 messageBox.Dock = DockStyle.Right;
             }
-            lastPanel.Height += messageBox.Height + 8;
+            lastPanel.RowCount += 2;
+            lastPanel.Height += timeStampBox.Height;
+            lastPanel.Height += messageBox.Height;
+            lastPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, timeStampBox.Height));
+            lastPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            lastPanel.Controls.Add(timeStampBox, 0, lastPanel.RowCount - 1);
             lastPanel.Controls.Add(messageBox, 0, lastPanel.RowCount);
+            logPublisher.Info("panel.Height=" + lastPanel.Height);
+            logPublisher.Info("messageBox.Height=" + messageBox.Height);
+            logPublisher.Info("timebox.Height=" + timeStampBox.Height);
+            messageBox.Height = size.Height + offsetPaddingMessageBox;
 
             ChatPanelScroller.VerticalScroll.Value = ChatPanelScroller.VerticalScroll.Maximum;
             return messageBox;
