@@ -94,7 +94,7 @@ namespace ChatApp {
             }
             string messageText = message.GetTextMessageFromContent();
             string timeInfoText = DateTime.Now.ToString("H:mm");
-            string timeStamp = System.DateTime.UtcNow.ToString();
+            string timeStamp = System.DateTime.Now.ToString();
             int fontHeigth = 12;
             Font font = new Font("Calibri", fontHeigth, FontStyle.Regular);
 
@@ -133,9 +133,8 @@ namespace ChatApp {
 
             TextBox messageBox = CreateMessageBox(messageText, font);
             Size size = TextRenderer.MeasureText(messageBox.Text, messageBox.Font);
-            logPublisher.Info("size.Height=" + size.Height);
             messageBox.Height = size.Height + 2;
-            messageBox.Top = nameBox.Height + 1;
+            //messageBox.Top = nameBox.Height + 1;
 
             TextBox timeStampBox = CreateTimeStampBox(timeInfoText, timeStamp, font, moveToTheRightSide);
 
@@ -154,9 +153,6 @@ namespace ChatApp {
             panel.Controls.Add(timeStampBox, 0, 1);
             panel.Controls.Add(messageBox, 0, 2);
             panel.Width = ChatPanelScroller.Width - 20;
-            logPublisher.Info("panel.Height=" + panel.Height);
-            logPublisher.Info("messageBox.Height=" + messageBox.Height);
-            logPublisher.Info("nameBox.Height=" + nameBox.Height);
 
             // Nach unten scrollen
             ChatPanelScroller.Controls.Add(panel);
@@ -201,7 +197,7 @@ namespace ChatApp {
             if (moveToTheRightSide) {
                 messageBox.Dock = DockStyle.Right;
             }
-            lastPanel.Height += messageBox.Height + 2;
+            lastPanel.Height += messageBox.Height;
             lastPanel.Controls.Add(messageBox, 0, lastPanel.RowCount);
 
             ChatPanelScroller.VerticalScroll.Value = ChatPanelScroller.VerticalScroll.Maximum;
