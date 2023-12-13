@@ -41,8 +41,8 @@
             this.Text_Message_Input = new System.Windows.Forms.TextBox();
             this.Tab_Control_Chats = new System.Windows.Forms.TabControl();
             this.TabPage_NewChat = new System.Windows.Forms.TabPage();
-            this.Text_Tabbed_Chatpartner = new System.Windows.Forms.TextBox();
             this.Button_Tabbed_Chat_Request = new System.Windows.Forms.Button();
+            this.Text_Tabbed_Chatpartner = new System.Windows.Forms.TextBox();
             this.mainTableLayout.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -263,7 +263,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Button_Send_Message.Enabled = false;
-            this.Button_Send_Message.Location = new System.Drawing.Point(3, 301);
+            this.Button_Send_Message.Location = new System.Drawing.Point(3, 297);
             this.Button_Send_Message.Name = "Button_Send_Message";
             this.Button_Send_Message.Size = new System.Drawing.Size(782, 22);
             this.Button_Send_Message.TabIndex = 4;
@@ -277,7 +277,7 @@
             this.ChatPanelScroller.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ChatPanelScroller.Location = new System.Drawing.Point(3, 3);
             this.ChatPanelScroller.Name = "ChatPanelScroller";
-            this.ChatPanelScroller.Size = new System.Drawing.Size(782, 219);
+            this.ChatPanelScroller.Size = new System.Drawing.Size(782, 215);
             this.ChatPanelScroller.TabIndex = 0;
             // 
             // Text_Message_Input
@@ -288,7 +288,7 @@
             this.Text_Message_Input.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.Text_Message_Input.Enabled = false;
             this.Text_Message_Input.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Text_Message_Input.Location = new System.Drawing.Point(3, 228);
+            this.Text_Message_Input.Location = new System.Drawing.Point(3, 224);
             this.Text_Message_Input.Multiline = true;
             this.Text_Message_Input.Name = "Text_Message_Input";
             this.Text_Message_Input.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -319,24 +319,12 @@
             this.TabPage_NewChat.Text = "Neuer Chat";
             this.TabPage_NewChat.UseVisualStyleBackColor = true;
             // 
-            // Text_Tabbed_Chatpartner
-            // 
-            this.Text_Tabbed_Chatpartner.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.Text_Tabbed_Chatpartner.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.Text_Tabbed_Chatpartner.Font = new System.Drawing.Font("Cascadia Mono Light", 10F);
-            this.Text_Tabbed_Chatpartner.Location = new System.Drawing.Point(0, 0);
-            this.Text_Tabbed_Chatpartner.Name = "Text_Tabbed_Chatpartner";
-            this.Text_Tabbed_Chatpartner.Size = new System.Drawing.Size(394, 23);
-            this.Text_Tabbed_Chatpartner.TabIndex = 3;
-            this.Text_Tabbed_Chatpartner.Text = "(Benutzername des Chatpartner eingeben)";
-            // 
             // Button_Tabbed_Chat_Request
             // 
             this.Button_Tabbed_Chat_Request.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_Tabbed_Chat_Request.Enabled = false;
             this.Button_Tabbed_Chat_Request.Location = new System.Drawing.Point(400, -1);
             this.Button_Tabbed_Chat_Request.Name = "Button_Tabbed_Chat_Request";
             this.Button_Tabbed_Chat_Request.Size = new System.Drawing.Size(199, 324);
@@ -344,6 +332,22 @@
             this.Button_Tabbed_Chat_Request.Text = "Chat Anfragen";
             this.Button_Tabbed_Chat_Request.UseVisualStyleBackColor = true;
             this.Button_Tabbed_Chat_Request.Click += new System.EventHandler(this.Button_Tabbed_Chat_Request_Click);
+            // 
+            // Text_Tabbed_Chatpartner
+            // 
+            this.Text_Tabbed_Chatpartner.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Text_Tabbed_Chatpartner.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.Text_Tabbed_Chatpartner.Enabled = false;
+            this.Text_Tabbed_Chatpartner.Font = new System.Drawing.Font("Cascadia Mono Light", 10F);
+            this.Text_Tabbed_Chatpartner.Location = new System.Drawing.Point(0, 0);
+            this.Text_Tabbed_Chatpartner.Name = "Text_Tabbed_Chatpartner";
+            this.Text_Tabbed_Chatpartner.Size = new System.Drawing.Size(394, 23);
+            this.Text_Tabbed_Chatpartner.TabIndex = 3;
+            this.Text_Tabbed_Chatpartner.Text = "(Benutzername des Chatpartner eingeben)";
+            this.Text_Tabbed_Chatpartner.Enter += new System.EventHandler(this.Text_Tabbed_Chatpartner_Enter);
+            this.Text_Tabbed_Chatpartner.Leave += new System.EventHandler(this.Text_Tabbed_Chatpartner_Leave);
             // 
             // ChatWindow
             // 

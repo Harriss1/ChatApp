@@ -79,6 +79,7 @@ namespace ChatApp {
             }
             chatController.SendChatPermissionRequest(chatpartnerName);
             AddChatTab(chatpartnerName);
+            Text_Tabbed_Chatpartner.Text = "(Benutzername des Chatpartner eingeben)";
         }
 
         private void AddChatTab(string chatpartnerName) {
@@ -149,12 +150,16 @@ namespace ChatApp {
             if (chatController.IsLoggedIn()){
                 Button_Login.Text = "Abmelden";
                 Text_Connection_Status.Text += " => erfolgreich angemeldet";
+                Button_Tabbed_Chat_Request.Enabled = true;
+                Text_Tabbed_Chatpartner.Enabled = true;
             }
             else {
                 Button_Login.Text = "Anmelden";
                 Text_Connection_Status.Text += " => nicht angemeldet";
                 Text_Message_Input.Enabled = false;
                 Button_Send_Message.Enabled = false;
+                Button_Tabbed_Chat_Request.Enabled = false;
+                Text_Tabbed_Chatpartner.Enabled = false;
             }
             if(chatController.LastChatMessageTransmitted && chatController.IsLoggedIn()) {
                 Text_Message_Input.Enabled = true;
@@ -381,5 +386,16 @@ namespace ChatApp {
             }
         }
 
+        private void Text_Tabbed_Chatpartner_Enter(object sender, EventArgs e) {
+            if (Text_Tabbed_Chatpartner.Text.Equals("(Benutzername des Chatpartner eingeben)")) {
+                Text_Tabbed_Chatpartner.Text = "";
+            }
+        }
+
+        private void Text_Tabbed_Chatpartner_Leave(object sender, EventArgs e) {
+            if (Text_Tabbed_Chatpartner.Text.Equals("")) {
+                Text_Tabbed_Chatpartner.Text = "(Benutzername des Chatpartner eingeben)";
+            }
+        }
     }
 }
