@@ -140,7 +140,7 @@
             this.Text_Server_Ip.Name = "Text_Server_Ip";
             this.Text_Server_Ip.Size = new System.Drawing.Size(468, 27);
             this.Text_Server_Ip.TabIndex = 2;
-            this.Text_Server_Ip.Text = "(Server-IP eingeben)";
+            this.Text_Server_Ip.Text = "Server: 127.0.0.1 (oder IP hier eingeben)";
             this.Text_Server_Ip.Enter += new System.EventHandler(this.On_Focus_Text_IpAddress);
             this.Text_Server_Ip.Leave += new System.EventHandler(this.On_Leave_Focus_Text_IpAddress);
             // 

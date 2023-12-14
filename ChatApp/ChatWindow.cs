@@ -54,6 +54,9 @@ namespace ChatApp {
                 !chatController.IsLoggedIn()) {
                 string username = Text_Username.Text;
                 string ipAddress = "127.0.0.1";
+                if(!Text_Server_Ip.Text.Equals("Server: 127.0.0.1 (oder IP hier eingeben)")) {
+                    ipAddress = Text_Server_Ip.Text;
+                }
                 chatController.LoginToServer(username, ipAddress);
             } else {
                 chatController.LogoutFromServer();
@@ -152,14 +155,14 @@ namespace ChatApp {
         }
 
         private void On_Focus_Text_IpAddress(object sender, EventArgs e) {
-            if (Text_Server_Ip.Text.Equals("(Server-IP eingeben)")) {
+            if (Text_Server_Ip.Text.Equals("Server: 127.0.0.1 (oder IP hier eingeben)")) {
                 Text_Server_Ip.Text = "";
             }
         }
 
         private void On_Leave_Focus_Text_IpAddress(object sender, EventArgs e) {
             if (Text_Server_Ip.Text.Equals("")) {
-                Text_Server_Ip.Text = "(Server-IP eingeben)";
+                Text_Server_Ip.Text = "Server: 127.0.0.1 (oder IP hier eingeben)";
             }
         }
 

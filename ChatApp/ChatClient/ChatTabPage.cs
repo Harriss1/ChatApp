@@ -106,7 +106,7 @@ namespace ChatApp.ChatClient {
             chatContainer.ColumnCount = 1;
             chatContainer.RowCount = 4;
             chatContainer.BackColor = backColor;
-            chatContainer.CellBorderStyle = TableLayoutPanelCellBorderStyle.Outset;
+            chatContainer.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
             chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
             chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 225));
             chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 80));
@@ -132,6 +132,7 @@ namespace ChatApp.ChatClient {
             SendButton = new Button();
             SendButton.Text = "Nachricht abschicken";
             SendButton.Dock = DockStyle.Fill;
+            SendButton.FlatStyle = FlatStyle.Flat;
 
             chatContainer.Controls.Add(CloseButton, 0, 0);
             chatContainer.Controls.Add(MessagesScrollerPanel, 0, 1);
