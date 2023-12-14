@@ -106,11 +106,11 @@ namespace ChatApp.ChatClient {
             chatContainer.ColumnCount = 1;
             chatContainer.RowCount = 4;
             chatContainer.BackColor = backColor;
-            chatContainer.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
+            chatContainer.CellBorderStyle = TableLayoutPanelCellBorderStyle.Outset;
             chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
-            chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 200));
-            chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
-            chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 28));
+            chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 225));
+            chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 80));
+            chatContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 25));
 
             CloseButton = new Button();
             CloseButton.Text = "╳";
@@ -120,10 +120,9 @@ namespace ChatApp.ChatClient {
             CloseButton.Anchor = AnchorStyles.Right;
 
             MessagesScrollerPanel = new Panel();
-            MessagesScrollerPanel.BackColor = Color.Firebrick;
+            MessagesScrollerPanel.BackColor = backColor;
             MessagesScrollerPanel.AutoScroll = true;
-            MessagesScrollerPanel.Dock = DockStyle.Fill;
-
+            MessagesScrollerPanel.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
             TextInput = new TextBox();
             TextInput.ScrollBars = ScrollBars.Vertical;
             TextInput.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
@@ -132,7 +131,7 @@ namespace ChatApp.ChatClient {
 
             SendButton = new Button();
             SendButton.Text = "Nachricht abschicken";
-            SendButton.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
+            SendButton.Dock = DockStyle.Fill;
 
             chatContainer.Controls.Add(CloseButton, 0, 0);
             chatContainer.Controls.Add(MessagesScrollerPanel, 0, 1);
