@@ -188,17 +188,11 @@ namespace ChatApp {
         private void ChatWindow_FormClosing(object sender, FormClosingEventArgs e) {
             
             ServerController srv = ServerController.GetInstace();
+            
             bool shutdownCalled = false;
             bool clientClosureCalled = false;
  
             while (!srv.IsGracefullyShutdown() || chatController.IsLoggedIn()) {
-                if (!shutdownCalled) {
-                    shutdownCalled = true;
-                    srv.GracefullyShutdown();
-                    logPublisher.Warn("#");
-                    logPublisher.Warn("# BITTE WARTEN BIS SERVER HERUNTERGEFAHREN IST");
-                    logPublisher.Warn("#");
-                }
                 if (!clientClosureCalled) {
                     clientClosureCalled = true;
                     logPublisher.Warn("#");
@@ -206,7 +200,29 @@ namespace ChatApp {
                     logPublisher.Warn("#");
                     chatController.LogoutFromServer();
                 }
-
+                if (!shutdownCalled) {
+                    shutdownCalled = true;
+                    srv.GracefullyShutdown();
+                    logPublisher.Warn("#");
+                    logPublisher.Warn("# BITTE WARTEN BIS SERVER HERUNTERGEFAHREN IST");
+                    logPublisher.Warn("#");
+                }
+                if (!srv.IsGracefullyShutdown()) {
+                    MessageBox.Show(
+                    "Server wurde nicht ordnungsgemäß heruntergefahren. \r\n\r\n" +
+                    "Das wird jetzt erledigt. Bitte mindestens 20 Sekunden warten bis dies erfolgt ist. Danach kann die Anwendung mit Klick auf OK geschlossen werden." +
+                    "\r\n ...oder im Taskmanager manuell die Anwendung schließen.",
+                    "Warnung",
+                    MessageBoxButtons.OK);
+                }
+                if (chatController.IsLoggedIn()) {
+                    MessageBox.Show(
+                    "Client wurde nicht ordnungsgemäß abgemeldet. \r\n\r\n" +
+                    "Dies wird jetzt erledigt. Bitte 5 Sekunden warten, dann sollte die Abmeldung erfolgt sein. Danach kann die Anwendung mit Klick auf OK geschlossen werden." +
+                    "...oder die Anwendung im Taskmanager beenden.",
+                    "Warnung",
+                    MessageBoxButtons.OK);
+                }
             }
         }
     }

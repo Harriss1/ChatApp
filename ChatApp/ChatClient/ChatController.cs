@@ -204,7 +204,7 @@ namespace ChatApp.ChatClient {
         }
         internal void LogoutFromServer() {
             log.Error("Logout angefragt...");
-            if (!chatSession.IsLoggedIn) {
+            if (chatSession == null || !chatSession.IsLoggedIn) {
                 log.Error("Logout nicht möglich, da nicht eingeloggt.");
                 return;
             }
