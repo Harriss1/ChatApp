@@ -13,9 +13,9 @@ namespace ChatApp.Server.Listener {
         private Socket listener;
         private static bool alreadyStarted = false;
         private Stopwatch cancelMainLoopStopwatch;
-        private TimeSpan maxCancelMainLoopLookup = TimeSpan.FromSeconds(5);
-        public bool useTimeoutForResponse = true;
-        public TimeSpan maxResponseWaitTimeout = TimeSpan.FromSeconds(4);
+        private readonly TimeSpan maxCancelMainLoopLookup = TimeSpan.FromSeconds(5);
+        public readonly bool useTimeoutForResponse = true;
+        public readonly TimeSpan maxResponseWaitTimeout = TimeSpan.FromSeconds(4);
 
         public delegate void ConnectionAcceptedCallback();
         private LogPublisher log = new LogPublisher("TcpServer");
@@ -79,14 +79,14 @@ namespace ChatApp.Server.Listener {
             TcpServer.alreadyStarted = false;
             log.Info("Socket Shutdown completed");
         }
-        public void Accept(ConnectionAcceptedCallback _newConnectionEstablishedCallback, CommunicationEventClerk clerk) {
+        public void Accept(ConnectionAcceptedCallback _newConnectionEstablishedCallback, CommunicationEventClerk clerk, CancellationTokenSource cancelToken) {
             try {
                 // Programm stoppt hier bis eine Verbindung aufgebaut wird.
                 log.Debug("Stopping Thread " + Thread.CurrentThread.ManagedThreadId+
                     " and waiting for a connection... ThreadId= " + Thread.CurrentThread.ManagedThreadId);
                 Socket handler = this.listener.Accept();
                 log.Debug("Resuming Thread " + Thread.CurrentThread.ManagedThreadId);
-                // Der Zugriff auf das Steuerelement Text_Console_Output erfolgte von einem anderen Thread als dem Thread, für den es erstellt wurde.
+                
                 _newConnectionEstablishedCallback();
                 log.Trace("connection established in TCPserver ThreadId= " + Thread.CurrentThread.ManagedThreadId);
                 bool closeConnection = false;
@@ -109,7 +109,7 @@ namespace ChatApp.Server.Listener {
                         log.Trace("Kontrolpunkt 5.1: Loop Callback von CheckForBytesToSend");
                         bytesToSend = clerk.PublishEvent_CheckForBytesToSend();
                     }
-                    if (ShouldStopMainLoop(clerk, receivedData)) {
+                    if (ShouldStopMainLoop(clerk)) {
                         closeConnection = true;
                     }
                 }
@@ -121,10 +121,16 @@ namespace ChatApp.Server.Listener {
             catch (Exception e) {
                 log.Debug(e.ToString());
             }
+            log.Info("Sollte jetzt Thread id{" + Thread.CurrentThread.ManagedThreadId + "} beenden (rufe CancelToken auf).");
+            cancelToken.Cancel();
         }
 
-        private bool ShouldStopMainLoop(CommunicationEventClerk clerk, string receivedData) {
-            if (clerk.PublishEvent_CheckForCancelConnection()) {
+        private bool ShouldStopMainLoop(CommunicationEventClerk clerk) {
+            if (clerk.PublishEvent_CheckForCancelConnection() || clerk.flagConnectionShouldClose) {
+                // da das PublishEvent eventuell später wieder false ist, gehe ich mit
+                // der ODER Verzweigung sicher, dass die Verbindung auch bei einmaligem Signal geschlossen wird.
+                clerk.flagConnectionShouldClose = true;
+                clerk.flagTransmissionShouldClose = true;
                 if (cancelMainLoopStopwatch == null) {
                     log.Debug("Verbindungsabbau: Starte Timeout");
                     cancelMainLoopStopwatch = new Stopwatch();
@@ -140,19 +146,6 @@ namespace ChatApp.Server.Listener {
                     }
                 }
             }
-            return CheckTextForQuitMessage(receivedData)
-                                    || CheckForDisconnectEvent();
-        }
-
-        private bool CheckForDisconnectEvent() {
-            return false;
-        }
-
-        private bool CheckTextForQuitMessage(string receivedData) {
-            if (receivedData == null) return false;
-            if (receivedData.Contains("quit") || receivedData.Contains("<MessageType>logout</MessageType>")) {
-                return true;
-            }
             return false;
         }
 
@@ -167,7 +160,7 @@ namespace ChatApp.Server.Listener {
             // Bug
             bool shouldCancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
             log.Debug("receive loop start");
-            while (bytesToReceiveExist && !shouldCancelTransmission) {
+            while (bytesToReceiveExist && !shouldCancelTransmission && !clerk.flagTransmissionShouldClose) {
                 log.Trace("Kontrolpunkt 0-1");
                 
                 bytes = new byte[1024];
@@ -214,7 +207,10 @@ namespace ChatApp.Server.Listener {
                     // Ansonsten werden die Bytes direkt an die jetzige Sendung angehangen :)
                 }
                 log.Trace("Kontrolpunkt 2");
-                shouldCancelTransmission = clerk.PublishEvent_OnCheckToStopCurrentTransmission();
+                if (clerk.PublishEvent_OnCheckToStopCurrentTransmission()) {
+                    shouldCancelTransmission = true;
+                    clerk.flagTransmissionShouldClose = true;
+                }
                 log.Trace("Kontrolpunkt 2-1");
                                  
             }

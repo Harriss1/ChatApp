@@ -38,7 +38,7 @@ namespace ChatApp.ChatClient.Network {
             }
             GracefullShutdown = false;
             cancelToken = new CancellationTokenSource();
-            clientThread = new Thread(() => RunTcpClientLoop(ipAddress, serverPort, cancelToken));
+            clientThread = new Thread(() => RunTcpClientWorkerLoop(ipAddress, serverPort, cancelToken));
             clientThread.Start();            
         }
 
@@ -48,17 +48,18 @@ namespace ChatApp.ChatClient.Network {
         /// </summary>
         /// <param name="ipAddress"></param>
         /// <param name="port"></param>
-        private void RunTcpClientLoop(string ipAddress, string port, CancellationTokenSource cancelToken) {
+        private void RunTcpClientWorkerLoop(string ipAddress, string port, CancellationTokenSource cancelToken) {
             serverlink.Connect(ipAddress, port);
             if (serverlink.IsConnectionToServerEstablished()) {
                 serverlink.RunConnectionLoop();
-            } else {
+                if (!IsConnectionToServerEstablished()) {
+                    GracefullShutdown = true;
+                }
                 // beendet den Kinder-Thread
                 // nachdem seine Hauptschleife ausläuft und hier hin gelangt.
-                GracefullShutdown = true;
                 log.Info("Beende Thread - Rufe Cancel() über CancelationTokenSource auf.");
                 cancelToken.Cancel();
-            }                        
+            }                       
         }
         internal void EnqueueMessageToOutBox(string message) {
             ValidateThreadSafety();

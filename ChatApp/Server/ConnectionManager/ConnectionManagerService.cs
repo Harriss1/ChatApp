@@ -17,10 +17,6 @@ namespace ChatApp.Server.Listener {
         private ServerRunner.OnAcceptedNewConnectionEvent _onAcceptedNewConnectionEvent;
         private ServerRunner.OnEvent_PublishConnectionThread _onEvent_PublishConnectionThread;
 
-        private class DelegateApi {
-            // Erleichtert das Debugging, indem deutlicher zu lesen ist, dasss es weitere Interface-Methoden gibt
-            // <issue>2</issue> Delegates sind Schnittstellenfunktionen, welche als Public getestet werden müssen.
-        }
         private ConnectionManagerService() { 
             
         }
@@ -36,13 +32,8 @@ namespace ChatApp.Server.Listener {
             
             serverRunner.SubscribeTo_OnNewConnectionEvent(_onAcceptedNewConnectionEvent);
             serverRunner.SubscribeTo_PublishConnectionThread(_onEvent_PublishConnectionThread);
-            serverRunner.AcceptConnections();
+            serverRunner.AcceptConnectionsLoop();
             log.Debug("AcceptConnections ThreadRunner Start erfolgreich abgeschlossen und ersten wartenden Socket im Thread geöffnet.");
-        }
-
-        public void ShutdownAllConnections() {
-            // TODO <issue>1</issue>
-            log.Error("ShutDown all connections not implemented!");
         }
 
         public void AbortAllConnections() {

@@ -4,7 +4,9 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Diagnostics;
 using ChatApp.Server.Listener;
+using ChatApp.Server.ConnectionManager;
 
 namespace ChatApp.Server {
     /// <summary>
@@ -28,9 +30,20 @@ namespace ChatApp.Server {
         private OnDefineConnectionClerkEventForEachNewConnection _defineConnectionClerk;
         private OnEvent_PublishConnectionThread _publishConnectionThread;
         private static LogPublisher log = new LogPublisher("ServerRunner");
+        private static ServerRunner instance;
+        private bool alreadyShuttingDown = false;
 
         private List<Thread> connectionThreads = new List<Thread> ();
-        public ServerRunner() {
+        private ServerRunner() {
+        }
+        public static ServerRunner GetInstace() {
+            object _lock = new object();
+            lock (_lock) {
+                if (instance == null) {
+                    instance = new ServerRunner();
+                }
+            }
+            return instance;
         }
 
         public void StartServer(string ipAddress, string port) {
@@ -66,7 +79,10 @@ namespace ChatApp.Server {
         /// Startet einen neuen Server-Thread, und immer einen weiteren 
         /// neuen Thread nach erfolgten Verbindungsaufbau mittels Accept()
         /// </summary>
-        public void AcceptConnections() {
+        public void AcceptConnectionsLoop() {
+            if (alreadyShuttingDown) {
+                return;
+            }
             if (_publishAcceptedNewConnectionEvent == null) {
                 log.Error("Fehler: NewConnectionEvent ohne Subscriber");
             }
@@ -74,25 +90,31 @@ namespace ChatApp.Server {
             log.Debug("ThreadCounter: " + threadCounter++);
 
             // Starte die eigene Methode bei Erhalt des Callback-Events nach erfolgten Accept (ähnlich einer Rekursion)           
-            TcpServer.ConnectionAcceptedCallback _newConnectionAcceptedCallback = new TcpServer.ConnectionAcceptedCallback(AcceptConnections);
-            Thread.Sleep(1000);
-            _publishAcceptedNewConnectionEvent(); // notwendig um immer einen neuen Callback zu erstellen, welcher immer einen neuen Clerk haben.
+            TcpServer.ConnectionAcceptedCallback _newConnectionAcceptedCallback = new TcpServer.ConnectionAcceptedCallback(AcceptConnectionsLoop);
+            Thread.Sleep(delayUntilPublishAccepted);
+            _publishAcceptedNewConnectionEvent(); // notwendig um immer einen neuen Callback zu erstellen,
+                                                  // welche immer einen neuen Clerk haben.
             log.Trace("NewConnectionEvent() signaled");
-            CommunicationEventClerk clerk = GetClerk();
+            CommunicationEventClerk clerk = CreateClerk();
 
             log.Trace("DELEGATE subscribe AcceptConnections(): Übergebe Clerk with registered Threads");
-            Thread serverHandler = new Thread(() => tcpServer.Accept(_newConnectionAcceptedCallback, clerk));
+
+            CancellationTokenSource cancelToken = new CancellationTokenSource();
+            Thread serverHandler = new Thread(() => tcpServer.Accept(_newConnectionAcceptedCallback, clerk, cancelToken));
             serverHandler.Start();
             log.Info("einzelner Accept-Thread gestartet");
             connectionThreads.Add(serverHandler);
-            if (_publishConnectionThread != null)
+            if (_publishConnectionThread != null) {
                 _publishConnectionThread(serverHandler);
+            }
             _defineConnectionClerk = null;
             // TODO Abbruchbedingung für rekursives Verhalten
             // TODO Limit für Verbindungen
         }
         private static CommunicationEventClerk lastClerk;
-        private CommunicationEventClerk GetClerk() {
+        private int delayUntilPublishAccepted = 1000;
+
+        private CommunicationEventClerk CreateClerk() {
             CommunicationEventClerk newClerk = _defineConnectionClerk();
             if(newClerk == lastClerk) {
                 throw new InvalidOperationException("CommunicationClerk muss für jede Verbindung neu erstelt werden. Der benachrichtigende Callback über die Erstellung eines neuen Verbindungssockets ist 'OnAcceptedNewConnectionEvent'");
@@ -107,16 +129,86 @@ namespace ChatApp.Server {
             }
             tcpServer.Stop();
         }
-
-        public bool GracefullyShutdown() {
+        public void BeginGracefulShutdown(TimeSpan shutdownTimeout) {
+            log.Info("Beginne Gracful Shutdown - maximal erlaubte Zeit (Sekunden) hierfür: " + shutdownTimeout.Seconds);
+            alreadyShuttingDown = true;
+            CancellationTokenSource cancelToken = new CancellationTokenSource();
+            Thread closeWorker = new Thread(() => SecureServerShutdown_Worker(shutdownTimeout, cancelToken));
+            closeWorker.Start();
+        }
+        public bool IsGracefullyShutdown() {
             foreach (Thread connection in connectionThreads) {
-                if(connection.IsAlive) {
-                    log.Error("Fehler: Gracefully Shutdown nicht möglich, Thread einer Verbindung ist noch offen.");
+                if (connection.IsAlive) {
+                    // Thread welcher Accept offen hat fährt nicht herunter...
+                    log.Debug("Thread einer Verbindung ist noch offen.");
+                    log.Debug("Details: connection ThreadID=" + connection.ManagedThreadId + " ThreadState=" + connection.ThreadState);
                     return false;
                 }
             }
-            tcpServer.Stop();
             return true;
+        }
+        /// <summary>
+        /// Versucht in einem vorgegebenen Zeitraum zu kontrollieren ob der Server herunter gefahren ist.
+        /// </summary>
+        private void SecureServerShutdown_Worker(TimeSpan shutdownTimeout, CancellationTokenSource cancelToken) {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            bool success = false;
+            bool anyThreadIsStillRunning = true;
+            bool stopCalled = false;
+            while (stopwatch.Elapsed < shutdownTimeout && anyThreadIsStillRunning) {
+                success = true;
+                foreach (Thread connectionThread in connectionThreads) {
+                    if (connectionThread.IsAlive) {
+                        log.Warn("Gracefully Shutdown noch nicht abgeschlossen, Thread einer Verbindung ist noch offen.");
+                        log.Warn("Details: " +
+                            "connection ThreadID=" + connectionThread.ManagedThreadId + " " +
+                            "ThreadState=" + connectionThread.ThreadState + " " +
+                            "Zeit verbleibend:" + (shutdownTimeout.Seconds - stopwatch.Elapsed.Seconds)+
+                            " elaps=" + stopwatch.Elapsed.Seconds + " timeout=" + shutdownTimeout.Seconds);
+                        success = false;
+                        if (!(stopwatch.Elapsed > TimeSpan.FromSeconds(10)) ) {
+                            
+                            ConnectionRegister registry = ConnectionRegister.GetInstance();
+                            Connection openConnection = registry.
+                                FindConnectionByThread(connectionThread.ManagedThreadId);
+                            if (!openConnection.FlaggedToCancel) {
+                                openConnection.FlaggedToCancel = true;
+                                log.Warn("Verbindung ist nun markiert für Beendigung - Details:");
+                                if (openConnection.Client != null) {
+                                    log.Warn("Benutzername=" + openConnection.Client.Name);
+                                }
+                                log.Warn("Thread Id = " + openConnection.Thread.ManagedThreadId);
+                            }
+                        } else {
+                            if (!stopCalled) {
+                                tcpServer.Stop();
+                                stopCalled = true;
+                            }
+                        }
+                    }
+                }
+                if (success) {
+                    anyThreadIsStillRunning = false;
+                    this._defineConnectionClerk = null;
+                    this._publishAcceptedNewConnectionEvent = null;
+                    this._publishConnectionThread = null;
+                }
+                Thread.Sleep(4000);
+            }
+            if (success) {
+                log.Info("### ### ### ### ### ### ### ### ### ### ### ### ### ###");
+                log.Info("### ");
+                log.Info("### Server erfolgreich nach " + stopwatch.Elapsed.Seconds + " Sekunden beendet. ###");
+                log.Info("### ");
+                log.Info("### ### ### ### ### ### ### ### ### ### ### ### ### ###");
+            }
+            else {
+                log.Error("Server wurde nicht ordnungsgemäß beendet.");
+            }
+            alreadyShuttingDown = false;
+            log.Debug("Beende den Shutdown-Kontroll-Thread.");
+            cancelToken.Cancel();
         }
     }
 }

@@ -10,7 +10,7 @@ using ChatApp.Server.ConnectionManager;
 namespace ChatApp.Server {
     internal class ServerController {
         private LogPublisher log = new LogPublisher("ServerController");
-        private static ServerRunner serverRunner = new ServerRunner();
+        private static ServerRunner serverRunner = ServerRunner.GetInstace();
         private static ConnectionManagerService connectionManager;
         public ServerController() {
         }
@@ -25,11 +25,11 @@ namespace ChatApp.Server {
             
 
         internal void GracefullyShutdown() {
-            bool success = serverRunner.GracefullyShutdown();
-            if (success) {
-                log.Info("Verbindungen wurden ordnungsgemäß abgebaut und der Server korrekt beendet.");
+            if (serverRunner.IsGracefullyShutdown()) {
+                log.Info("Der Server wurde bereits Server korrekt beendet.");
             } else {
-                log.Error("FEHLER: Server konnte nicht heruntergefahren werden. Bitte Logs konsultieren und ggf. Stop erzwingen.");
+                serverRunner.BeginGracefulShutdown(TimeSpan.FromSeconds(30));
+                log.Info("Beginne den Server herunter zu fahren.");
             }
         }
 

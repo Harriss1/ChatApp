@@ -91,6 +91,9 @@ namespace ChatApp.ChatClient.Network.Serverlink {
         /// <param name="content">message string without eof suffix</param>
         public string Send(string content) {
             string received = "[nothing received]";
+            if (!IsConnectedToHost) {
+                return received;
+            }
             log.Debug("[start send] Zu übermittelnde Nachricht:" + content);
             log.Trace("Client Kontrollpunkt 1");
             byte[] bytes = new byte[1024];
@@ -111,7 +114,14 @@ namespace ChatApp.ChatClient.Network.Serverlink {
                     IAsyncResult result;
                     Action action = () =>
                     {
-                        bytesRec = sender.Receive(bytes);
+                        try {
+                            bytesRec = sender.Receive(bytes);
+                        }
+                        catch (SocketException socketEx) {
+                            log.Error("Der Server ist nicht mehr erreichbar. Fehlermeldung:" + socketEx.ToString());
+                            bytes = new byte[1024];
+                            IsConnectedToHost = false;
+                        }
                     };
                     result = action.BeginInvoke(null, null);
                     if (result.AsyncWaitHandle.WaitOne(maxResponseWaitTimeout))

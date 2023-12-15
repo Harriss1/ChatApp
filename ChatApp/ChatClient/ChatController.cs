@@ -228,7 +228,7 @@ namespace ChatApp.ChatClient {
         }
 
         public bool IsLoggedIn() {
-            if (chatSession == null || !chatSession.IsLoggedIn) {
+            if (chatSession == null || !chatSession.IsLoggedIn || !serverlink.IsConnectionToServerEstablished()) {
                 return false;
             }
             else {

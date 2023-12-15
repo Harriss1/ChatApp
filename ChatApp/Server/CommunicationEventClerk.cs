@@ -10,6 +10,8 @@ namespace ChatApp.Server {
     // Namen: Subscriber, ClientCommunicationEvents, ClientCommunicationListener, CommunicationBridge, Mediator
     // 
     public class CommunicationEventClerk {
+        public bool flagConnectionShouldClose = false;
+        public bool flagTransmissionShouldClose = false;
 
         public delegate void OnEvent_ReceiveByteArray(byte[] bytes, int receivedBytes);
         /// <summary>
@@ -48,6 +50,12 @@ namespace ChatApp.Server {
             return _onCheckForBytesToSend();
         }
 
+        /// <summary>
+        /// Dieses Event prüft, ob eine einzelne Verbindung zw. Client und Server beendet werden soll.
+        /// 
+        /// Nach Beenden der Verbindung sollte auch der zugehörige Thread für den einzelnen Client beendet werden.
+        /// </summary>
+        /// <returns></returns>
         public bool PublishEvent_CheckForCancelConnection() {
             return _onCheckToCancelConnection();
         }

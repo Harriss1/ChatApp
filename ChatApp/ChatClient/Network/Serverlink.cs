@@ -63,6 +63,8 @@ namespace ChatApp.ChatClient.Network.Serverlink {
 
         private void SplitAndEnqueReceivedMessages(string received) {
             List<string> incommingMessages = new List<string>();
+            if (received.Length < Config.MessageMinLength || received.Equals("[nothing received]"))
+                return;
             // In vielen Fällen erhalten wir mehrere Nachrichten in einem byteMessage-Packet:
             if (received.Substring(Config.protocolMsgStart.Length).Contains(Config.protocolMsgStart)) {
                 log.Warn("mehrere Nachrichten in einem Segment: " + received);
@@ -104,6 +106,10 @@ namespace ChatApp.ChatClient.Network.Serverlink {
         }
 
         private void CheckFlags() {
+            if (!socket.IsConnectedToHost) {
+                TransmissionFlaggedToCancel = true;
+                ConnectionFlaggedToShutdown = true;
+            }
             log.Trace("check Flags");
             if (TransmissionFlaggedToCancel && outboxMessages.Count == 0) {
                 log.Debug("CheckFlags() Stop Flag erkannt");
