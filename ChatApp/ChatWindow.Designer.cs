@@ -142,6 +142,7 @@
             this.Text_Server_Ip.TabIndex = 2;
             this.Text_Server_Ip.Text = "Server: 127.0.0.1 (oder IP hier eingeben)";
             this.Text_Server_Ip.Enter += new System.EventHandler(this.On_Focus_Text_IpAddress);
+            this.Text_Server_Ip.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnEnterKey_ServerIp);
             this.Text_Server_Ip.Leave += new System.EventHandler(this.On_Leave_Focus_Text_IpAddress);
             // 
             // Button_Login
@@ -169,6 +170,7 @@
             this.Text_Username.TabIndex = 1;
             this.Text_Username.Text = "(Benutzername eingeben)";
             this.Text_Username.Enter += new System.EventHandler(this.On_Focus_Text_Username);
+            this.Text_Username.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnEnterKey_Username);
             this.Text_Username.Leave += new System.EventHandler(this.On_Leave_Focus_Text_Username);
             // 
             // tabTableLayout
@@ -241,6 +243,7 @@
             this.Text_Tabbed_Chatpartner.TabIndex = 3;
             this.Text_Tabbed_Chatpartner.Text = "(Benutzername des Chatpartner eingeben)";
             this.Text_Tabbed_Chatpartner.Enter += new System.EventHandler(this.Text_Tabbed_Chatpartner_Enter);
+            this.Text_Tabbed_Chatpartner.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnEnterKey_ChatPartner);
             this.Text_Tabbed_Chatpartner.Leave += new System.EventHandler(this.Text_Tabbed_Chatpartner_Leave);
             // 
             // ChatWindow

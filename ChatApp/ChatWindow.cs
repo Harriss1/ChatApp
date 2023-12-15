@@ -212,5 +212,26 @@ namespace ChatApp {
                 }
             }
         }
+
+        private void OnEnterKey_Username(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter) {
+                //enter key is down
+                Button_Login_Click(sender, e);
+            }
+        }
+
+        private void OnEnterKey_ChatPartner(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter) {
+                //enter key is down
+                Button_Tabbed_Chat_Request_Click(sender, e);
+            }
+        }
+
+        private void OnEnterKey_ServerIp(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter) {
+                //enter key is down
+                Button_Login_Click(sender, e);
+            }
+        }
     }
 }
