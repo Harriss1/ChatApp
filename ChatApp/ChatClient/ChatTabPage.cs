@@ -270,7 +270,16 @@ namespace ChatApp.ChatClient {
             messageBox.Multiline = true;
             messageBox.Text = messageText;
             messageBox.Width = MessagesScrollerPanel.Width - 80;
+            //messageBox.AcceptsReturn = false;
+            messageBox.KeyDown += OnKeyEnter_MessageBox;
             return messageBox;
+        }
+
+        private void OnKeyEnter_MessageBox(object sender, KeyEventArgs e) {
+            if (e.Shift && e.KeyCode == Keys.Enter) {
+                SendMessage(sender, e);
+            }
+            //enter key is down
         }
 
         private static TextBox CreateNameBox(ProtocolMessage message, Font font) {
