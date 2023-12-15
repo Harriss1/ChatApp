@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace ChatApp {
     public partial class ServerWindow : Form {
-        ServerController server = new ServerController();
+        ServerController server = ServerController.GetInstace();
         public ServerWindow() {
             InitializeComponent();
             LogPublisher.OnEvent_PublishServerMessage onEvent_PublishServerMessage =

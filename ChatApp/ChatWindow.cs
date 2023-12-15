@@ -1,5 +1,6 @@
 ﻿using ChatApp.ChatClient;
 using ChatApp.Protocol;
+using ChatApp.Server;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -181,6 +182,31 @@ namespace ChatApp {
         private void Text_Tabbed_Chatpartner_Leave(object sender, EventArgs e) {
             if (Text_Tabbed_Chatpartner.Text.Equals("")) {
                 Text_Tabbed_Chatpartner.Text = "(Benutzername des Chatpartner eingeben)";
+            }
+        }
+
+        private void ChatWindow_FormClosing(object sender, FormClosingEventArgs e) {
+            
+            ServerController srv = ServerController.GetInstace();
+            bool shutdownCalled = false;
+            bool clientClosureCalled = false;
+ 
+            while (!srv.IsGracefullyShutdown() || chatController.IsLoggedIn()) {
+                if (!shutdownCalled) {
+                    shutdownCalled = true;
+                    srv.GracefullyShutdown();
+                    logPublisher.Warn("#");
+                    logPublisher.Warn("# BITTE WARTEN BIS SERVER HERUNTERGEFAHREN IST");
+                    logPublisher.Warn("#");
+                }
+                if (!clientClosureCalled) {
+                    clientClosureCalled = true;
+                    logPublisher.Warn("#");
+                    logPublisher.Warn("# BITTE WARTEN BIS CLIENT HERUNTERGEFAHREN IST");
+                    logPublisher.Warn("#");
+                    chatController.LogoutFromServer();
+                }
+
             }
         }
     }

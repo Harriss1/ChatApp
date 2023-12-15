@@ -73,7 +73,7 @@
             this.tableLayoutPanel1.Controls.Add(this.Button_Server_View, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.Text_Connection_Status, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(4, 53);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -86,7 +86,7 @@
             this.Button_Server_View.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Button_Server_View.Location = new System.Drawing.Point(896, 4);
-            this.Button_Server_View.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Button_Server_View.Margin = new System.Windows.Forms.Padding(4);
             this.Button_Server_View.Name = "Button_Server_View";
             this.Button_Server_View.Size = new System.Drawing.Size(152, 28);
             this.Button_Server_View.TabIndex = 0;
@@ -102,7 +102,7 @@
             this.Text_Connection_Status.BackColor = System.Drawing.SystemColors.Menu;
             this.Text_Connection_Status.Font = new System.Drawing.Font("Cascadia Mono Light", 10F);
             this.Text_Connection_Status.Location = new System.Drawing.Point(4, 4);
-            this.Text_Connection_Status.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Text_Connection_Status.Margin = new System.Windows.Forms.Padding(4);
             this.Text_Connection_Status.Name = "Text_Connection_Status";
             this.Text_Connection_Status.Size = new System.Drawing.Size(884, 27);
             this.Text_Connection_Status.TabIndex = 1;
@@ -121,7 +121,7 @@
             this.tableLayoutPanel2.Controls.Add(this.Button_Login, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.Text_Username, 0, 0);
             this.tableLayoutPanel2.Location = new System.Drawing.Point(4, 4);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -136,7 +136,7 @@
             this.Text_Server_Ip.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.Text_Server_Ip.Font = new System.Drawing.Font("Cascadia Mono Light", 10F);
             this.Text_Server_Ip.Location = new System.Drawing.Point(480, 4);
-            this.Text_Server_Ip.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Text_Server_Ip.Margin = new System.Windows.Forms.Padding(4);
             this.Text_Server_Ip.Name = "Text_Server_Ip";
             this.Text_Server_Ip.Size = new System.Drawing.Size(468, 27);
             this.Text_Server_Ip.TabIndex = 2;
@@ -147,7 +147,7 @@
             // Button_Login
             // 
             this.Button_Login.Location = new System.Drawing.Point(956, 4);
-            this.Button_Login.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Button_Login.Margin = new System.Windows.Forms.Padding(4);
             this.Button_Login.Name = "Button_Login";
             this.Button_Login.Size = new System.Drawing.Size(99, 28);
             this.Button_Login.TabIndex = 0;
@@ -163,7 +163,7 @@
             this.Text_Username.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.Text_Username.Font = new System.Drawing.Font("Cascadia Mono Light", 10F);
             this.Text_Username.Location = new System.Drawing.Point(4, 4);
-            this.Text_Username.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Text_Username.Margin = new System.Windows.Forms.Padding(4);
             this.Text_Username.Name = "Text_Username";
             this.Text_Username.Size = new System.Drawing.Size(468, 27);
             this.Text_Username.TabIndex = 1;
@@ -180,7 +180,7 @@
             this.tabTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tabTableLayout.Controls.Add(this.Tab_Control_Chats, 0, 0);
             this.tabTableLayout.Location = new System.Drawing.Point(4, 102);
-            this.tabTableLayout.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabTableLayout.Margin = new System.Windows.Forms.Padding(4);
             this.tabTableLayout.Name = "tabTableLayout";
             this.tabTableLayout.RowCount = 1;
             this.tabTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 492F));
@@ -192,7 +192,7 @@
             this.Tab_Control_Chats.Controls.Add(this.TabPage_NewChat);
             this.Tab_Control_Chats.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Tab_Control_Chats.Location = new System.Drawing.Point(4, 4);
-            this.Tab_Control_Chats.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Tab_Control_Chats.Margin = new System.Windows.Forms.Padding(4);
             this.Tab_Control_Chats.Name = "Tab_Control_Chats";
             this.Tab_Control_Chats.SelectedIndex = 0;
             this.Tab_Control_Chats.Size = new System.Drawing.Size(1051, 505);
@@ -203,9 +203,9 @@
             this.TabPage_NewChat.Controls.Add(this.Button_Tabbed_Chat_Request);
             this.TabPage_NewChat.Controls.Add(this.Text_Tabbed_Chatpartner);
             this.TabPage_NewChat.Location = new System.Drawing.Point(4, 25);
-            this.TabPage_NewChat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.TabPage_NewChat.Margin = new System.Windows.Forms.Padding(4);
             this.TabPage_NewChat.Name = "TabPage_NewChat";
-            this.TabPage_NewChat.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.TabPage_NewChat.Padding = new System.Windows.Forms.Padding(4);
             this.TabPage_NewChat.Size = new System.Drawing.Size(1043, 476);
             this.TabPage_NewChat.TabIndex = 0;
             this.TabPage_NewChat.Text = "Neuer Chat";
@@ -218,7 +218,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Button_Tabbed_Chat_Request.Enabled = false;
             this.Button_Tabbed_Chat_Request.Location = new System.Drawing.Point(8, 43);
-            this.Button_Tabbed_Chat_Request.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Button_Tabbed_Chat_Request.Margin = new System.Windows.Forms.Padding(4);
             this.Button_Tabbed_Chat_Request.Name = "Button_Tabbed_Chat_Request";
             this.Button_Tabbed_Chat_Request.Size = new System.Drawing.Size(226, 49);
             this.Button_Tabbed_Chat_Request.TabIndex = 4;
@@ -235,7 +235,7 @@
             this.Text_Tabbed_Chatpartner.Enabled = false;
             this.Text_Tabbed_Chatpartner.Font = new System.Drawing.Font("Cascadia Mono Light", 10F);
             this.Text_Tabbed_Chatpartner.Location = new System.Drawing.Point(8, 8);
-            this.Text_Tabbed_Chatpartner.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Text_Tabbed_Chatpartner.Margin = new System.Windows.Forms.Padding(4);
             this.Text_Tabbed_Chatpartner.Name = "Text_Tabbed_Chatpartner";
             this.Text_Tabbed_Chatpartner.Size = new System.Drawing.Size(524, 27);
             this.Text_Tabbed_Chatpartner.TabIndex = 3;
@@ -249,9 +249,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1067, 621);
             this.Controls.Add(this.mainTableLayout);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ChatWindow";
             this.Text = "ChatApp";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ChatWindow_FormClosing);
             this.mainTableLayout.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();

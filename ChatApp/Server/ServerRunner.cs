@@ -30,13 +30,12 @@ namespace ChatApp.Server {
         private OnDefineConnectionClerkEventForEachNewConnection _defineConnectionClerk;
         private OnEvent_PublishConnectionThread _publishConnectionThread;
         private static LogPublisher log = new LogPublisher("ServerRunner");
-        private static ServerRunner instance;
         private bool alreadyShuttingDown = false;
 
         private List<Thread> connectionThreads = new List<Thread> ();
-        private ServerRunner() {
-        }
-        public static ServerRunner GetInstace() {
+        internal static ServerRunner instance;
+        private ServerRunner() {}
+        internal static ServerRunner GetInstance() {
             object _lock = new object();
             lock (_lock) {
                 if (instance == null) {
@@ -210,5 +209,6 @@ namespace ChatApp.Server {
             log.Debug("Beende den Shutdown-Kontroll-Thread.");
             cancelToken.Cancel();
         }
+
     }
 }
