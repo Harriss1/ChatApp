@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using static ChatApp.Server.CommunicationEventClerk;
 
-namespace ChatApp.Server.Listener{
+namespace ChatApp.Server.Listener {
     internal class ConnectionManagerService {
 
         private static ConnectionRegister connectionRegister = ConnectionRegister.GetInstance();

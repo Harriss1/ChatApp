@@ -102,6 +102,7 @@ namespace ChatApp.Server.MessageMediator {
                     ServerMessageCreator.CreateChatMessageTransmissionStatusResponse(transmissionCode);
                 outbox.Add(CreateByteMessage(transmissionStatusResponse, sender));
             }
+            // Chat-Anfrage
             if (messageType.Equals(MessageTypeEnum.CHAT_REQUEST)) {
                 log.Debug("Verarbeitung der  erkannten Chat Anfrage");
                 string receiverUsername = inboxMessage.GetReceiverUsername();
@@ -118,6 +119,37 @@ namespace ChatApp.Server.MessageMediator {
                         + " und [" + inboxMessage.GetReceiverUsername() + "] \r\n" +
                         "XML=" + inboxMessage.GetXml().OuterXml);
                     permissionResult = ResultCodeEnum.SUCCESS;
+                }
+                // Ergebnis der Prüfung des Servers ob der Client existiert (nicht ob der Empfänger bestätigt hat)
+                // dem Client mitteilen:
+                log.Trace("erstelle Übermittlungsergebnis der Chatanfrage von Client an Server:");
+                ProtocolMessage chatPermissionResponseToSender = ServerMessageCreator.
+                        CreateChatPermissionResponse(inboxMessage.GetSenderUsername(), inboxMessage.GetReceiverUsername(),
+                        permissionResult);
+                ProtocolMessage chatPermissionRequestToReceiver = ServerMessageCreator.
+                       CreateChatPermissionRequest(inboxMessage.GetSenderUsername(), inboxMessage.GetReceiverUsername(),
+                       permissionResult);
+                outbox.Add(CreateByteMessage(chatPermissionResponseToSender, sender));
+                // Auch der Empfänger erhält eine Bestätigung, damit er einen neuen Tab öffnen kann
+                outbox.Add(CreateByteMessage(chatPermissionRequestToReceiver, receiver));
+            }
+            // Chat-Konversation beendet
+            if (messageType.Equals(MessageTypeEnum.CHAT_CLOSED_NOTIFICATION)) {
+                log.Debug("Verarbeitung der  erkannten Chat beendet Mitteilung");
+                string receiverUsername = inboxMessage.GetReceiverUsername();
+                log.Debug("Suche Benutzer: " + receiverUsername);
+                Connection receiver = connectionRegister.SearchByUsername(receiverUsername);
+                string permissionResult = ResultCodeEnum.SUCCESS;
+                // Suche nach dem Empfänger
+                if (receiver == null) {
+                    log.Warn("Empfänger hat sich noch nicht registriert, kann Nachricht nicht weiterleiten");
+                }
+                else {
+                    log.Debug("Empfänger gefunden");
+                    log.Info("Beende Nachrichtenaustausch zwischen [" + inboxMessage.GetSenderUsername() + "]"
+                        + " und [" + inboxMessage.GetReceiverUsername() + "] \r\n" +
+                        "XML=" + inboxMessage.GetXml().OuterXml);
+                    permissionResult = ResultCodeEnum.FAILURE;
                 }
                 // Ergebnis der Prüfung des Servers ob der Client existiert (nicht ob der Empfänger bestätigt hat)
                 // dem Client mitteilen:

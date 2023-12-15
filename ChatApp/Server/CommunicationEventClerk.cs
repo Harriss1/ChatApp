@@ -29,7 +29,6 @@ namespace ChatApp.Server {
         private OnEvent_CheckCancelConnection _onCheckToCancelConnection;
 
         public CommunicationEventClerk(
-
             OnEvent_ReceiveByteArray _onReceiveByteArray,
             OnEvent_CheckForBytesToSend _onCheckForBytesToSend,
             OnEvent_CheckAbortTransmission _onCheckToAbortTransmission,

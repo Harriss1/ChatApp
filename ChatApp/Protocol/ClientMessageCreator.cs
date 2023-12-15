@@ -59,5 +59,15 @@ namespace ChatApp.Protocol {
             message.SetSourceType(MessageSourceEnum.CLIENT_REQUEST);
             return message;
         }
+
+        internal static ProtocolMessage CreateChatClosedNotificationRequest(string username, string chatPartnerName) {
+            ProtocolMessage message = CreateBaseClientRequest();
+            message.SetMessageType(MessageTypeEnum.CHAT_CLOSED_NOTIFICATION);
+
+            message.AppendSenderIntoContent(username);
+            message.AppendReceiverIntoContent(chatPartnerName);
+
+            return message;
+        }
     }
 }

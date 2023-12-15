@@ -18,6 +18,7 @@ namespace ChatApp.Protocol {
             LOGOUT_ORDER,
             STATUS_EXCHANGE,
             CHAT_REQUEST,
+            CHAT_CLOSED_NOTIFICATION,
             CHAT_MESSAGE_TRANSMISSION_STATUS,
             CHAT_PARTNER_STATUS
         };
@@ -30,6 +31,7 @@ namespace ChatApp.Protocol {
         public const string LOGOUT_ORDER = "logoutOrder";
         public const string STATUS_EXCHANGE = "statusExchange";
         public const string CHAT_REQUEST = "chatRequest";
+        public const string CHAT_CLOSED_NOTIFICATION = "chatClosedNotification";
         public const string CHAT_PARTNER_STATUS = "chatPartnerStatus";
         // TODO FileSendRequest usw...
         public static List<string> Values() {

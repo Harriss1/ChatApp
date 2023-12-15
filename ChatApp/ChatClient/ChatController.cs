@@ -152,6 +152,24 @@ namespace ChatApp.ChatClient {
             }
         }
 
+        internal ProtocolMessage SendChatClosedPermission(string chatPartnerName) {
+            ValidateSession();
+            bool partnerExists = false;
+            foreach (string partner in permittedChatPartners) {
+                if (partner.Equals(chatPartnerName)) {
+                    partnerExists = true;
+                }
+            }
+            if (!partnerExists) {
+                return null;
+            }
+            permittedChatPartners.Remove(chatPartnerName);
+            ProtocolMessage protocolMessage = ClientMessageCreator.
+                CreateChatClosedNotificationRequest(chatSession.Username, chatPartnerName);
+            serverlink.EnqueueMessageToOutBox(protocolMessage.GetXml().OuterXml);
+            return protocolMessage;
+        }
+
         internal ProtocolMessage SendChatPermissionRequest(string chatpartnerName) {
             ValidateSession();
             ProtocolMessage protocolMessage = ClientMessageCreator.

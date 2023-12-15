@@ -92,6 +92,7 @@ namespace ChatApp.ChatClient {
         }
 
         private void CloseTab(object sender, EventArgs e) {
+            chatController.SendChatClosedPermission(ChatPartner);
             Dispose();
         }
 
