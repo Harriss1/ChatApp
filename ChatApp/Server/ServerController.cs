@@ -13,7 +13,10 @@ namespace ChatApp.Server {
         private static ServerController instance;
         private static ServerRunner serverRunner = ServerRunner.GetInstance();
         private static ConnectionManagerService connectionManager;
-        private ServerController() {}
+        internal bool IsInShutdownProcess { get; private set; }
+        private ServerController() {
+            IsInShutdownProcess = false;
+        }
         internal static ServerController GetInstace() {
             object _lock = new object();
             lock (_lock) {
@@ -24,6 +27,7 @@ namespace ChatApp.Server {
             return instance;
         }
         internal void Start() {
+            IsInShutdownProcess = false;
             serverRunner.StartServer(Config.ServerAddress, Config.ServerPort);
             log.Info("Started Server at " + Config.ServerAddress + ":" + Config.ServerPort);
             connectionManager = new ConnectionManagerService(serverRunner);
@@ -34,10 +38,12 @@ namespace ChatApp.Server {
             return serverRunner.IsGracefullyShutdown();
         }  
 
-        internal void GracefullyShutdown() {
+        internal void ShutdownGracefully() {
             if (serverRunner.IsGracefullyShutdown()) {
+                IsInShutdownProcess = false;
                 log.Info("Der Server wurde bereits Server korrekt beendet.");
             } else {
+                IsInShutdownProcess = true;
                 serverRunner.BeginGracefulShutdown(TimeSpan.FromSeconds(60));
                 log.Info("Beginne den Server herunter zu fahren.");
             }

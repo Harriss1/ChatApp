@@ -133,7 +133,7 @@ namespace ChatApp.ChatClient {
 
             SendButton = new Button();
             SendButton.Text = "Nachricht abschicken";
-            SendButton.Dock = DockStyle.Fill;
+            SendButton.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
             SendButton.FlatStyle = FlatStyle.Flat;
 
             chatContainer.Controls.Add(CloseButton, 0, 0);

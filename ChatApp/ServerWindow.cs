@@ -18,6 +18,7 @@ namespace ChatApp {
             LogPublisher.OnEvent_PublishServerMessage onEvent_PublishServerMessage =
                 new LogPublisher.OnEvent_PublishServerMessage(OnEvent_AddConsoleMessage);
             LogPublisher.SubscribeTo_PublishServerMessage(onEvent_PublishServerMessage);
+            Label_ServerStatus.Font = new Font("Cascadia Mono Light", 9, FontStyle.Regular);
         }
 
         private void OnEvent_AddConsoleMessage(string message) {
@@ -35,6 +36,24 @@ namespace ChatApp {
                     Text_Console_Output.Text += message + "\r\n";
                     Text_Console_Output.SelectionStart = Text_Console_Output.Text.Length;
                     Text_Console_Output.ScrollToCaret();
+
+                    if (server.IsGracefullyShutdown()) {
+                        Label_ServerStatus.Text = "⛔ Offline";
+                        Label_ServerStatus.BackColor = Color.Red;
+                        Label_ServerStatus.ForeColor = Color.Linen;
+                    }
+                    else {
+                        if (server.IsInShutdownProcess && !server.IsGracefullyShutdown()) {
+                            Label_ServerStatus.Text = "⚙ Herunterfahrend";
+                            Label_ServerStatus.BackColor = Color.Yellow;
+                            Label_ServerStatus.ForeColor = Color.LightSlateGray;
+                        }
+                        else {
+                            Label_ServerStatus.Text = "✔ Online";
+                            Label_ServerStatus.BackColor = Color.YellowGreen;
+                            Label_ServerStatus.ForeColor = Color.SlateGray;
+                        }
+                    }
                 });
             }
         }
@@ -44,7 +63,7 @@ namespace ChatApp {
         }
 
         private void Button_Shutdown_Server_Click(object sender, EventArgs e) {
-            server.GracefullyShutdown();
+            server.ShutdownGracefully();
         }
 
         private void Button_Abort_Server_Click(object sender, EventArgs e) {
@@ -59,7 +78,8 @@ namespace ChatApp {
             // erweiterter Code: https://stackoverflow.com/a/17796192
             if (e.CloseReason == CloseReason.UserClosing) {
                 e.Cancel = true;
-                MessageBox.Show("Der Server wird im Hintergrund weiter ausgeführt.", "Information", MessageBoxButtons.OK);
+                if(!server.IsGracefullyShutdown())
+                    MessageBox.Show("Der Server wird im Hintergrund weiter ausgeführt.", "Information", MessageBoxButtons.OK);
                 this.Hide();
             }
         }

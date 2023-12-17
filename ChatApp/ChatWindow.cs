@@ -225,7 +225,7 @@ namespace ChatApp {
             while (!srv.IsGracefullyShutdown()) {                
                 if (!shutdownCalled) {
                     shutdownCalled = true;
-                    srv.GracefullyShutdown();
+                    srv.ShutdownGracefully();
                     logPublisher.Warn("#");
                     logPublisher.Warn("# BITTE WARTEN BIS SERVER HERUNTERGEFAHREN IST");
                     logPublisher.Warn("#");

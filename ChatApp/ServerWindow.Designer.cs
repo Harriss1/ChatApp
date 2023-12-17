@@ -27,6 +27,8 @@
             this.Panel_Controls = new System.Windows.Forms.TableLayoutPanel();
             this.Button_Shutdown_Server = new System.Windows.Forms.Button();
             this.Button_Start_Server = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.Label_ServerStatus = new System.Windows.Forms.Label();
             this.Text_Console_Output = new System.Windows.Forms.TextBox();
             this.tableLayout.SuspendLayout();
             this.Panel_Controls.SuspendLayout();
@@ -34,12 +36,15 @@
             // 
             // tableLayout
             // 
+            this.tableLayout.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayout.ColumnCount = 1;
             this.tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayout.Controls.Add(this.Panel_Controls, 0, 1);
             this.tableLayout.Controls.Add(this.Text_Console_Output, 0, 0);
+            this.tableLayout.Controls.Add(this.Panel_Controls, 0, 1);
             this.tableLayout.Location = new System.Drawing.Point(-1, -1);
-            this.tableLayout.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayout.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayout.Name = "tableLayout";
             this.tableLayout.RowCount = 2;
             this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -51,18 +56,20 @@
             // 
             this.Panel_Controls.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Panel_Controls.ColumnCount = 4;
-            this.Panel_Controls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.Panel_Controls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 133F));
+            this.Panel_Controls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.Panel_Controls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 133F));
             this.Panel_Controls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 133F));
             this.Panel_Controls.Controls.Add(this.Button_Shutdown_Server, 3, 0);
             this.Panel_Controls.Controls.Add(this.Button_Start_Server, 2, 0);
-            this.Panel_Controls.Location = new System.Drawing.Point(551, 521);
+            this.Panel_Controls.Controls.Add(this.label1, 0, 0);
+            this.Panel_Controls.Controls.Add(this.Label_ServerStatus, 1, 0);
+            this.Panel_Controls.Location = new System.Drawing.Point(465, 521);
             this.Panel_Controls.Margin = new System.Windows.Forms.Padding(0);
             this.Panel_Controls.Name = "Panel_Controls";
             this.Panel_Controls.RowCount = 1;
             this.Panel_Controls.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.Panel_Controls.Size = new System.Drawing.Size(541, 37);
+            this.Panel_Controls.Size = new System.Drawing.Size(627, 37);
             this.Panel_Controls.TabIndex = 0;
             // 
             // Button_Shutdown_Server
@@ -70,10 +77,10 @@
             this.Button_Shutdown_Server.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_Shutdown_Server.Location = new System.Drawing.Point(412, 4);
-            this.Button_Shutdown_Server.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Button_Shutdown_Server.Location = new System.Drawing.Point(470, 4);
+            this.Button_Shutdown_Server.Margin = new System.Windows.Forms.Padding(4);
             this.Button_Shutdown_Server.Name = "Button_Shutdown_Server";
-            this.Button_Shutdown_Server.Size = new System.Drawing.Size(125, 29);
+            this.Button_Shutdown_Server.Size = new System.Drawing.Size(153, 29);
             this.Button_Shutdown_Server.TabIndex = 1;
             this.Button_Shutdown_Server.Text = "Herunterfahren";
             this.Button_Shutdown_Server.UseVisualStyleBackColor = true;
@@ -84,14 +91,34 @@
             this.Button_Start_Server.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_Start_Server.Location = new System.Drawing.Point(279, 4);
-            this.Button_Start_Server.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Button_Start_Server.Location = new System.Drawing.Point(337, 4);
+            this.Button_Start_Server.Margin = new System.Windows.Forms.Padding(4);
             this.Button_Start_Server.Name = "Button_Start_Server";
             this.Button_Start_Server.Size = new System.Drawing.Size(125, 29);
             this.Button_Start_Server.TabIndex = 0;
             this.Button_Start_Server.Text = "Starten";
             this.Button_Start_Server.UseVisualStyleBackColor = true;
             this.Button_Start_Server.Click += new System.EventHandler(this.Button_Start_Server_Click);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(40, 10);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(90, 16);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Server Status:";
+            // 
+            // Label_ServerStatus
+            // 
+            this.Label_ServerStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.Label_ServerStatus.AutoSize = true;
+            this.Label_ServerStatus.Location = new System.Drawing.Point(136, 10);
+            this.Label_ServerStatus.Name = "Label_ServerStatus";
+            this.Label_ServerStatus.Size = new System.Drawing.Size(125, 16);
+            this.Label_ServerStatus.TabIndex = 3;
+            this.Label_ServerStatus.Text = "Label_ServerStatus";
             // 
             // Text_Console_Output
             // 
@@ -116,13 +143,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1089, 554);
             this.Controls.Add(this.tableLayout);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ServerWindow";
             this.Text = "Server";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ServerWindow_FormClosing_1);
             this.tableLayout.ResumeLayout(false);
             this.tableLayout.PerformLayout();
             this.Panel_Controls.ResumeLayout(false);
+            this.Panel_Controls.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -134,5 +162,7 @@
         private System.Windows.Forms.Button Button_Start_Server;
         private System.Windows.Forms.Button Button_Shutdown_Server;
         private System.Windows.Forms.TextBox Text_Console_Output;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label Label_ServerStatus;
     }
 }
