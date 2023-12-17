@@ -19,6 +19,7 @@ namespace ChatApp {
         private ChatController chatController = new ChatController();
         private Timer updateTimer;
         private bool popupWarningTransmissionFailureAlreadyShown = false;
+        private bool showUserLoggedOffPopupWarning = false;
         public ChatWindow() {
             InitializeComponent();
         }
@@ -115,15 +116,33 @@ namespace ChatApp {
                 Text_Connection_Status.Text += " => erfolgreich angemeldet";
                 Button_Tabbed_Chat_Request.Enabled = true;
                 Text_Tabbed_Chatpartner.Enabled = true;
+                showUserLoggedOffPopupWarning = true;
             }
             else {
                 Button_Login.Text = "Anmelden";
                 Text_Connection_Status.Text += " => nicht angemeldet";
                 Button_Tabbed_Chat_Request.Enabled = false;
                 Text_Tabbed_Chatpartner.Enabled = false;
+                if (showUserLoggedOffPopupWarning) {
+                    showUserLoggedOffPopupWarning = false;
+                    if (!chatController.IsServerOnline()) {
+                        MessageBox.Show(
+                        "Die Verbindung zum Server besteht nicht mehr.",
+                        "Warnung",
+                        MessageBoxButtons.OK);
+                    }
+                    else {
+                        MessageBox.Show(
+                            "Sie wurden abgemeldet.",
+                            "Information",
+                            MessageBoxButtons.OK);
+                    }
+                }
             }
+
             if(chatController.LastChatMessageTransmitted && chatController.IsLoggedIn()) {
-                if (!chatController.LastChatMessageSuccessfullySent && !popupWarningTransmissionFailureAlreadyShown) {
+                if (!chatController.LastChatMessageSuccessfullySent 
+                    && !popupWarningTransmissionFailureAlreadyShown) {
                     popupWarningTransmissionFailureAlreadyShown = true;
                     MessageBox.Show(
                         "Bei der letzten Nachrichtenübertragung trat ein Fehler auf.",
@@ -136,7 +155,16 @@ namespace ChatApp {
             foreach(ChatTabPage page in ChatTabPage.TabList) {
                 if (chatController.permittedChatPartners.Contains(page.ChatPartner)) {
                     page.ActivateControls();
+                    page.showConversationTerminatedWarning = true;
                 } else {
+                    if (page.showConversationTerminatedWarning) {
+                        page.showConversationTerminatedWarning = false;
+                        MessageBox.Show(
+                        "Der Chatpartner ist nicht mehr online oder hat den Chat beendet." +
+                        "\r\nSenden Sie ihm bitte eine neue Chatanfrage, sobald er verfügbar ist.",
+                        "Information",
+                        MessageBoxButtons.OK);
+                    }
                     page.DeactivateControls();
                 }
             }

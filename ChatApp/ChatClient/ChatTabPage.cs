@@ -16,6 +16,7 @@ namespace ChatApp.ChatClient {
         internal Button SendButton { get; set; }
         internal Button CloseButton { get; set; }
         internal bool ControlsAreEnabled {get; private set; }
+        internal bool showConversationTerminatedWarning = false;
 
         internal static List<ChatTabPage> TabList = new List<ChatTabPage>();
         private TabControl outerTabControl;
@@ -277,9 +278,10 @@ namespace ChatApp.ChatClient {
 
         private void OnKeyEnter_MessageBox(object sender, KeyEventArgs e) {
             if (e.Shift && e.KeyCode == Keys.Enter) {
+                //enter key is down
+                // https://mycsharp.de/forum/threads/66008/erledigt-shift-enter-in-textbox-abfangen
                 SendMessage(sender, e);
             }
-            //enter key is down
         }
 
         private static TextBox CreateNameBox(ProtocolMessage message, Font font) {

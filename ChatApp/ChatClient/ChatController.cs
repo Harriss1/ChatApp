@@ -212,6 +212,13 @@ namespace ChatApp.ChatClient {
             serverlink.ShutdownConnection();
         }
 
+        internal bool IsServerOnline() {
+            if(serverlink.IsConnectionToServerEstablished()) {
+                return true;
+            }
+            return false;
+        }
+
         internal string GetServerlinkStatusMessage() {
             if (lastServerStatus != null) {
                 return "Serverstatus: " + lastServerStatus.GetStatusCodeFromContent();
