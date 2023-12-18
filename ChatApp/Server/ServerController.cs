@@ -49,5 +49,10 @@ namespace ChatApp.Server {
             }
         }
 
+        internal void Abort() {
+            log.Info("Erzwinge Stop des Servers indem alle Threads beendet werden.");
+            connectionManager.AbortAllConnections();
+            serverRunner.Abort();
+        }
     }
 }

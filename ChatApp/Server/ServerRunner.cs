@@ -122,6 +122,12 @@ namespace ChatApp.Server {
             return newClerk;             
         }
 
+        public void Abort() {
+            foreach(Thread connection in connectionThreads) {
+                connection.Abort();
+            }
+            tcpServer.Stop();
+        }
         public void BeginGracefulShutdown(TimeSpan shutdownTimeout) {
             log.Info("Beginne Gracful Shutdown - maximal erlaubte Zeit (Sekunden) hierfür: " + shutdownTimeout.Seconds);
             alreadyShuttingDown = true;

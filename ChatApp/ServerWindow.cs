@@ -59,13 +59,26 @@ namespace ChatApp {
         }
 
         private void Button_Start_Server_Click(object sender, EventArgs e) {
+            if(!server.IsGracefullyShutdown()) {
+                MessageBox.Show("Der Server ist bereits gestartet.", 
+                    "Warnung", MessageBoxButtons.OK);
+                return;
+            }
             server.Start();
         }
 
         private void Button_Shutdown_Server_Click(object sender, EventArgs e) {
+            if (server.IsGracefullyShutdown()) {
+                MessageBox.Show("Der Server ist bereits beendet.",
+                    "Warnung", MessageBoxButtons.OK);
+                return;
+            }
             server.ShutdownGracefully();
         }
 
+        private void Button_Abort_Server_Click(object sender, EventArgs e) {
+            server.Abort();
+        }
         /// <summary>
         /// Die Wiederherstellung und Re-Fokusierung des Server-Fensters wird im ChatWindow behandelt.
         /// </summary>
