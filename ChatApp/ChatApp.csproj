@@ -77,11 +77,6 @@
       <DependentUpon>ServerWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="ByteConverter.cs" />
-    <Compile Include="Server\Repository\ChatMessage.cs" />
-    <Compile Include="Server\Repository\ChatRequest.cs" />
-    <Compile Include="Server\Repository\Client.cs" />
-    <Compile Include="Server\Repository\ConnectionStatus.cs" />
-    <Compile Include="Server\Repository\MessageType.cs" />
     <Compile Include="Server\CommunicationEventClerk.cs" />
     <Compile Include="Server\ConnectionManager\Connection.cs" />
     <Compile Include="Server\ConnectionManager\ConnectionManagerService.cs" />
@@ -92,7 +87,6 @@
     <Compile Include="Server\MessageMediator\MessageService.cs" />
     <Compile Include="Protocol\ProtocolValidator.cs" />
     <Compile Include="Server\MessageMediator\PostalWorker.cs" />
-    <Compile Include="Server\MessageMediator\RetainFlag.cs" />
     <Compile Include="Server\ServerController.cs" />
     <Compile Include="Server\ServerRunner.cs" />
     <Compile Include="Server\TcpServer.cs" />

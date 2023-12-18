@@ -15,7 +15,6 @@ namespace ChatApp.Server.MessageMediator {
         private List<ByteMessage> inboxByteMessageStack = new List<ByteMessage>();
         private List<ByteMessage> outboxByteMessageStack = new List<ByteMessage>();
         LogPublisher log = new LogPublisher("MessageService");
-        public List<Connection> connections = new List<Connection>();
         private MessageService() {
         }
         internal static MessageService GetInstance() {
