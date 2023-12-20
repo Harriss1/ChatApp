@@ -14,7 +14,7 @@ namespace ChatApp {
         int maxGapLength = 25;
         bool publishToSubscribers = true;
         bool alwaysPublishLogToSubscribers = Config.alwaysPublishLogToSubscribers;
-        private Level level;
+        Level level;
         enum Level {
             TRACE = 0,
             DEBUG = 1,

@@ -11,28 +11,28 @@ namespace ChatApp.ChatClient {
     internal class ChatTabPage {
         internal string ChatPartner { get; private set; }
         internal TabPage TabPage { get; private set; }
-        internal Panel MessagesScrollerPanel { get; set; }
-        internal TextBox TextInput { get; set; }
-        internal Button SendButton { get; set; }
-        internal Button CloseButton { get; set; }
-        internal bool ControlsAreEnabled {get; private set; }
-        internal bool showConversationTerminatedWarning = false;
+        private Panel MessagesScrollerPanel { get; set; }
+        private TextBox TextInput { get; set; }
+        private Button SendButton { get; set; }
+        private Button CloseButton { get; set; }
+        private TableLayoutPanel Body { get; set; }
+        private Color backColor = Color.FromArgb(218, 232, 252);
+        private bool ControlsAreEnabled {get; set; }
+        internal bool ShowConversationTerminatedWarning {get; set; }
 
         internal static List<ChatTabPage> TabList = new List<ChatTabPage>();
         private TabControl outerTabControl;
-        internal TableLayoutPanel Body { get; private set; }
-        Color backColor = Color.FromArgb(218, 232, 252);
-
 
         private TableLayoutPanel lastPanel = null;
         private ProtocolMessage lastProtocolMessage = null;
         private TextBox lastChatTextMessageBox = null;
-        ToolTip timeStampHoverText;
+        private ToolTip timeStampHoverText;
 
         private ChatController chatController;
 
         private ChatTabPage() { }
         public ChatTabPage(string chatpartner, TabControl outside_tab_control, ChatController chatController) {
+            ShowConversationTerminatedWarning = false;
             this.chatController = chatController;
             timeStampHoverText = GetToolTip();
             ChatPartner = chatpartner;

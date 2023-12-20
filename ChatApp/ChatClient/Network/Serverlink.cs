@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.ChatClient.Network.Serverlink {
     internal class Serverlink {
-        LogPublisher log = new LogPublisher("Serverlink", false);
+        private LogPublisher log = new LogPublisher("Serverlink", false);
         private Queue<string> outboxMessages = new Queue<string>();
         private Queue<string> inboxMessages = new Queue<string>();
         internal bool TransmissionFlaggedToCancel { get; set; }

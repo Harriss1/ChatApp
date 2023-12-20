@@ -58,7 +58,7 @@ namespace ChatApp.ChatClient {
         }
 
         internal void HandleNetworkMessages() {
-            if (serverlink.GracefullShutdown || !serverlink.IsConnectionToServerEstablished()) {
+            if (serverlink.IsGracefullyShutdown || !serverlink.IsConnectionToServerEstablished()) {
                 log.Debug("Verbindung ist geschlossen.");
                 return;
             }

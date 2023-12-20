@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace ChatApp {
     public partial class ChatWindow : Form {
-        LogPublisher logPublisher = new LogPublisher("ChatWindow", false);
+        private LogPublisher logPublisher = new LogPublisher("ChatWindow", false);
         private ServerWindow serverWindow;
         private ChatController chatController = new ChatController();
         private Timer updateTimer;
@@ -154,10 +154,10 @@ namespace ChatApp {
             foreach(ChatTabPage page in ChatTabPage.TabList) {
                 if (chatController.permittedChatPartners.Contains(page.ChatPartner)) {
                     page.ActivateControls();
-                    page.showConversationTerminatedWarning = true;
+                    page.ShowConversationTerminatedWarning = true;
                 } else {
-                    if (page.showConversationTerminatedWarning) {
-                        page.showConversationTerminatedWarning = false;
+                    if (page.ShowConversationTerminatedWarning) {
+                        page.ShowConversationTerminatedWarning = false;
                         MessageBox.Show(
                         "Der Chatpartner ist nicht mehr online oder hat den Chat beendet." +
                         "\r\nSenden Sie ihm bitte eine neue Chatanfrage, sobald er verfügbar ist.",

@@ -10,8 +10,8 @@ namespace ChatApp.ChatClient.Network.Serverlink {
     internal class TcpSocket {
         private LogPublisher log = new LogPublisher("TcpSocket", false);
         private Socket sender;
-        public bool useTimeoutForResponse = true;
-        public TimeSpan maxResponseWaitTimeout = TimeSpan.FromSeconds(4);
+        private bool useTimeoutForResponse = true;
+        private TimeSpan maxResponseWaitTimeout = TimeSpan.FromSeconds(4);
         internal bool IsConnectedToHost { private set; get; }
         internal string FailureMessage { private set; get; }
         public TcpSocket() {

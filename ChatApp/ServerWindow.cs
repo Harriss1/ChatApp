@@ -76,9 +76,6 @@ namespace ChatApp {
             server.ShutdownGracefully();
         }
 
-        private void Button_Abort_Server_Click(object sender, EventArgs e) {
-            server.Abort();
-        }
         /// <summary>
         /// Die Wiederherstellung und Re-Fokusierung des Server-Fensters wird im ChatWindow behandelt.
         /// </summary>

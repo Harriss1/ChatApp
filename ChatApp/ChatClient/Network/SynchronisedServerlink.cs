@@ -11,12 +11,12 @@ namespace ChatApp.ChatClient.Network {
     /// Verwaltet den Zugriff auf die im Thread laufende Client-Verbindung
     /// </summary>
     internal class SynchronisedServerlink {
-        LogPublisher log = new LogPublisher("SynchronisedServerlink", false);
+        private LogPublisher log = new LogPublisher("SynchronisedServerlink", false);
         private static Serverlink.Serverlink serverlink;
         private static Thread clientThread;
-        public bool GracefullShutdown { get; set; }
+        internal bool IsGracefullyShutdown { get; set; }
         private static Thread handlerThread;
-        CancellationTokenSource cancelToken;
+        private CancellationTokenSource cancelToken;
 
         public SynchronisedServerlink() {
             if (serverlink != null) {
@@ -25,7 +25,7 @@ namespace ChatApp.ChatClient.Network {
             }
             serverlink = new Serverlink.Serverlink();
             handlerThread = Thread.CurrentThread;
-            GracefullShutdown = false;
+            IsGracefullyShutdown = false;
         }
         internal bool IsConnectionToServerEstablished() {
             return serverlink != null && serverlink.IsConnectionToServerEstablished();
@@ -36,7 +36,7 @@ namespace ChatApp.ChatClient.Network {
                 // Thread-übergreifenden und über das Block-Level hinaus persistenten Token-Objekts
                 cancelToken.Dispose();
             }
-            GracefullShutdown = false;
+            IsGracefullyShutdown = false;
             cancelToken = new CancellationTokenSource();
             clientThread = new Thread(() => RunTcpClientWorkerLoop(ipAddress, serverPort, cancelToken));
             clientThread.Start();            
@@ -53,7 +53,7 @@ namespace ChatApp.ChatClient.Network {
             if (serverlink.IsConnectionToServerEstablished()) {
                 serverlink.RunConnectionLoop();
                 if (!IsConnectionToServerEstablished()) {
-                    GracefullShutdown = true;
+                    IsGracefullyShutdown = true;
                 }
                 // beendet den Kinder-Thread
                 // nachdem seine Hauptschleife ausläuft und hier hin gelangt.
