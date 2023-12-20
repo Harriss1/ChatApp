@@ -8,7 +8,7 @@ using System.Diagnostics;
 using ChatApp.Server.Listener;
 using ChatApp.Server.ConnectionManager;
 
-namespace ChatApp.Server {
+namespace ChatApp.Server.Listener {
     /// <summary>
     /// Einzelne Verbindungen werden durch den ConnectionClerk gemanaged.
     /// Für einen GracefullyShutdown ist es nötig alle offenen Verbindungen mittels ConnectionClerk zu schließen.

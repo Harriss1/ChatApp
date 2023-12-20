@@ -13,7 +13,6 @@ using System.Windows.Forms;
 
 namespace ChatApp {
     public partial class ChatWindow : Form {
-        private TableLayoutPanel lastPanel = null;
         LogPublisher logPublisher = new LogPublisher("ChatWindow", false);
         private ServerWindow serverWindow;
         private ChatController chatController = new ChatController();

@@ -4,7 +4,8 @@ using ChatApp.Server.MessageMediator;
 using System;
 using System.Text;
 using System.Threading;
-using static ChatApp.Server.CommunicationEventClerk;
+using ChatApp.Server.Listener;
+using static ChatApp.Server.Listener.CommunicationEventClerk;
 
 namespace ChatApp.Server.Listener {
     internal class ConnectionManagerService {
