@@ -26,7 +26,7 @@ namespace ChatApp.Server.MessageMediator {
             string messageType = inboxMessage.GetMessageType();
             if (messageType.Equals(MessageTypeEnum.UNDEFINED)) {
                 log.Warn("Request mit Nachrichten Typ 'UNDEFINED'");
-                ProtocolMessage statusResponse = ServerMessageCreator.CreateServerStatusResponse();
+                ProtocolMessage statusResponse = ServerMessageCreator.CreateServerStatusExchangeResponse();
                 outbox.Add(CreateByteMessage(statusResponse, sender));
                 ProtocolMessage failureResponse = ServerMessageCreator.CreateChatMessageTransmissionStatusResponse(ResultCodeEnum.FAILURE);
                 outbox.Add(CreateByteMessage(failureResponse, sender));
@@ -39,7 +39,7 @@ namespace ChatApp.Server.MessageMediator {
                 // Statusaustausch
                 if (messageType.Equals(MessageTypeEnum.STATUS_EXCHANGE)) {
                     log.Debug("status austausch");
-                    ProtocolMessage response = ServerMessageCreator.CreateServerStatusResponse();
+                    ProtocolMessage response = ServerMessageCreator.CreateServerStatusExchangeResponse();
                     outbox.Add(CreateByteMessage(response, sender));
                 }
                 // Login
@@ -124,7 +124,7 @@ namespace ChatApp.Server.MessageMediator {
                 // dem Client mitteilen:
                 log.Trace("erstelle Übermittlungsergebnis der Chatanfrage von Client an Server:");
                 ProtocolMessage chatPermissionResponseToSender = ServerMessageCreator.
-                        CreateChatPermissionResponse(inboxMessage.GetSenderUsername(), inboxMessage.GetReceiverUsername(),
+                        CreateChatConversationPermissionResponse(inboxMessage.GetSenderUsername(), inboxMessage.GetReceiverUsername(),
                         permissionResult);
                 ProtocolMessage chatPermissionRequestToReceiver = ServerMessageCreator.
                        CreateChatPermissionRequest(inboxMessage.GetSenderUsername(), inboxMessage.GetReceiverUsername(),
@@ -155,7 +155,7 @@ namespace ChatApp.Server.MessageMediator {
                 // dem Client mitteilen:
                 log.Trace("erstelle Übermittlungsergebnis der Chatanfrage von Client an Server:");
                 ProtocolMessage chatPermissionResponseToSender = ServerMessageCreator.
-                        CreateChatPermissionResponse(inboxMessage.GetSenderUsername(), inboxMessage.GetReceiverUsername(),
+                        CreateChatConversationPermissionResponse(inboxMessage.GetSenderUsername(), inboxMessage.GetReceiverUsername(),
                         permissionResult);
                 ProtocolMessage chatPermissionRequestToReceiver = ServerMessageCreator.
                        CreateChatPermissionRequest(inboxMessage.GetSenderUsername(), inboxMessage.GetReceiverUsername(),
@@ -167,7 +167,7 @@ namespace ChatApp.Server.MessageMediator {
             // Status Austausch
             if (messageType.Equals(MessageTypeEnum.STATUS_EXCHANGE)) {
                 log.Debug("Antwort: Status Austausch");
-                ProtocolMessage response = ServerMessageCreator.CreateServerStatusResponse();
+                ProtocolMessage response = ServerMessageCreator.CreateServerStatusExchangeResponse();
                 outbox.Add(CreateByteMessage(response, sender));
             }
             // Logout

@@ -24,6 +24,9 @@ namespace ChatApp.Protocol {
         private XmlNode Source() {
             return Root().ChildNodes[0];
         }
+        public string GetSourceType() {
+            return messageSource;
+        }
         public void SetSourceType(string type) {
             Source().InnerText = type;
             this.messageSource = type;
@@ -125,9 +128,6 @@ namespace ChatApp.Protocol {
         public void SetProtocolVersion(string version) {
             this.protocolVersion = version;
             Root().SetAttribute(NodeDescription.Message.PROTOCOLVERSION, version);
-        }
-        public string GetSource() {
-            return messageSource;
         }
         public ProtocolMessage LoadAndValidate(string message) {
             if(alreadySet) {

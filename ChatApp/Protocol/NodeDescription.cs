@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ChatApp.Protocol {
     internal readonly struct NodeDescription {
         public struct Message {
-            public static string NAME = "message";
+            public const string NAME = "message";
             public const string PROTOCOLVERSION = "protocolVersion";
             public const bool isOptional = false;
             public struct Source {

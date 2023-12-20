@@ -21,7 +21,7 @@ namespace ChatApp.Protocol {
             message.SetSourceType(sourceString);
             return message;
         }
-        public static ProtocolMessage CreateServerStatusResponse() {
+        public static ProtocolMessage CreateServerStatusExchangeResponse() {
             ProtocolMessage message = CreateBaseServerResponse();
             message.SetMessageType(MessageTypeEnum.STATUS_EXCHANGE);
 
@@ -67,7 +67,7 @@ namespace ChatApp.Protocol {
 
             return message;
         }
-        internal static ProtocolMessage CreateChatPermissionResponse(string sender, string receiver, string resultCode) {
+        internal static ProtocolMessage CreateChatConversationPermissionResponse(string sender, string receiver, string resultCode) {
             ProtocolMessage message = CreateBaseServerResponse();
             message.SetMessageType(MessageTypeEnum.CHAT_REQUEST);
 

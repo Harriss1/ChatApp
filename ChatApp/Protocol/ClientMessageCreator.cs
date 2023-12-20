@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Protocol {
     internal class ClientMessageCreator {
-        public static ProtocolMessage CreateStatusExchangeRequest() {
+        public static ProtocolMessage CreateServerStatusExchangeRequest() {
             ProtocolMessage message = CreateBaseClientRequest();
             message.SetMessageType(MessageTypeEnum.STATUS_EXCHANGE);
 
@@ -43,7 +43,7 @@ namespace ChatApp.Protocol {
 
             return message;
         }
-        internal static ProtocolMessage CreateChatMessagePermissionRequest(string sender, string receiver) {
+        internal static ProtocolMessage CreateChatConversationPermissionRequest(string sender, string receiver) {
             ProtocolMessage message = CreateBaseClientRequest();
             message.SetMessageType(MessageTypeEnum.CHAT_REQUEST);
 
@@ -60,12 +60,12 @@ namespace ChatApp.Protocol {
             return message;
         }
 
-        internal static ProtocolMessage CreateChatClosedNotificationRequest(string username, string chatPartnerName) {
+        internal static ProtocolMessage CreateChatClosedNotificationRequest(string sender, string receiver) {
             ProtocolMessage message = CreateBaseClientRequest();
             message.SetMessageType(MessageTypeEnum.CHAT_CLOSED_NOTIFICATION);
 
-            message.AppendSenderIntoContent(username);
-            message.AppendReceiverIntoContent(chatPartnerName);
+            message.AppendSenderIntoContent(sender);
+            message.AppendReceiverIntoContent(receiver);
 
             return message;
         }

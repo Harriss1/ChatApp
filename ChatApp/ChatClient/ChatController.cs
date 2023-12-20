@@ -9,7 +9,7 @@ using ChatApp.Protocol;
 
 namespace ChatApp.ChatClient {
     internal class ChatController {
-        LogPublisher log = new LogPublisher("ChatController", false);
+        private LogPublisher log = new LogPublisher("ChatController", false);
         private static SynchronisedServerlink serverlink = new SynchronisedServerlink();
         private static ChatSession chatSession;
         private static Queue<ProtocolMessage> chatMessages = new Queue<ProtocolMessage>();
@@ -44,7 +44,7 @@ namespace ChatApp.ChatClient {
         }
 
         private void SendStatusExchangeRequest() {
-            ProtocolMessage statusExchange = ClientMessageCreator.CreateStatusExchangeRequest();
+            ProtocolMessage statusExchange = ClientMessageCreator.CreateServerStatusExchangeRequest();
             statusExchange.AppendSenderIntoContent(chatSession.Username);
             serverlink.EnqueueMessageToOutBox(statusExchange.GetXml().OuterXml);
         }
@@ -75,7 +75,7 @@ namespace ChatApp.ChatClient {
             while (receivedMessage != null) {
                 ProtocolMessage message = new ProtocolMessage();
                 if (message.LoadAndValidate(receivedMessage) != null) {
-                    if (message.GetSource() == MessageSourceEnum.SERVER_RESPONSE) {
+                    if (message.GetSourceType() == MessageSourceEnum.SERVER_RESPONSE) {
                         if (message.GetMessageType().Equals(MessageTypeEnum.STATUS_EXCHANGE)) {
                             lastServerStatus = message;
                         }
@@ -128,7 +128,7 @@ namespace ChatApp.ChatClient {
                         }
                     }
 
-                    if (message.GetSource() == MessageSourceEnum.SERVER_REQUEST) {
+                    if (message.GetSourceType() == MessageSourceEnum.SERVER_REQUEST) {
                         // Eine Chatanfrage wurde an den Server geschickt, und nun fragt der Server
                         // den Clienten ob die Chatanfrage okay ist, wir haben aber keine
                         // Erlaubnisannahme implementiert, und nehmen ergo den neuen Chatpartner einfach in die Liste auf.
@@ -173,7 +173,7 @@ namespace ChatApp.ChatClient {
         internal ProtocolMessage SendChatPermissionRequest(string chatpartnerName) {
             ValidateSession();
             ProtocolMessage protocolMessage = ClientMessageCreator.
-                CreateChatMessagePermissionRequest(chatSession.Username, chatpartnerName);
+                CreateChatConversationPermissionRequest(chatSession.Username, chatpartnerName);
             serverlink.EnqueueMessageToOutBox(protocolMessage.GetXml().OuterXml);
             return protocolMessage;
         }
