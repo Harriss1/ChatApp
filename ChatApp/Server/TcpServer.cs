@@ -171,7 +171,14 @@ namespace ChatApp.Server.Listener {
                     IAsyncResult result;
                     Action action = () =>
                     {
-                        receivedBytesCount = handler.Receive(bytes);
+                        try {
+                            // Exception: Ein Blockierungsvorgang wurde
+                            // durch einen Aufruf von WSACancelBlockingCall unterbrochen
+                            receivedBytesCount = handler.Receive(bytes);
+                        }
+                        catch (SocketException e) {
+                            log.Warn("Eine Übertragung wurde abgebrochen.");
+                        }
                     };
                     result = action.BeginInvoke(null, null);
                     if (result.AsyncWaitHandle.WaitOne(maxResponseWaitTimeout))

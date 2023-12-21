@@ -26,7 +26,7 @@ namespace ChatApp.ChatClient {
             serverlink.StartConnection(ipAddress, Config.ServerPort);
             chatSession = new ChatSession(username);
             chatSession.IsLoggedIn = false;
-            Thread.Sleep(2000);
+            Thread.Sleep(1000);
             if (serverlink.IsConnectionToServerEstablished()) {
                 SendLoginRequest();
                 HandleNetworkMessages();
