@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Protocol {
     internal class ClientMessageCreator {
+
+        private static ProtocolMessage CreateBaseClientRequest() {
+            ProtocolMessage message = (new ProtocolMessage()).CreateBaseMessage();
+            message.SetProtocolVersion(Config.ProtocolVersion);
+            message.SetSourceType(MessageSourceEnum.CLIENT_REQUEST);
+            return message;
+        }
+
         public static ProtocolMessage CreateServerStatusExchangeRequest() {
             ProtocolMessage message = CreateBaseClientRequest();
             message.SetMessageType(MessageTypeEnum.STATUS_EXCHANGE);
@@ -50,13 +58,6 @@ namespace ChatApp.Protocol {
             message.AppendSenderIntoContent(sender);
             message.AppendReceiverIntoContent(receiver);
 
-            return message;
-        }
-
-        private static ProtocolMessage CreateBaseClientRequest() {
-            ProtocolMessage message = (new ProtocolMessage()).CreateBaseMessage();
-            message.SetProtocolVersion(Config.ProtocolVersion);
-            message.SetSourceType(MessageSourceEnum.CLIENT_REQUEST);
             return message;
         }
 

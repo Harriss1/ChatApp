@@ -1,4 +1,4 @@
-﻿namespace ChatApp.ChatClient {
+﻿namespace ChatApp.ChatClient.Network {
     internal class ChatSession {
         public string Username { get; private set; }
         public bool IsLoggedIn { get; set; }

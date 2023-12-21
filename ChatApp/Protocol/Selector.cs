@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace ChatApp.Protocol {
+namespace ChatApp.Protocol.Engine {
     /// <summary>
     /// Dient nur zum Selektieren der Werte und Elemente aus einer
     /// Protokoll konformen Xml-Datei

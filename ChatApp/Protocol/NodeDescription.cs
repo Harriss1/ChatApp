@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatApp.Protocol {
+namespace ChatApp.Protocol.Engine {
     internal readonly struct NodeDescription {
         public struct Message {
             public const string NAME = "message";

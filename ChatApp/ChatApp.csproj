@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChatClient\ChatSession.cs" />
+    <Compile Include="ChatClient\Network\ChatSession.cs" />
     <Compile Include="ChatClient\ChatTabPage.cs" />
     <Compile Include="ChatClient\Network\Serverlink.cs" />
     <Compile Include="ChatClient\Network\TcpSocket.cs" />
